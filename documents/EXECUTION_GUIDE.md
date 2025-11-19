@@ -26,7 +26,7 @@ Cursor must carefully review:
 
 Special attention should be given to:
 
-- `events` pages
+- `events` pages [Note: this page for only example purposes. That is not included in the project backend.]
 - `users` page
 - `user-details` page
 
@@ -156,7 +156,7 @@ Except for:
 
 ## **6. Backend Updates (If Needed)**
 
-Cursor is allowed to propose and apply small backend adjustments **if required to complete the integration properly**.
+Cursor is allowed to propose and apply small backend adjustments **if required to complete the integration properly**. But it is not allowed to make any major changes. And `Events` module is not included in the project backend, so no need to change backend for it.
 
 ---
 
