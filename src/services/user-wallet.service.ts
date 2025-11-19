@@ -5,6 +5,14 @@ import type {
   TUserWalletsResponse,
 } from "@/types/user-wallet.type";
 
+// GET All User Wallets (Admin)
+export async function fetchUserWallets(
+  query?: Record<string, any>,
+): Promise<TUserWalletsResponse> {
+  const response = await api.get("/api/user-wallets", { params: query });
+  return response.data as TUserWalletsResponse;
+}
+
 // GET Self Wallet (User/Admin)
 export async function fetchSelfWallet(): Promise<TUserWalletResponse> {
   const response = await api.get("/api/user-wallets/self");
