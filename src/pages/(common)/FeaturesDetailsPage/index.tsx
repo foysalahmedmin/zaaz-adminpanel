@@ -62,7 +62,6 @@ const FeaturesDetailsPage = () => {
       toast.error(
         error.response?.data?.message || "Failed to delete feature endpoint",
       );
-      console.error("Delete Feature Endpoint Error:", error);
     },
   });
 

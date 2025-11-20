@@ -66,8 +66,6 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to update user");
-      // eslint-disable-next-line no-console
-      console.error("Update User Error:", error);
     },
   });
 

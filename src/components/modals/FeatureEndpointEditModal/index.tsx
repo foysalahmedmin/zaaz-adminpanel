@@ -72,7 +72,6 @@ const FeatureEndpointEditModal: React.FC<FeatureEndpointEditModalProps> = ({
       toast.error(
         error.response?.data?.message || "Failed to update feature endpoint",
       );
-      console.error("Update Feature Endpoint Error:", error);
     },
   });
 

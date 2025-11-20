@@ -49,7 +49,6 @@ const PackagesPage = () => {
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to delete package");
-      console.error("Delete Package Error:", error);
     },
   });
 

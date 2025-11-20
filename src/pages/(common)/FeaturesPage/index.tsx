@@ -49,7 +49,6 @@ const FeaturesPage = () => {
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to delete feature");
-      console.error("Delete Feature Error:", error);
     },
   });
 

@@ -52,7 +52,6 @@ const TokenProfitAddModal: React.FC<TokenProfitAddModalProps> = ({
       toast.error(
         error.response?.data?.message || "Failed to create token profit",
       );
-      console.error("Create Token Profit Error:", error);
     },
   });
 

@@ -75,7 +75,6 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to restore item");
-      console.error("Restore Error:", error);
     },
   });
 
@@ -103,7 +102,6 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to delete item");
-      console.error("Permanent Delete Error:", error);
     },
   });
 

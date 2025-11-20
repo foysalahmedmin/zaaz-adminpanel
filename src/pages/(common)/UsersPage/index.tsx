@@ -36,11 +36,10 @@ const UsersPage = () => {
     mutationFn: (_id: string) => deleteUser(_id),
     onSuccess: (data) => {
       toast.success(data?.message || "User deleted successfully!");
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to delete User");
-      console.error("Delete User Error:", error);
     },
   });
 

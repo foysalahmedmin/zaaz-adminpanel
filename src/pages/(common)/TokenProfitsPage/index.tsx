@@ -51,7 +51,6 @@ const TokenProfitsPage = () => {
       toast.error(
         error.response?.data?.message || "Failed to delete token profit",
       );
-      console.error("Delete Token Profit Error:", error);
     },
   });
 

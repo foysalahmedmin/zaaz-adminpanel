@@ -64,7 +64,6 @@ const TokenProfitEditModal: React.FC<TokenProfitEditModalProps> = ({
       toast.error(
         error.response?.data?.message || "Failed to update token profit",
       );
-      console.error("Update Token Profit Error:", error);
     },
   });
 

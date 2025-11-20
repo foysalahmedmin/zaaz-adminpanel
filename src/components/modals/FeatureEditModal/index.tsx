@@ -70,7 +70,6 @@ const FeatureEditModal: React.FC<FeatureEditModalProps> = ({
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to update feature");
-      console.error("Update Feature Error:", error);
     },
   });
 

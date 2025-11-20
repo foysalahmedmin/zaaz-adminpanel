@@ -54,7 +54,6 @@ const FeatureAddModal: React.FC<FeatureAddModalProps> = ({
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to create feature");
-      console.error("Create Feature Error:", error);
     },
   });
 

@@ -60,7 +60,6 @@ const FeatureEndpointAddModal: React.FC<FeatureEndpointAddModalProps> = ({
       toast.error(
         error.response?.data?.message || "Failed to create feature endpoint",
       );
-      console.error("Create Feature Endpoint Error:", error);
     },
   });
 
