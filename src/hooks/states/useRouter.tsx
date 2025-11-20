@@ -7,7 +7,9 @@ import CommonLayout from "@/layouts/CommonLayout";
 import RootLayout from "@/layouts/RootLayout";
 import SignInPage from "@/pages/(auth)/SignInPage";
 import SignUpPage from "@/pages/(auth)/SignUpPage";
+import CheckoutCancelPage from "@/pages/(client)/CheckoutCancelPage";
 import CheckoutPage from "@/pages/(client)/CheckoutPage";
+import CheckoutSuccessPage from "@/pages/(client)/CheckoutSuccessPage";
 import PricingPage from "@/pages/(client)/PricingPage";
 import ProfilePage from "@/pages/(user)/ProfilePage";
 import ErrorPage from "@/pages/(partial)/ErrorPage";
@@ -75,11 +77,11 @@ const useAppRouter = () => {
             },
             {
               path: "checkout/success",
-              element: <CheckoutPage />,
+              element: <CheckoutSuccessPage />,
             },
             {
               path: "checkout/cancel",
-              element: <CheckoutPage />,
+              element: <CheckoutCancelPage />,
             },
             {
               path: "profile",

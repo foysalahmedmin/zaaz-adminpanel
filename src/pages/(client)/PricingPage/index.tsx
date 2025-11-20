@@ -5,7 +5,6 @@ import type { TPackage } from "@/types/package.type";
 import { useQuery } from "@tanstack/react-query";
 import { Check, Loader2, ShoppingCart } from "lucide-react";
 import { Link } from "react-router";
-import { ENV } from "@/config";
 
 const PricingPage = () => {
   const { data, isLoading, isError } = useQuery({
@@ -18,22 +17,24 @@ const PricingPage = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="text-primary h-8 w-8 animate-spin" />
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="text-center py-12">
-        <p className="text-destructive">Failed to load packages. Please try again later.</p>
+      <div className="py-12 text-center">
+        <p className="text-destructive">
+          Failed to load packages. Please try again later.
+        </p>
       </div>
     );
   }
 
   return (
     <div className="space-y-8">
-      <div className="text-center space-y-4">
+      <div className="space-y-4 text-center">
         <h1 className="text-4xl font-bold">Choose Your Package</h1>
         <p className="text-muted-foreground text-lg">
           Select the perfect package for your needs
@@ -41,8 +42,10 @@ const PricingPage = () => {
       </div>
 
       {packages.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">No packages available at the moment.</p>
+        <div className="py-12 text-center">
+          <p className="text-muted-foreground">
+            No packages available at the moment.
+          </p>
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -60,8 +63,10 @@ type PricingCardProps = {
 };
 
 const PricingCard: React.FC<PricingCardProps> = ({ package: pkg }) => {
-  const hasDiscount = pkg.price_previous && 
-    ((pkg.price_previous.USD > pkg.price.USD) || (pkg.price_previous.BDT > pkg.price.BDT));
+  const hasDiscount =
+    pkg.price_previous &&
+    (pkg.price_previous.USD > pkg.price.USD ||
+      pkg.price_previous.BDT > pkg.price.BDT);
 
   const formatPrice = (amount: number, currency: string) => {
     return new Intl.NumberFormat("en-US", {
@@ -98,11 +103,18 @@ const PricingCard: React.FC<PricingCardProps> = ({ package: pkg }) => {
           </div>
           {hasDiscount && pkg.price_previous && (
             <div className="flex items-center gap-2">
-              <span className="text-muted-foreground line-through text-sm">
-                {formatPrice(pkg.price_previous.USD, "USD")} / {formatPrice(pkg.price_previous.BDT, "BDT")}
+              <span className="text-muted-foreground text-sm line-through">
+                {formatPrice(pkg.price_previous.USD, "USD")} /{" "}
+                {formatPrice(pkg.price_previous.BDT, "BDT")}
               </span>
               <span className="bg-destructive/10 text-destructive rounded-full px-2 py-1 text-xs font-medium">
-                Save {Math.round(((pkg.price_previous.USD - pkg.price.USD) / pkg.price_previous.USD) * 100)}%
+                Save{" "}
+                {Math.round(
+                  ((pkg.price_previous.USD - pkg.price.USD) /
+                    pkg.price_previous.USD) *
+                    100,
+                )}
+                %
               </span>
             </div>
           )}
@@ -128,7 +140,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ package: pkg }) => {
             <ul className="space-y-1">
               {pkg.features.map((feature, index) => (
                 <li key={index} className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                  <Check className="text-primary h-4 w-4 flex-shrink-0" />
                   <span>{feature}</span>
                 </li>
               ))}
@@ -152,4 +164,3 @@ const PricingCard: React.FC<PricingCardProps> = ({ package: pkg }) => {
 };
 
 export default PricingPage;
-

@@ -1,18 +1,16 @@
+import Loader from "@/components/partials/Loader";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { FormControl } from "@/components/ui/FormControl";
-import Loader from "@/components/partials/Loader";
-import { fetchPublicPaymentMethods } from "@/services/payment-method.service";
+import { ENV } from "@/config";
 import { fetchPublicPackages } from "@/services/package.service";
+import { fetchPublicPaymentMethods } from "@/services/payment-method.service";
 import { initiatePayment } from "@/services/payment-transaction.service";
 import type { TPackage } from "@/types/package.type";
 import type { TPaymentMethod } from "@/types/payment-method.type";
 import type { ErrorResponse } from "@/types/response.type";
-import { ENV } from "@/config";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import {
-  AlertCircle,
   CheckCircle,
   CreditCard,
   Loader2,
@@ -23,18 +21,17 @@ import {
 import { useEffect, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router";
 import { toast } from "react-toastify";
-import useUser from "@/hooks/states/useUser";
 
 type PaymentStatus = "idle" | "processing" | "success" | "failed" | "pending";
 
 const CheckoutPage = () => {
-  const { user } = useUser();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const packageId = searchParams.get("packageId");
   const packageData = (location.state as { package?: TPackage })?.package;
 
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState<string>("");
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("idle");
   const [paymentResult, setPaymentResult] = useState<{
     redirectUrl?: string;
@@ -73,19 +70,19 @@ const CheckoutPage = () => {
     onSuccess: (data) => {
       const response = data?.data;
       if (response) {
-        const transaction = response.paymentTransaction || response;
+        const transaction = response.payment_transaction;
         setPaymentResult({
-          redirectUrl: response.redirectUrl,
-          paymentUrl: response.paymentUrl,
-          transactionId: transaction?._id || transaction?._id,
+          redirectUrl: response.redirect_url,
+          paymentUrl: response.payment_url,
+          transactionId: transaction?._id,
         });
 
         // Auto-redirect if URL is available
-        if (response.redirectUrl) {
-          window.location.href = response.redirectUrl;
+        if (response.redirect_url) {
+          window.location.href = response.redirect_url;
           setPaymentStatus("processing");
-        } else if (response.paymentUrl) {
-          window.location.href = response.paymentUrl;
+        } else if (response.payment_url) {
+          window.location.href = response.payment_url;
           setPaymentStatus("processing");
         } else {
           setPaymentStatus("pending");
@@ -96,7 +93,8 @@ const CheckoutPage = () => {
     onError: (error: AxiosError<ErrorResponse>) => {
       setPaymentStatus("failed");
       toast.error(
-        error.response?.data?.message || "Failed to initiate payment. Please try again.",
+        error.response?.data?.message ||
+          "Failed to initiate payment. Please try again.",
       );
     },
   });
@@ -118,8 +116,8 @@ const CheckoutPage = () => {
 
     setPaymentStatus("processing");
 
-    const returnUrl = `${ENV?.app_url || window.location.origin}/client/checkout/success`;
-    const cancelUrl = `${ENV?.app_url || window.location.origin}/client/checkout/cancel`;
+    const returnUrl = `${ENV?.app_url || window.location.origin}/client/checkout/success?package_id=${currentPackage._id}`;
+    const cancelUrl = `${ENV?.app_url || window.location.origin}/client/checkout/cancel?package_id=${currentPackage._id}`;
 
     initiatePaymentMutation.mutate({
       package: currentPackage._id,
@@ -153,11 +151,12 @@ const CheckoutPage = () => {
 
   if (!currentPackage) {
     return (
-      <div className="text-center py-12 space-y-4">
-        <XCircle className="h-12 w-12 text-destructive mx-auto" />
+      <div className="space-y-4 py-12 text-center">
+        <XCircle className="text-destructive mx-auto h-12 w-12" />
         <h2 className="text-2xl font-bold">Package Not Found</h2>
         <p className="text-muted-foreground">
-          The package you're looking for doesn't exist or is no longer available.
+          The package you're looking for doesn't exist or is no longer
+          available.
         </p>
         <Button asChild>
           <Link to="/client/pricing">Back to Pricing</Link>
@@ -189,7 +188,7 @@ const CheckoutPage = () => {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <div className="text-center space-y-2">
+      <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold">Checkout</h1>
         <p className="text-muted-foreground">Complete your purchase</p>
       </div>
@@ -202,9 +201,11 @@ const CheckoutPage = () => {
           </Card.Header>
           <Card.Content className="space-y-4">
             <div>
-              <h3 className="font-semibold text-lg">{currentPackage.name}</h3>
+              <h3 className="text-lg font-semibold">{currentPackage.name}</h3>
               {currentPackage.description && (
-                <p className="text-muted-foreground text-sm">{currentPackage.description}</p>
+                <p className="text-muted-foreground text-sm">
+                  {currentPackage.description}
+                </p>
               )}
             </div>
             <div className="space-y-2">
@@ -215,7 +216,9 @@ const CheckoutPage = () => {
               {currentPackage.duration && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Duration:</span>
-                  <span className="font-semibold">{currentPackage.duration} days</span>
+                  <span className="font-semibold">
+                    {currentPackage.duration} days
+                  </span>
                 </div>
               )}
             </div>
@@ -229,7 +232,7 @@ const CheckoutPage = () => {
           </Card.Header>
           <Card.Content className="space-y-4">
             {paymentMethods.length === 0 ? (
-              <div className="text-center py-8">
+              <div className="py-8 text-center">
                 <p className="text-muted-foreground">
                   No payment methods available at the moment.
                 </p>
@@ -239,15 +242,11 @@ const CheckoutPage = () => {
                 {paymentMethods.map((method: TPaymentMethod) => (
                   <label
                     key={method._id}
-                    className={`
-                      flex items-center gap-3 p-4 border rounded-lg cursor-pointer
-                      transition-colors
-                      ${
-                        selectedPaymentMethod === method._id
-                          ? "border-primary bg-primary/5"
-                          : "border-border hover:border-primary/50"
-                      }
-                    `}
+                    className={`flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition-colors ${
+                      selectedPaymentMethod === method._id
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    } `}
                   >
                     <input
                       type="radio"
@@ -265,12 +264,12 @@ const CheckoutPage = () => {
                         </span>
                       </div>
                       {method.description && (
-                        <p className="text-muted-foreground text-sm mt-1">
+                        <p className="text-muted-foreground mt-1 text-sm">
                           {method.description}
                         </p>
                       )}
                       {method.is_test && (
-                        <span className="bg-yellow-100 text-yellow-800 rounded-full px-2 py-0.5 text-xs font-medium mt-1 inline-block">
+                        <span className="mt-1 inline-block rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800">
                           Test Mode
                         </span>
                       )}
@@ -281,14 +280,15 @@ const CheckoutPage = () => {
             )}
 
             {selectedPaymentMethod && (
-              <div className="pt-4 border-t">
+              <div className="border-t pt-4">
                 <div className="space-y-2">
                   <div className="flex justify-between text-lg font-semibold">
                     <span>Total:</span>
                     <span>
                       {(() => {
                         const selectedMethod = paymentMethods.find(
-                          (m: TPaymentMethod) => m._id === selectedPaymentMethod,
+                          (m: TPaymentMethod) =>
+                            m._id === selectedPaymentMethod,
                         );
                         if (!selectedMethod) return "";
                         const amount =
@@ -317,7 +317,8 @@ const CheckoutPage = () => {
               className="w-full"
               size="lg"
             >
-              {paymentStatus === "processing" || initiatePaymentMutation.isPending ? (
+              {paymentStatus === "processing" ||
+              initiatePaymentMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Processing...
@@ -337,7 +338,7 @@ const CheckoutPage = () => {
         <Card className="bg-muted">
           <Card.Content className="py-4">
             <div className="flex items-center gap-2">
-              <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              <Loader2 className="text-primary h-5 w-5 animate-spin" />
               <p className="text-sm">
                 Payment is being processed. Please wait...
               </p>
@@ -361,8 +362,8 @@ const PaymentSuccessView: React.FC<PaymentSuccessViewProps> = ({
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <Card className="border-green-200 bg-green-50 dark:bg-green-950">
-        <Card.Content className="py-12 text-center space-y-4">
-          <CheckCircle className="h-16 w-16 text-green-600 mx-auto" />
+        <Card.Content className="space-y-4 py-12 text-center">
+          <CheckCircle className="mx-auto h-16 w-16 text-green-600" />
           <h2 className="text-3xl font-bold text-green-900 dark:text-green-100">
             Payment Successful!
           </h2>
@@ -387,7 +388,7 @@ const PaymentSuccessView: React.FC<PaymentSuccessViewProps> = ({
             <p className="text-muted-foreground text-sm">{pkg.description}</p>
           </div>
           <div className="flex items-center gap-2">
-            <Wallet className="h-5 w-5 text-primary" />
+            <Wallet className="text-primary h-5 w-5" />
             <span className="font-semibold">{pkg.token} Tokens</span>
           </div>
         </Card.Content>
@@ -401,9 +402,7 @@ const PaymentSuccessView: React.FC<PaymentSuccessViewProps> = ({
           </Link>
         </Button>
         <Button asChild variant="outline" size="lg">
-          <Link to="/client/pricing">
-            Browse More Packages
-          </Link>
+          <Link to="/client/pricing">Browse More Packages</Link>
         </Button>
       </div>
     </div>
@@ -422,8 +421,8 @@ const PaymentFailedView: React.FC<PaymentFailedViewProps> = ({
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <Card className="border-destructive/50 bg-destructive/5">
-        <Card.Content className="py-12 text-center space-y-4">
-          <XCircle className="h-16 w-16 text-destructive mx-auto" />
+        <Card.Content className="space-y-4 py-12 text-center">
+          <XCircle className="text-destructive mx-auto h-16 w-16" />
           <h2 className="text-3xl font-bold">Payment Failed</h2>
           <p className="text-muted-foreground">
             Your payment could not be processed. Please try again.
@@ -436,9 +435,7 @@ const PaymentFailedView: React.FC<PaymentFailedViewProps> = ({
           Try Again
         </Button>
         <Button asChild variant="outline" size="lg">
-          <Link to="/client/pricing">
-            Back to Pricing
-          </Link>
+          <Link to="/client/pricing">Back to Pricing</Link>
         </Button>
         <Button asChild variant="outline" size="lg">
           <Link to="/client/profile">
@@ -452,4 +449,3 @@ const PaymentFailedView: React.FC<PaymentFailedViewProps> = ({
 };
 
 export default CheckoutPage;
-

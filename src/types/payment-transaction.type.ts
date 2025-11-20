@@ -1,6 +1,10 @@
 import type { Response } from "./response.type";
 
-export type TPaymentTransactionStatus = "pending" | "success" | "failed" | "refunded";
+export type TPaymentTransactionStatus =
+  | "pending"
+  | "success"
+  | "failed"
+  | "refunded";
 export type TCurrency = "USD" | "BDT";
 
 export type TPaymentTransaction = {
@@ -32,3 +36,10 @@ export type TPaymentTransaction = {
 export type TPaymentTransactionResponse = Response<TPaymentTransaction>;
 export type TPaymentTransactionsResponse = Response<TPaymentTransaction[]>;
 
+export type TInitiatePaymentResponse = {
+  payment_transaction: TPaymentTransaction;
+  redirect_url?: string;
+  payment_url?: string;
+};
+
+export type TInitiatePaymentResponseData = Response<TInitiatePaymentResponse>;

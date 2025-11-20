@@ -4,6 +4,7 @@ import FeaturesDetailsPage from "@/pages/(common)/FeaturesDetailsPage";
 import FeaturesPage from "@/pages/(common)/FeaturesPage";
 import PackagesDetailsPage from "@/pages/(common)/PackagesDetailsPage";
 import PackagesPage from "@/pages/(common)/PackagesPage";
+import PaymentMethodsPage from "@/pages/(common)/PaymentMethodsPage";
 import PaymentTransactionsDetailsPage from "@/pages/(common)/PaymentTransactionsDetailsPage";
 import PaymentTransactionsPage from "@/pages/(common)/PaymentTransactionsPage";
 import RecycleBinPage from "@/pages/(common)/RecycleBinPage";
@@ -139,6 +140,31 @@ export const items: TItem[] = [
         element: (
           <AuthWrapper roles={["supper-admin", "admin"]}>
             <PackagesDetailsPage />
+          </AuthWrapper>
+        ),
+        menuType: "invisible",
+      },
+    ],
+  },
+  {
+    roles: ["supper-admin", "admin"],
+    icon: "credit-card",
+    path: "payment-methods",
+    name: "Payment Methods",
+    routeType: "layout",
+    menuType: "item-without-children",
+    element: (
+      <AuthWrapper roles={["supper-admin", "admin"]}>
+        <Outlet />
+      </AuthWrapper>
+    ),
+    children: [
+      {
+        index: true,
+        name: "Payment Methods",
+        element: (
+          <AuthWrapper roles={["supper-admin", "admin"]}>
+            <PaymentMethodsPage />
           </AuthWrapper>
         ),
         menuType: "invisible",

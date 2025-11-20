@@ -1,5 +1,6 @@
 import api from "@/lib/api";
 import type {
+  TInitiatePaymentResponseData,
   TPaymentTransaction,
   TPaymentTransactionResponse,
   TPaymentTransactionsResponse,
@@ -9,7 +10,9 @@ import type {
 export async function fetchPaymentTransactions(
   query?: Record<string, any>,
 ): Promise<TPaymentTransactionsResponse> {
-  const response = await api.get("/api/payment-transactions", { params: query });
+  const response = await api.get("/api/payment-transactions", {
+    params: query,
+  });
   return response.data as TPaymentTransactionsResponse;
 }
 
@@ -54,9 +57,12 @@ export async function initiatePayment(payload: {
   currency: "USD" | "BDT";
   return_url?: string;
   cancel_url?: string;
-}): Promise<TPaymentTransactionResponse> {
-  const response = await api.post("/api/payment-transactions/initiate", payload);
-  return response.data as TPaymentTransactionResponse;
+}): Promise<TInitiatePaymentResponseData> {
+  const response = await api.post(
+    "/api/payment-transactions/initiate",
+    payload,
+  );
+  return response.data as TInitiatePaymentResponseData;
 }
 
 // POST Verify Payment (User/Admin)
@@ -83,4 +89,3 @@ export async function deletePaymentTransaction(
   const response = await api.delete(`/api/payment-transactions/${id}`);
   return response.data as TPaymentTransactionResponse;
 }
-
