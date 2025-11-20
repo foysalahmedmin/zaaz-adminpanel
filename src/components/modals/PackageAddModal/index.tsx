@@ -1,15 +1,16 @@
+import BlockNoteEditor from "@/components/ui/BlockNoteEditor";
 import { Button } from "@/components/ui/Button";
 import { FormControl } from "@/components/ui/FormControl";
 import { Modal } from "@/components/ui/Modal";
-import { createPackage } from "@/services/package.service";
 import { fetchFeatures } from "@/services/feature.service";
+import { createPackage } from "@/services/package.service";
 import type { TPackage } from "@/types/package.type";
 import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 type PackageAddModalProps = {
@@ -39,6 +40,7 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
     reset,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = useForm<Partial<TPackage> & { priceUSD: number; priceBDT: number }>({
     defaultValues: {
@@ -66,11 +68,12 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to create package");
-      console.error("Create Package Error:", error);
     },
   });
 
-  const onSubmit = (data: Partial<TPackage> & { priceUSD: number; priceBDT: number }) => {
+  const onSubmit = (
+    data: Partial<TPackage> & { priceUSD: number; priceBDT: number },
+  ) => {
     mutation.mutate({
       name: data.name,
       description: data.description,
@@ -133,11 +136,15 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
 
               <div>
                 <FormControl.Label>Content (Optional)</FormControl.Label>
-                <FormControl
-                  as="textarea"
-                  className="h-auto min-h-32 py-2"
-                  placeholder="Package content (HTML allowed)"
-                  {...register("content")}
+                <Controller
+                  name="content"
+                  control={control}
+                  render={({ field }) => (
+                    <BlockNoteEditor
+                      value={field.value || ""}
+                      onChange={field.onChange}
+                    />
+                  )}
                 />
               </div>
 
@@ -164,7 +171,7 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
                   {featuresData?.data?.map((feature) => (
                     <label
                       key={feature._id}
-                      className="flex items-center gap-2 cursor-pointer"
+                      className="flex cursor-pointer items-center gap-2"
                     >
                       <input
                         type="checkbox"
@@ -184,14 +191,19 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
               </div>
 
               <div>
-                <FormControl.Label>Duration (Optional, in days)</FormControl.Label>
+                <FormControl.Label>
+                  Duration (Optional, in days)
+                </FormControl.Label>
                 <FormControl
                   type="number"
                   placeholder="30"
                   min="1"
                   {...register("duration", {
                     valueAsNumber: true,
-                    min: { value: 1, message: "Duration must be at least 1 day" },
+                    min: {
+                      value: 1,
+                      message: "Duration must be at least 1 day",
+                    },
                   })}
                 />
                 {errors.duration && (
@@ -280,4 +292,3 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
 };
 
 export default PackageAddModal;
-

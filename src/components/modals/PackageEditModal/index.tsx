@@ -1,15 +1,16 @@
+import BlockNoteEditor from "@/components/ui/BlockNoteEditor";
 import { Button } from "@/components/ui/Button";
 import { FormControl } from "@/components/ui/FormControl";
 import { Modal } from "@/components/ui/Modal";
-import { updatePackage } from "@/services/package.service";
 import { fetchFeatures } from "@/services/feature.service";
+import { updatePackage } from "@/services/package.service";
 import type { TPackage } from "@/types/package.type";
 import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 type PackageEditModalProps = {
@@ -39,6 +40,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
     reset,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = useForm<Partial<TPackage> & { priceUSD: number; priceBDT: number }>({
     defaultValues: {
@@ -84,31 +86,31 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to update package");
-      console.error("Update Package Error:", error);
     },
   });
 
-  const onSubmit = (data: Partial<TPackage> & { priceUSD: number; priceBDT: number }) => {
+  const onSubmit = (
+    data: Partial<TPackage> & { priceUSD: number; priceBDT: number },
+  ) => {
     const updatedFields: Partial<TPackage> = {};
 
     if (data.name !== pkg.name) updatedFields.name = data.name;
-    if (data.description !== pkg.description) updatedFields.description = data.description;
+    if (data.description !== pkg.description)
+      updatedFields.description = data.description;
     if (data.content !== pkg.content) updatedFields.content = data.content;
     if (data.token !== pkg.token) updatedFields.token = data.token;
     if (JSON.stringify(data.features) !== JSON.stringify(pkg.features)) {
       updatedFields.features = data.features;
     }
     if (data.duration !== pkg.duration) updatedFields.duration = data.duration;
-    if (
-      data.priceUSD !== pkg.price?.USD ||
-      data.priceBDT !== pkg.price?.BDT
-    ) {
+    if (data.priceUSD !== pkg.price?.USD || data.priceBDT !== pkg.price?.BDT) {
       updatedFields.price = {
         USD: data.priceUSD,
         BDT: data.priceBDT,
       };
     }
-    if (data.is_active !== pkg.is_active) updatedFields.is_active = data.is_active;
+    if (data.is_active !== pkg.is_active)
+      updatedFields.is_active = data.is_active;
 
     if (Object.keys(updatedFields).length === 0) {
       toast.info("No changes detected");
@@ -165,11 +167,15 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
 
               <div>
                 <FormControl.Label>Content (Optional)</FormControl.Label>
-                <FormControl
-                  as="textarea"
-                  className="h-auto min-h-32 py-2"
-                  placeholder="Package content (HTML allowed)"
-                  {...register("content")}
+                <Controller
+                  name="content"
+                  control={control}
+                  render={({ field }) => (
+                    <BlockNoteEditor
+                      value={field.value || ""}
+                      onChange={field.onChange}
+                    />
+                  )}
                 />
               </div>
 
@@ -196,7 +202,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
                   {featuresData?.data?.map((feature) => (
                     <label
                       key={feature._id}
-                      className="flex items-center gap-2 cursor-pointer"
+                      className="flex cursor-pointer items-center gap-2"
                     >
                       <input
                         type="checkbox"
@@ -216,14 +222,19 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
               </div>
 
               <div>
-                <FormControl.Label>Duration (Optional, in days)</FormControl.Label>
+                <FormControl.Label>
+                  Duration (Optional, in days)
+                </FormControl.Label>
                 <FormControl
                   type="number"
                   placeholder="30"
                   min="1"
                   {...register("duration", {
                     valueAsNumber: true,
-                    min: { value: 1, message: "Duration must be at least 1 day" },
+                    min: {
+                      value: 1,
+                      message: "Duration must be at least 1 day",
+                    },
                   })}
                 />
                 {errors.duration && (
@@ -312,4 +323,3 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
 };
 
 export default PackageEditModal;
-
