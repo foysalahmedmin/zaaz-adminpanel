@@ -1,6 +1,5 @@
 import api from "@/lib/api";
 import type {
-  TPackageHistory,
   TPackageHistoryResponse,
   TPackageHistoriesResponse,
 } from "@/types/package-history.type";
@@ -8,7 +7,7 @@ import type {
 // GET Package Histories by Package ID (Admin)
 export async function fetchPackageHistories(
   packageId: string,
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
 ): Promise<TPackageHistoriesResponse> {
   const response = await api.get(`/api/package-histories/package/${packageId}`, {
     params: query,

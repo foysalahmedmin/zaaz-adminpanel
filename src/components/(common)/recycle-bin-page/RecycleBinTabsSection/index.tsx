@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/Button";
-import type { TColumn, TDataTableState } from "@/components/ui/DataTable";
+import type { TColumn, TState } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
-import { cn } from "@/lib/utils";
 import useAlert from "@/hooks/ui/useAlert";
 import type { TFeature } from "@/types/feature.type";
 import type { TFeatureEndpoint } from "@/types/feature-endpoint.type";
@@ -34,16 +33,15 @@ type DeletedItemType = "feature" | "feature-endpoint" | "package" | "token-profi
 type RecycleBinTabsSectionProps = {
   type: DeletedItemType;
   data: (TFeature | TFeatureEndpoint | TPackage | TTokenProfit | TUser)[];
-  meta?: { total: number; page: number; limit: number };
+  meta?: { total?: number; page?: number; limit?: number };
   isLoading: boolean;
   isError: boolean;
-  state: TDataTableState;
+  state: TState;
 };
 
 const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
   type,
   data,
-  meta,
   isLoading,
   isError,
   state,

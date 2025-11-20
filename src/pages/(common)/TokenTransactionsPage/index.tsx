@@ -3,7 +3,6 @@ import TokenTransactionsStatisticsSection from "@/components/(common)/token-tran
 import TokenTransactionViewModal from "@/components/modals/TokenTransactionViewModal";
 import PageHeader from "@/components/sections/PageHeader";
 import { Card } from "@/components/ui/Card";
-import useMenu from "@/hooks/states/useMenu";
 import {
   closeViewModal,
   openViewModal,
@@ -15,7 +14,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 
 const TokenTransactionsPage = () => {
-  const { activeBreadcrumbs } = useMenu();
   const dispatch = useDispatch();
 
   const { isViewModalOpen, selectedTokenTransaction } = useSelector(
@@ -39,7 +37,6 @@ const TokenTransactionsPage = () => {
         <Card.Content>
           <TokenTransactionsDataTableSection
             data={data?.data || []}
-            breadcrumbs={activeBreadcrumbs || []}
             isLoading={isLoading}
             isError={isError}
             onView={onOpenViewModal}

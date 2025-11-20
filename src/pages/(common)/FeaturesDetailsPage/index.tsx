@@ -4,7 +4,6 @@ import FeatureEndpointEditModal from "@/components/modals/FeatureEndpointEditMod
 import PageHeader from "@/components/sections/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import useMenu from "@/hooks/states/useMenu";
 import useAlert from "@/hooks/ui/useAlert";
 import {
   closeAddModal,
@@ -15,7 +14,6 @@ import {
 import type { RootState } from "@/redux/store";
 import {
   deleteFeatureEndpoint,
-  fetchFeature,
   fetchFeatureEndpoints,
 } from "@/services/feature-endpoint.service";
 import { fetchFeature as fetchFeatureById } from "@/services/feature.service";
@@ -31,7 +29,6 @@ import { toast } from "react-toastify";
 const FeaturesDetailsPage = () => {
   const { id } = useParams();
   const location = useLocation();
-  const { activeBreadcrumbs } = useMenu();
   const queryClient = useQueryClient();
   const confirm = useAlert();
   const dispatch = useDispatch();
@@ -77,7 +74,7 @@ const FeaturesDetailsPage = () => {
     }
   };
 
-  const { data: featureData, isLoading: featureLoading } = useQuery({
+  const { data: featureData } = useQuery({
     queryKey: ["feature", id],
     queryFn: () => fetchFeatureById(id || ""),
     enabled: !!id,
@@ -144,12 +141,10 @@ const FeaturesDetailsPage = () => {
         <Card.Content>
           <FeatureEndpointsDataTableSection
             data={endpointsData?.data || []}
-            breadcrumbs={activeBreadcrumbs || []}
             isLoading={endpointsLoading}
             isError={false}
             onEdit={onOpenEditModal}
             onDelete={onDelete}
-            featureId={id || ""}
           />
         </Card.Content>
       </Card>

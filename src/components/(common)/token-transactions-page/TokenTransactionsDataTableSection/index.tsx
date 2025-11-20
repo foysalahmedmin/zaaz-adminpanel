@@ -3,14 +3,12 @@ import { Button } from "@/components/ui/Button";
 import type { TColumn } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
-import type { TBreadcrumbs } from "@/types/route-menu.type";
 import type { TTokenTransaction } from "@/types/token-transaction.type";
 import { Eye } from "lucide-react";
 import React from "react";
 
 type TokenTransactionsDataTableSectionProps = {
   data?: TTokenTransaction[];
-  breadcrumbs: TBreadcrumbs[];
   isLoading: boolean;
   isError: boolean;
   onView: (row: TTokenTransaction) => void;
@@ -20,7 +18,6 @@ const TokenTransactionsDataTableSection: React.FC<
   TokenTransactionsDataTableSectionProps
 > = ({
   data = [],
-  breadcrumbs,
   isLoading,
   isError,
   onView,

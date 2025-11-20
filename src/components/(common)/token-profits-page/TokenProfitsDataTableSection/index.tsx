@@ -4,7 +4,7 @@ import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
 import type { TBreadcrumbs } from "@/types/route-menu.type";
 import type { TTokenProfit } from "@/types/token-profit.type";
-import { Edit, Eye, History, Trash } from "lucide-react";
+import { Edit, Eye, Trash } from "lucide-react";
 import React from "react";
 import { Link } from "react-router";
 

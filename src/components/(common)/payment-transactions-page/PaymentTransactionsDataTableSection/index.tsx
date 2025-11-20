@@ -1,16 +1,13 @@
-import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import type { TColumn } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
-import type { TBreadcrumbs } from "@/types/route-menu.type";
 import type { TPaymentTransaction } from "@/types/payment-transaction.type";
 import { Eye } from "lucide-react";
 import React from "react";
 
 type PaymentTransactionsDataTableSectionProps = {
   data?: TPaymentTransaction[];
-  breadcrumbs: TBreadcrumbs[];
   isLoading: boolean;
   isError: boolean;
   onView: (row: TPaymentTransaction) => void;
@@ -20,7 +17,6 @@ const PaymentTransactionsDataTableSection: React.FC<
   PaymentTransactionsDataTableSectionProps
 > = ({
   data = [],
-  breadcrumbs,
   isLoading,
   isError,
   onView,

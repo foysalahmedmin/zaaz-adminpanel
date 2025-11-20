@@ -13,7 +13,7 @@ const UsersStatisticsSection: React.FC<UsersStatisticsSectionProps> = ({
   data,
 }) => {
   const total = data?.length || 0;
-  const totalAuthor = data?.filter((d) => d?.role === "author").length || 0;
+  const totalAuthor = data?.filter((d) => d?.role === "admin").length || 0;
   const totalActive =
     data?.filter((d) => d?.status === "in-progress").length || 0;
   const totalInactive =

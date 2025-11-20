@@ -7,7 +7,6 @@ import {
 } from "@/redux/slices/payment-transactions-page-slice";
 import type { RootState } from "@/redux/store";
 import { fetchPaymentTransaction } from "@/services/payment-transaction.service";
-import type { TPaymentTransaction } from "@/types/payment-transaction.type";
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router";
@@ -19,7 +18,7 @@ const PaymentTransactionsDetailsPage = () => {
 
   const transaction = (location.state as { transaction?: any })?.transaction;
 
-  const { isViewModalOpen, selectedPaymentTransaction } = useSelector(
+  const { isViewModalOpen } = useSelector(
     (state: RootState) => state.paymentTransactionsPage,
   );
 

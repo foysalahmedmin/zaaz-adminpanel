@@ -3,7 +3,6 @@ import PaymentTransactionsStatisticsSection from "@/components/(common)/payment-
 import PaymentTransactionViewModal from "@/components/modals/PaymentTransactionViewModal";
 import PageHeader from "@/components/sections/PageHeader";
 import { Card } from "@/components/ui/Card";
-import useMenu from "@/hooks/states/useMenu";
 import {
   closeViewModal,
   openViewModal,
@@ -15,7 +14,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 
 const PaymentTransactionsPage = () => {
-  const { activeBreadcrumbs } = useMenu();
   const dispatch = useDispatch();
 
   const { isViewModalOpen, selectedPaymentTransaction } = useSelector(
@@ -39,7 +37,6 @@ const PaymentTransactionsPage = () => {
         <Card.Content>
           <PaymentTransactionsDataTableSection
             data={data?.data || []}
-            breadcrumbs={activeBreadcrumbs || []}
             isLoading={isLoading}
             isError={isError}
             onView={onOpenViewModal}

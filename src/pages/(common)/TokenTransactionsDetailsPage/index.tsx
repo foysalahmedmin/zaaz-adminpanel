@@ -7,7 +7,6 @@ import {
 } from "@/redux/slices/token-transactions-page-slice";
 import type { RootState } from "@/redux/store";
 import { fetchTokenTransaction } from "@/services/token-transaction.service";
-import type { TTokenTransaction } from "@/types/token-transaction.type";
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router";
@@ -19,7 +18,7 @@ const TokenTransactionsDetailsPage = () => {
 
   const transaction = (location.state as { transaction?: any })?.transaction;
 
-  const { isViewModalOpen, selectedTokenTransaction } = useSelector(
+  const { isViewModalOpen } = useSelector(
     (state: RootState) => state.tokenTransactionsPage,
   );
 

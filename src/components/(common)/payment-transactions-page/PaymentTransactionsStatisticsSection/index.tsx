@@ -19,7 +19,6 @@ const PaymentTransactionsStatisticsSection: React.FC<
     data?.filter((d) => d?.status === "pending").length || 0;
   const totalFailed =
     data?.filter((d) => d?.status === "failed").length || 0;
-  const totalAmount = data?.reduce((sum, d) => sum + (d?.amount || 0), 0) || 0;
 
   const statistics: TStatistic[] = [
     {

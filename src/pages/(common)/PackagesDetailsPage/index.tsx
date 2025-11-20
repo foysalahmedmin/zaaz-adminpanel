@@ -3,7 +3,6 @@ import PackageHistoryViewModal from "@/components/modals/PackageHistoryViewModal
 import PageHeader from "@/components/sections/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import useMenu from "@/hooks/states/useMenu";
 import {
   closeHistoryModal,
   openHistoryModal,
@@ -11,7 +10,6 @@ import {
 import type { RootState } from "@/redux/store";
 import { fetchPackageHistories } from "@/services/package-history.service";
 import { fetchPackage } from "@/services/package.service";
-import type { TPackageHistory } from "@/types/package-history.type";
 import { useQuery } from "@tanstack/react-query";
 import { History } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,7 +18,6 @@ import { useLocation, useParams } from "react-router";
 const PackagesDetailsPage = () => {
   const { id } = useParams();
   const location = useLocation();
-  const { activeBreadcrumbs } = useMenu();
   const dispatch = useDispatch();
 
   const packageData = (location.state as { package?: any })?.package;
@@ -29,11 +26,11 @@ const PackagesDetailsPage = () => {
     (state: RootState) => state.packagesPage,
   );
 
-  const onOpenHistoryModal = (history: TPackageHistory) => {
+  const onOpenHistoryModal = () => {
     dispatch(openHistoryModal(selectedPackage || ({} as any)));
   };
 
-  const { data: packageResponse, isLoading: packageLoading } = useQuery({
+  const { data: packageResponse } = useQuery({
     queryKey: ["package", id],
     queryFn: () => fetchPackage(id || ""),
     enabled: !!id,
@@ -100,10 +97,7 @@ const PackagesDetailsPage = () => {
         <Card.Header className="border-b">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">Package History</h2>
-            <Button
-              onClick={() => onOpenHistoryModal({} as TPackageHistory)}
-              variant="outline"
-            >
+            <Button onClick={() => onOpenHistoryModal()} variant="outline">
               <History className="h-4 w-4" /> View All History
             </Button>
           </div>
@@ -111,7 +105,6 @@ const PackagesDetailsPage = () => {
         <Card.Content>
           <PackageHistoriesDataTableSection
             data={historiesData?.data || []}
-            breadcrumbs={activeBreadcrumbs || []}
             isLoading={historiesLoading}
             isError={false}
             onView={onOpenHistoryModal}
@@ -134,4 +127,3 @@ const PackagesDetailsPage = () => {
 };
 
 export default PackagesDetailsPage;
-

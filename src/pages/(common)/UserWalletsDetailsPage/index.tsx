@@ -7,7 +7,6 @@ import {
 } from "@/redux/slices/user-wallets-page-slice";
 import type { RootState } from "@/redux/store";
 import { fetchUserWalletById } from "@/services/user-wallet.service";
-import type { TUserWallet } from "@/types/user-wallet.type";
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router";
@@ -19,7 +18,7 @@ const UserWalletsDetailsPage = () => {
 
   const wallet = (location.state as { wallet?: any })?.wallet;
 
-  const { isViewModalOpen, selectedUserWallet } = useSelector(
+  const { isViewModalOpen } = useSelector(
     (state: RootState) => state.userWalletsPage,
   );
 

@@ -18,7 +18,7 @@ const TokenProfitsStatisticsSection: React.FC<
   const totalInactive =
     data?.filter((d) => d?.is_active === false).length || 0;
   const avgPercentage =
-    data?.length > 0
+    data && data.length > 0
       ? data.reduce((sum, d) => sum + (d?.percentage || 0), 0) / data.length
       : 0;
 

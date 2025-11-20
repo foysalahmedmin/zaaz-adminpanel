@@ -3,32 +3,21 @@ import { Button } from "@/components/ui/Button";
 import type { TColumn } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
-import type { TBreadcrumbs } from "@/types/route-menu.type";
 import type { TFeatureEndpoint } from "@/types/feature-endpoint.type";
 import { Edit, Trash } from "lucide-react";
 import React from "react";
 
 type FeatureEndpointsDataTableSectionProps = {
   data?: TFeatureEndpoint[];
-  breadcrumbs: TBreadcrumbs[];
   isLoading: boolean;
   isError: boolean;
   onEdit: (row: TFeatureEndpoint) => void;
   onDelete: (row: TFeatureEndpoint) => void;
-  featureId: string;
 };
 
 const FeatureEndpointsDataTableSection: React.FC<
   FeatureEndpointsDataTableSectionProps
-> = ({
-  data = [],
-  breadcrumbs,
-  isLoading,
-  isError,
-  onEdit,
-  onDelete,
-  featureId,
-}) => {
+> = ({ data = [], isLoading, isError, onEdit, onDelete }) => {
   const columns: TColumn<TFeatureEndpoint>[] = [
     {
       name: "Name",
@@ -52,10 +41,8 @@ const FeatureEndpointsDataTableSection: React.FC<
       isSortable: true,
       cell: ({ row }) => (
         <div className="space-y-1">
-          <Badge className="bg-blue-100 text-blue-800">
-            {row.method}
-          </Badge>
-          <p className="text-sm font-mono">{row.endpoint}</p>
+          <Badge className="bg-blue-100 text-blue-800">{row.method}</Badge>
+          <p className="font-mono text-sm">{row.endpoint}</p>
         </div>
       ),
     },
@@ -75,9 +62,7 @@ const FeatureEndpointsDataTableSection: React.FC<
         <span
           className={cn(
             "rounded-full px-2 py-1 text-xs font-medium",
-            cell
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800",
+            cell ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800",
           )}
         >
           {cell ? "Active" : "Inactive"}
@@ -128,4 +113,3 @@ const FeatureEndpointsDataTableSection: React.FC<
 };
 
 export default FeatureEndpointsDataTableSection;
-

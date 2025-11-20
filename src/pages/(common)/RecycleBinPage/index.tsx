@@ -142,7 +142,11 @@ const RecycleBinPage = () => {
                 <RecycleBinTabsSection
                   type="feature"
                   data={featuresData?.data || []}
-                  meta={featuresData?.meta}
+                  meta={featuresData?.meta ? {
+                    total: featuresData.meta.total || 0,
+                    page: featuresData.meta.page || 1,
+                    limit: featuresData.meta.limit || 10,
+                  } : undefined}
                   isLoading={false}
                   isError={false}
                   state={{
@@ -162,7 +166,11 @@ const RecycleBinPage = () => {
                 <RecycleBinTabsSection
                   type="feature-endpoint"
                   data={featureEndpointsData?.data || []}
-                  meta={featureEndpointsData?.meta}
+                  meta={featureEndpointsData?.meta ? {
+                    total: featureEndpointsData.meta.total || 0,
+                    page: featureEndpointsData.meta.page || 1,
+                    limit: featureEndpointsData.meta.limit || 10,
+                  } : undefined}
                   isLoading={false}
                   isError={false}
                   state={{
@@ -182,7 +190,11 @@ const RecycleBinPage = () => {
                 <RecycleBinTabsSection
                   type="package"
                   data={packagesData?.data || []}
-                  meta={packagesData?.meta}
+                  meta={packagesData?.meta ? {
+                    total: packagesData.meta.total || 0,
+                    page: packagesData.meta.page || 1,
+                    limit: packagesData.meta.limit || 10,
+                  } : undefined}
                   isLoading={false}
                   isError={false}
                   state={{
@@ -202,7 +214,11 @@ const RecycleBinPage = () => {
                 <RecycleBinTabsSection
                   type="token-profit"
                   data={tokenProfitsData?.data || []}
-                  meta={tokenProfitsData?.meta}
+                  meta={tokenProfitsData?.meta ? {
+                    total: tokenProfitsData.meta.total || 0,
+                    page: tokenProfitsData.meta.page || 1,
+                    limit: tokenProfitsData.meta.limit || 10,
+                  } : undefined}
                   isLoading={false}
                   isError={false}
                   state={{
@@ -222,7 +238,11 @@ const RecycleBinPage = () => {
                 <RecycleBinTabsSection
                   type="user"
                   data={usersData?.data || []}
-                  meta={usersData?.meta}
+                  meta={usersData?.meta ? {
+                    total: usersData.meta.total || 0,
+                    page: usersData.meta.page || 1,
+                    limit: usersData.meta.limit || 10,
+                  } : undefined}
                   isLoading={false}
                   isError={false}
                   state={{

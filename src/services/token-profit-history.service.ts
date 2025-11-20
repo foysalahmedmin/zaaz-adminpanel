@@ -1,14 +1,13 @@
 import api from "@/lib/api";
 import type {
-  TTokenProfitHistory,
-  TTokenProfitHistoryResponse,
   TTokenProfitHistoriesResponse,
+  TTokenProfitHistoryResponse,
 } from "@/types/token-profit-history.type";
 
 // GET Token Profit Histories by Token Profit ID (Admin)
 export async function fetchTokenProfitHistories(
   tokenProfitId: string,
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
 ): Promise<TTokenProfitHistoriesResponse> {
   const response = await api.get(
     `/api/token-profit-histories/token-profit/${tokenProfitId}`,
@@ -24,4 +23,3 @@ export async function fetchTokenProfitHistory(
   const response = await api.get(`/api/token-profit-histories/${id}`);
   return response.data as TTokenProfitHistoryResponse;
 }
-

@@ -1,14 +1,12 @@
 import { Button } from "@/components/ui/Button";
 import type { TColumn } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
-import type { TBreadcrumbs } from "@/types/route-menu.type";
 import type { TPackageHistory } from "@/types/package-history.type";
 import { Eye } from "lucide-react";
 import React from "react";
 
 type PackageHistoriesDataTableSectionProps = {
   data?: TPackageHistory[];
-  breadcrumbs: TBreadcrumbs[];
   isLoading: boolean;
   isError: boolean;
   onView: (row: TPackageHistory) => void;
@@ -18,7 +16,6 @@ const PackageHistoriesDataTableSection: React.FC<
   PackageHistoriesDataTableSectionProps
 > = ({
   data = [],
-  breadcrumbs,
   isLoading,
   isError,
   onView,

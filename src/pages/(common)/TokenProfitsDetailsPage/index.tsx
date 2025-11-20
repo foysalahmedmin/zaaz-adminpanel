@@ -3,7 +3,6 @@ import TokenProfitHistoryViewModal from "@/components/modals/TokenProfitHistoryV
 import PageHeader from "@/components/sections/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import useMenu from "@/hooks/states/useMenu";
 import {
   closeHistoryModal,
   openHistoryModal,
@@ -11,7 +10,6 @@ import {
 import type { RootState } from "@/redux/store";
 import { fetchTokenProfitHistories } from "@/services/token-profit-history.service";
 import { fetchTokenProfit } from "@/services/token-profit.service";
-import type { TTokenProfitHistory } from "@/types/token-profit-history.type";
 import { useQuery } from "@tanstack/react-query";
 import { History } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,7 +18,6 @@ import { useLocation, useParams } from "react-router";
 const TokenProfitsDetailsPage = () => {
   const { id } = useParams();
   const location = useLocation();
-  const { activeBreadcrumbs } = useMenu();
   const dispatch = useDispatch();
 
   const tokenProfit = (location.state as { tokenProfit?: any })?.tokenProfit;
@@ -29,11 +26,11 @@ const TokenProfitsDetailsPage = () => {
     (state: RootState) => state.tokenProfitsPage,
   );
 
-  const onOpenHistoryModal = (history: TTokenProfitHistory) => {
+  const onOpenHistoryModal = () => {
     dispatch(openHistoryModal(selectedTokenProfit || ({} as any)));
   };
 
-  const { data: profitResponse, isLoading: profitLoading } = useQuery({
+  const { data: profitResponse } = useQuery({
     queryKey: ["token-profit", id],
     queryFn: () => fetchTokenProfit(id || ""),
     enabled: !!id,
@@ -49,9 +46,7 @@ const TokenProfitsDetailsPage = () => {
 
   return (
     <main className="space-y-6">
-      <PageHeader
-        name={currentProfit?.name || "Token Profit Details"}
-      />
+      <PageHeader name={currentProfit?.name || "Token Profit Details"} />
       <Card>
         <Card.Content>
           <div className="space-y-4">
@@ -79,10 +74,7 @@ const TokenProfitsDetailsPage = () => {
         <Card.Header className="border-b">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">Profit History</h2>
-            <Button
-              onClick={() => onOpenHistoryModal({} as TTokenProfitHistory)}
-              variant="outline"
-            >
+            <Button onClick={() => onOpenHistoryModal()} variant="outline">
               <History className="h-4 w-4" /> View All History
             </Button>
           </div>
@@ -90,7 +82,6 @@ const TokenProfitsDetailsPage = () => {
         <Card.Content>
           <TokenProfitHistoriesDataTableSection
             data={historiesData?.data || []}
-            breadcrumbs={activeBreadcrumbs || []}
             isLoading={historiesLoading}
             isError={false}
             onView={onOpenHistoryModal}
@@ -113,4 +104,3 @@ const TokenProfitsDetailsPage = () => {
 };
 
 export default TokenProfitsDetailsPage;
-
