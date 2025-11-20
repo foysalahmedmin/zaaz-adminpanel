@@ -11,9 +11,15 @@ import { toast } from "react-toastify";
 
 const CheckoutSuccessPage = () => {
   const [searchParams] = useSearchParams();
-  const transactionId = searchParams.get("transaction_id");
   const packageId = searchParams.get("package_id");
   const [isVerifying, setIsVerifying] = useState(true);
+  
+  // Get transaction ID from sessionStorage (set during payment initiation)
+  // or from URL params (if gateway provides it)
+  const [transactionId, setTransactionId] = useState<string | null>(
+    searchParams.get("transaction_id") || 
+    sessionStorage.getItem("pending_transaction_id")
+  );
 
   // Fetch package details if packageId is provided
   const { data: packageResponse } = useQuery({
@@ -33,6 +39,8 @@ const CheckoutSuccessPage = () => {
       verifyPayment(transactionId)
         .then(() => {
           setIsVerifying(false);
+          // Clear sessionStorage after successful verification
+          sessionStorage.removeItem("pending_transaction_id");
         })
         .catch(() => {
           setIsVerifying(false);

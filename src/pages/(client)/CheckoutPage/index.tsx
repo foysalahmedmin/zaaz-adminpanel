@@ -63,7 +63,6 @@ const CheckoutPage = () => {
     mutationFn: (payload: {
       package: string;
       payment_method: string;
-      currency: "USD" | "BDT";
       return_url: string;
       cancel_url: string;
     }) => initiatePayment(payload),
@@ -71,10 +70,17 @@ const CheckoutPage = () => {
       const response = data?.data;
       if (response) {
         const transaction = response.payment_transaction;
+        const transactionId = transaction?._id;
+
+        // Store transaction ID in sessionStorage for success page
+        if (transactionId) {
+          sessionStorage.setItem("pending_transaction_id", transactionId);
+        }
+
         setPaymentResult({
           redirectUrl: response.redirect_url,
           paymentUrl: response.payment_url,
-          transactionId: transaction?._id,
+          transactionId: transactionId,
         });
 
         // Auto-redirect if URL is available
@@ -122,7 +128,6 @@ const CheckoutPage = () => {
     initiatePaymentMutation.mutate({
       package: currentPackage._id,
       payment_method: selectedPaymentMethod,
-      currency: selectedMethod.currency,
       return_url: returnUrl,
       cancel_url: cancelUrl,
     });

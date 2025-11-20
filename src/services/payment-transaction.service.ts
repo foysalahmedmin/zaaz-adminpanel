@@ -54,9 +54,10 @@ export async function createPaymentTransaction(
 export async function initiatePayment(payload: {
   package: string;
   payment_method: string;
-  currency: "USD" | "BDT";
-  return_url?: string;
-  cancel_url?: string;
+  return_url: string;
+  cancel_url: string;
+  customer_email?: string;
+  customer_name?: string;
 }): Promise<TInitiatePaymentResponseData> {
   const response = await api.post(
     "/api/payment-transactions/initiate",
