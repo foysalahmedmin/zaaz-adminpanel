@@ -5,9 +5,17 @@ import type {
   TPackagesResponse,
 } from "@/types/package.type";
 
+// GET Public Packages (No Auth Required)
+export async function fetchPublicPackages(
+  query?: Record<string, unknown>,
+): Promise<TPackagesResponse> {
+  const response = await api.get("/api/packages/public", { params: query });
+  return response.data as TPackagesResponse;
+}
+
 // GET All Packages (Admin)
 export async function fetchPackages(
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
 ): Promise<TPackagesResponse> {
   const response = await api.get("/api/packages", { params: query });
   return response.data as TPackagesResponse;

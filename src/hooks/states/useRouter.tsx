@@ -2,10 +2,14 @@ import { items } from "@/assets/data/route-menu-items";
 import { RouteMenu } from "@/builder/RouteMenu";
 import AuthWrapper from "@/components/wrappers/AuthWrapper";
 import AuthLayout from "@/layouts/AuthLayout";
+import ClientLayout from "@/layouts/ClientLayout";
 import CommonLayout from "@/layouts/CommonLayout";
 import RootLayout from "@/layouts/RootLayout";
 import SignInPage from "@/pages/(auth)/SignInPage";
 import SignUpPage from "@/pages/(auth)/SignUpPage";
+import CheckoutPage from "@/pages/(client)/CheckoutPage";
+import PricingPage from "@/pages/(client)/PricingPage";
+import ProfilePage from "@/pages/(user)/ProfilePage";
 import ErrorPage from "@/pages/(partial)/ErrorPage";
 import MaintenancePage from "@/pages/(partial)/MaintenancePage";
 import NotFoundPage from "@/pages/(partial)/NotFoundPage";
@@ -50,6 +54,36 @@ const useAppRouter = () => {
             {
               path: "signup",
               element: <SignUpPage />,
+            },
+          ],
+        },
+        {
+          path: "client",
+          element: (
+            <AuthWrapper>
+              <ClientLayout />
+            </AuthWrapper>
+          ),
+          children: [
+            {
+              path: "pricing",
+              element: <PricingPage />,
+            },
+            {
+              path: "checkout",
+              element: <CheckoutPage />,
+            },
+            {
+              path: "checkout/success",
+              element: <CheckoutPage />,
+            },
+            {
+              path: "checkout/cancel",
+              element: <CheckoutPage />,
+            },
+            {
+              path: "profile",
+              element: <ProfilePage />,
             },
           ],
         },
