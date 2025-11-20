@@ -151,7 +151,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ package: pkg }) => {
       <Card.Footer>
         <Button asChild className="w-full" size="lg">
           <Link
-            to={`/client/checkout?packageId=${pkg._id}`}
+            to={`/client/checkout?package_id=${pkg._id}`}
             state={{ package: pkg }}
           >
             <ShoppingCart className="mr-2 h-4 w-4" />

@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { fetchPublicPackages } from "@/services/package.service";
 import { verifyPayment } from "@/services/payment-transaction.service";
-import type { TPackage } from "@/types/package.type";
 import { useQuery } from "@tanstack/react-query";
 import { CheckCircle, Loader2, User, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -12,14 +11,13 @@ import { toast } from "react-toastify";
 const CheckoutSuccessPage = () => {
   const [searchParams] = useSearchParams();
   const packageId = searchParams.get("package_id");
-  const [isVerifying, setIsVerifying] = useState(true);
-  
+  const [isVerifying, setIsVerifying] = useState<boolean>(true);
+
   // Get transaction ID from sessionStorage (set during payment initiation)
   // or from URL params (if gateway provides it)
-  const [transactionId, setTransactionId] = useState<string | null>(
-    searchParams.get("transaction_id") || 
-    sessionStorage.getItem("pending_transaction_id")
-  );
+  const transactionId =
+    searchParams.get("transaction_id") ||
+    sessionStorage.getItem("pending_transaction_id");
 
   // Fetch package details if packageId is provided
   const { data: packageResponse } = useQuery({
@@ -55,8 +53,8 @@ const CheckoutSuccessPage = () => {
     return (
       <div className="mx-auto max-w-2xl space-y-6">
         <Card>
-          <Card.Content className="py-12 text-center space-y-4">
-            <Loader2 className="h-16 w-16 text-primary mx-auto animate-spin" />
+          <Card.Content className="space-y-4 py-12 text-center">
+            <Loader2 className="text-primary mx-auto h-16 w-16 animate-spin" />
             <h2 className="text-2xl font-bold">Verifying Payment...</h2>
             <p className="text-muted-foreground">
               Please wait while we verify your payment.
@@ -70,8 +68,8 @@ const CheckoutSuccessPage = () => {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <Card className="border-green-200 bg-green-50 dark:bg-green-950">
-        <Card.Content className="py-12 text-center space-y-4">
-          <CheckCircle className="h-16 w-16 text-green-600 mx-auto" />
+        <Card.Content className="space-y-4 py-12 text-center">
+          <CheckCircle className="mx-auto h-16 w-16 text-green-600" />
           <h2 className="text-3xl font-bold text-green-900 dark:text-green-100">
             Payment Successful!
           </h2>
@@ -101,7 +99,7 @@ const CheckoutSuccessPage = () => {
               )}
             </div>
             <div className="flex items-center gap-2">
-              <Wallet className="h-5 w-5 text-primary" />
+              <Wallet className="text-primary h-5 w-5" />
               <span className="font-semibold">{packageData.token} Tokens</span>
             </div>
           </Card.Content>
@@ -124,4 +122,3 @@ const CheckoutSuccessPage = () => {
 };
 
 export default CheckoutSuccessPage;
-

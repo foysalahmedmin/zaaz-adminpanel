@@ -2,14 +2,12 @@ import { Button } from "@/components/ui/Button";
 import type { TColumn } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
-import type { TBreadcrumbs } from "@/types/route-menu.type";
 import type { TPaymentMethod } from "@/types/payment-method.type";
 import { Edit, Trash } from "lucide-react";
 import React from "react";
 
 type PaymentMethodsDataTableSectionProps = {
   data?: TPaymentMethod[];
-  breadcrumbs: TBreadcrumbs[];
   isLoading: boolean;
   isError: boolean;
   onEdit: (row: TPaymentMethod) => void;
@@ -18,7 +16,7 @@ type PaymentMethodsDataTableSectionProps = {
 
 const PaymentMethodsDataTableSection: React.FC<
   PaymentMethodsDataTableSectionProps
-> = ({ data = [], breadcrumbs, isLoading, isError, onEdit, onDelete }) => {
+> = ({ data = [], isLoading, isError, onEdit, onDelete }) => {
   const columns: TColumn<TPaymentMethod>[] = [
     {
       name: "Name",
@@ -50,7 +48,9 @@ const PaymentMethodsDataTableSection: React.FC<
       field: "currency",
       isSortable: true,
       cell: ({ cell }) => (
-        <span className="uppercase font-semibold">{cell?.toString() || "N/A"}</span>
+        <span className="font-semibold uppercase">
+          {cell?.toString() || "N/A"}
+        </span>
       ),
     },
     {
@@ -78,9 +78,7 @@ const PaymentMethodsDataTableSection: React.FC<
         <span
           className={cn(
             "rounded-full px-2 py-1 text-xs font-medium",
-            cell
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800",
+            cell ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800",
           )}
         >
           {cell ? "Active" : "Inactive"}
@@ -131,4 +129,3 @@ const PaymentMethodsDataTableSection: React.FC<
 };
 
 export default PaymentMethodsDataTableSection;
-

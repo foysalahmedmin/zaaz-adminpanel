@@ -27,7 +27,7 @@ type PaymentStatus = "idle" | "processing" | "success" | "failed" | "pending";
 const CheckoutPage = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const packageId = searchParams.get("packageId");
+  const packageId = searchParams.get("package_id");
   const packageData = (location.state as { package?: TPackage })?.package;
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
@@ -435,10 +435,38 @@ const PaymentFailedView: React.FC<PaymentFailedViewProps> = ({
         </Card.Content>
       </Card>
 
+      {pkg && (
+        <Card>
+          <Card.Header>
+            <h3 className="text-xl font-semibold">Package Details</h3>
+          </Card.Header>
+          <Card.Content className="space-y-4">
+            <div>
+              <h4 className="font-semibold">{pkg.name}</h4>
+              {pkg.description && (
+                <p className="text-muted-foreground text-sm">
+                  {pkg.description}
+                </p>
+              )}
+            </div>
+          </Card.Content>
+        </Card>
+      )}
+
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
         <Button onClick={onRetry} size="lg">
           Try Again
         </Button>
+        {pkg && (
+          <Button asChild variant="outline" size="lg">
+            <Link
+              to={`/client/checkout?package_id=${pkg._id}`}
+              state={{ package: pkg }}
+            >
+              Retry with Same Package
+            </Link>
+          </Button>
+        )}
         <Button asChild variant="outline" size="lg">
           <Link to="/client/pricing">Back to Pricing</Link>
         </Button>

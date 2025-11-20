@@ -5,6 +5,7 @@ export type TPaymentMethod = {
   name: string;
   value: string;
   currency: "USD" | "BDT";
+  secret?: string;
   description?: string;
   public_key?: string;
   webhook_url?: string;
@@ -19,4 +20,3 @@ export type TPaymentMethod = {
 
 export type TPaymentMethodResponse = Response<TPaymentMethod>;
 export type TPaymentMethodsResponse = Response<TPaymentMethod[]>;
-

@@ -5,7 +5,6 @@ import PaymentMethodEditModal from "@/components/modals/PaymentMethodEditModal";
 import PageHeader from "@/components/sections/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import useMenu from "@/hooks/states/useMenu";
 import useAlert from "@/hooks/ui/useAlert";
 import {
   closeAddModal,
@@ -27,7 +26,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const PaymentMethodsPage = () => {
-  const { activeBreadcrumbs } = useMenu();
   const queryClient = useQueryClient();
   const confirm = useAlert();
   const dispatch = useDispatch();
@@ -46,9 +44,7 @@ const PaymentMethodsPage = () => {
   const delete_mutation = useMutation({
     mutationFn: (_id: string) => deletePaymentMethod(_id),
     onSuccess: (data) => {
-      toast.success(
-        data?.message || "Payment method deleted successfully!",
-      );
+      toast.success(data?.message || "Payment method deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["payment-methods"] });
     },
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -90,7 +86,6 @@ const PaymentMethodsPage = () => {
         <Card.Content>
           <PaymentMethodsDataTableSection
             data={data?.data || []}
-            breadcrumbs={activeBreadcrumbs || []}
             isLoading={isLoading}
             isError={isError}
             onEdit={onOpenEditModal}
@@ -120,4 +115,3 @@ const PaymentMethodsPage = () => {
 };
 
 export default PaymentMethodsPage;
-

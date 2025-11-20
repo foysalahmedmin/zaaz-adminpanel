@@ -84,6 +84,8 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
               <div>
                 <FormControl.Label>Name *</FormControl.Label>
                 <FormControl
+                  type="text"
+                  placeholder="e.g., Stripe, SSL Commerz"
                   {...register("name", {
                     required: "Name is required",
                     minLength: {
@@ -91,14 +93,17 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
                       message: "Name must be at least 2 characters",
                     },
                   })}
-                  placeholder="e.g., Stripe, SSL Commerz"
-                  error={errors.name?.message}
                 />
+                {errors.name && (
+                  <FormControl.Error>{errors.name.message}</FormControl.Error>
+                )}
               </div>
 
               <div>
                 <FormControl.Label>Value *</FormControl.Label>
                 <FormControl
+                  type="text"
+                  placeholder="e.g., stripe, sslcommerz"
                   {...register("value", {
                     required: "Value is required",
                     minLength: {
@@ -106,93 +111,112 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
                       message: "Value must be at least 2 characters",
                     },
                   })}
-                  placeholder="e.g., stripe, sslcommerz"
-                  error={errors.value?.message}
                 />
-                <FormControl.Hint>
+                {errors.value && (
+                  <FormControl.Error>{errors.value.message}</FormControl.Error>
+                )}
+                <FormControl.Helper>
                   Lowercase identifier for the payment method
-                </FormControl.Hint>
+                </FormControl.Helper>
               </div>
 
               <div>
                 <FormControl.Label>Currency *</FormControl.Label>
-                <FormControl.Select
+                <FormControl
+                  as="select"
+                  className="border-input bg-card w-full rounded-md border px-3 py-2 text-sm"
                   {...register("currency", {
                     required: "Currency is required",
                   })}
-                  error={errors.currency?.message}
                 >
                   <option value="USD">USD</option>
                   <option value="BDT">BDT</option>
-                </FormControl.Select>
+                </FormControl>
+                {errors.currency && (
+                  <FormControl.Error>{errors.currency.message}</FormControl.Error>
+                )}
               </div>
 
               <div>
                 <FormControl.Label>Secret</FormControl.Label>
                 <FormControl
-                  {...register("secret")}
                   type="password"
                   placeholder="Enter new secret key (leave empty to keep current)"
-                  error={errors.secret?.message}
+                  {...register("secret")}
                 />
-                <FormControl.Hint>
+                {errors.secret && (
+                  <FormControl.Error>{errors.secret.message}</FormControl.Error>
+                )}
+                <FormControl.Helper>
                   Leave empty to keep current secret
-                </FormControl.Hint>
+                </FormControl.Helper>
               </div>
 
               <div>
                 <FormControl.Label>Public Key</FormControl.Label>
                 <FormControl
-                  {...register("public_key")}
+                  type="text"
                   placeholder="Enter public key (optional)"
-                  error={errors.public_key?.message}
+                  {...register("public_key")}
                 />
+                {errors.public_key && (
+                  <FormControl.Error>{errors.public_key.message}</FormControl.Error>
+                )}
               </div>
 
               <div>
                 <FormControl.Label>Description</FormControl.Label>
-                <FormControl.Textarea
+                <FormControl
+                  as="textarea"
+                  className="h-auto min-h-20 py-2"
+                  placeholder="Enter description (optional)"
                   {...register("description", {
                     maxLength: {
                       value: 500,
                       message: "Description cannot exceed 500 characters",
                     },
                   })}
-                  placeholder="Enter description (optional)"
-                  rows={3}
-                  error={errors.description?.message}
                 />
+                {errors.description && (
+                  <FormControl.Error>{errors.description.message}</FormControl.Error>
+                )}
               </div>
 
               <div>
                 <FormControl.Label>Webhook URL</FormControl.Label>
                 <FormControl
+                  type="url"
+                  placeholder="https://example.com/webhook"
                   {...register("webhook_url", {
                     pattern: {
                       value: /^https?:\/\/.+/,
                       message: "Must be a valid URL",
                     },
                   })}
-                  type="url"
-                  placeholder="https://example.com/webhook"
-                  error={errors.webhook_url?.message}
                 />
+                {errors.webhook_url && (
+                  <FormControl.Error>{errors.webhook_url.message}</FormControl.Error>
+                )}
               </div>
 
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <FormControl.Checkbox
-                    {...register("is_test")}
+                  <input
+                    type="checkbox"
+                    className="accent-accent size-5"
                     id="is_test"
+                    {...register("is_test")}
                   />
                   <FormControl.Label htmlFor="is_test" className="font-normal">
                     Test Mode
                   </FormControl.Label>
                 </div>
                 <div className="flex items-center gap-2">
-                  <FormControl.Checkbox
-                    {...register("is_active")}
+                  <input
+                    type="checkbox"
+                    className="accent-accent size-5"
                     id="is_active"
+                    {...register("is_active")}
                   />
                   <FormControl.Label htmlFor="is_active" className="font-normal">
                     Active
