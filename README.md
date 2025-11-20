@@ -1,6 +1,6 @@
 # Payment System Admin Panel
 
-A modern, feature-rich admin panel for managing the Payment System platform. Built with React 19, TypeScript, and modern web technologies. This admin panel provides complete management capabilities for all payment system modules including features, packages, transactions, wallets, and more.
+A modern, feature-rich admin panel for managing the Payment System platform. Built with React 19, TypeScript, and modern web technologies. This admin panel provides complete management capabilities for all payment system modules including features, packages, transactions, wallets, and more. It also includes client-facing pages for the complete payment flow.
 
 ## 🚀 Features
 
@@ -37,7 +37,16 @@ A modern, feature-rich admin panel for managing the Payment System platform. Bui
 - **Token Allocation**: Configure token amounts per package
 - **Package History**: View complete change history via modal
 
-### 💳 Payment Transaction Management
+### 💳 Payment Methods Management
+
+- **Payment Methods Page**: Configure and manage payment gateway settings
+- **Gateway Configuration**: Set up Stripe and SSL Commerz payment methods
+- **Test Mode Support**: Configure test/sandbox mode for payment gateways
+- **Active/Inactive Status**: Enable or disable payment methods
+- **Currency Support**: Configure USD and BDT payment methods
+- **Complete CRUD**: Create, edit, and delete payment method configurations
+
+### 💰 Payment Transaction Management
 
 - **Payment Transactions Page**: View and filter all payment transactions
 - **Payment Transactions Details Page**: Detailed view of individual transactions
@@ -54,7 +63,7 @@ A modern, feature-rich admin panel for managing the Payment System platform. Bui
 - **User Filtering**: Filter transactions by user
 - **Real-time Updates**: Live token balance updates via Socket.io
 
-### 💰 Token Profit Management
+### 💵 Token Profit Management
 
 - **Token Profits Page**: Configure profit percentages
 - **Token Profits Details Page**: View profit configuration and history
@@ -69,10 +78,19 @@ A modern, feature-rich admin panel for managing the Payment System platform. Bui
 - **Transaction History**: Access wallet transaction history
 - **User Filtering**: Filter wallets by user
 
+### 🛒 Client-Side Payment Flow
+
+- **Pricing Page** (`/client/pricing`): Display all public packages as pricing cards
+- **Checkout Page** (`/client/checkout`): Select payment method and initiate payment
+- **Checkout Success Page** (`/client/checkout/success`): Display payment success confirmation
+- **Checkout Cancel Page** (`/client/checkout/cancel`): Handle payment cancellation/failure
+- **Client Layout**: Dedicated layout for user-facing pages
+- **Payment Status Handling**: Complete payment flow with status management
+
 ### 🗑️ Recycle Bin
 
 - **Soft-Deleted Items Management**: View all soft-deleted items
-- **Multi-Module Support**: Manage deleted items from Features, Feature Endpoints, Packages, Token Profits, and Users
+- **Multi-Module Support**: Manage deleted items from Features, Feature Endpoints, Packages, Token Profits, Payment Methods, and Users
 - **Restore Functionality**: Restore deleted items with one click
 - **Permanent Delete**: Permanently delete items from the system
 - **Statistics**: View counts of deleted items per module
@@ -153,6 +171,7 @@ src/
 │   ├── (common)/    # Common page components
 │   │   ├── features-page/
 │   │   ├── packages-page/
+│   │   ├── payment-methods-page/
 │   │   ├── payment-transactions-page/
 │   │   ├── token-transactions-page/
 │   │   ├── token-profits-page/
@@ -169,6 +188,8 @@ src/
 │   │   ├── PackageAddModal/
 │   │   ├── PackageEditModal/
 │   │   ├── PackageHistoryViewModal/
+│   │   ├── PaymentMethodAddModal/
+│   │   ├── PaymentMethodEditModal/
 │   │   ├── PaymentTransactionViewModal/
 │   │   ├── TokenProfitAddModal/
 │   │   ├── TokenProfitEditModal/
@@ -199,15 +220,19 @@ src/
 │   ├── ui/          # UI-related hooks
 │   └── utils/       # Utility hooks
 ├── layouts/         # Page layouts
+│   ├── CommonLayout.tsx  # Admin panel layout
+│   ├── ClientLayout.tsx  # Client-facing layout
+│   └── AuthLayout.tsx   # Auth pages layout
 ├── lib/             # Library utilities (API, utils)
 ├── pages/           # Page components
 │   ├── (auth)/     # Authentication pages
-│   ├── (common)/    # Common pages
+│   ├── (common)/    # Common pages (admin)
 │   │   ├── Dashboard/
 │   │   ├── FeaturesPage/
 │   │   ├── FeaturesDetailsPage/
 │   │   ├── PackagesPage/
 │   │   ├── PackagesDetailsPage/
+│   │   ├── PaymentMethodsPage/
 │   │   ├── PaymentTransactionsPage/
 │   │   ├── PaymentTransactionsDetailsPage/
 │   │   ├── TokenTransactionsPage/
@@ -218,6 +243,11 @@ src/
 │   │   ├── UserWalletsDetailsPage/
 │   │   ├── UsersPage/
 │   │   └── RecycleBinPage/
+│   ├── (client)/    # Client-facing pages
+│   │   ├── PricingPage/
+│   │   ├── CheckoutPage/
+│   │   ├── CheckoutSuccessPage/
+│   │   └── CheckoutCancelPage/
 │   ├── (partial)/   # Partial pages (Error, 404, etc.)
 │   └── (user)/      # User-specific pages
 │       └── ProfilePage/
@@ -230,6 +260,7 @@ src/
 │   ├── feature-endpoint.service.ts
 │   ├── package.service.ts
 │   ├── package-history.service.ts
+│   ├── payment-method.service.ts
 │   ├── payment-transaction.service.ts
 │   ├── token-transaction.service.ts
 │   ├── token-profit.service.ts
@@ -423,10 +454,11 @@ The admin panel implements a robust role-based access control system:
 
 ### Protected Routes
 
-All payment system management pages (Features, Packages, Transactions, Wallets, etc.) are restricted to **super-admin** and **admin** roles only. Regular users can only access:
+All payment system management pages (Features, Packages, Payment Methods, Transactions, Wallets, etc.) are restricted to **super-admin** and **admin** roles only. Regular users can only access:
 
 - Dashboard
 - User Profile (own profile)
+- Client Pages (Pricing, Checkout)
 - Own wallet details
 - Own transaction history
 
@@ -437,6 +469,7 @@ The application integrates with a RESTful API for:
 - User authentication and management
 - Features and Feature Endpoints CRUD operations
 - Package management with rich text content
+- Payment Methods configuration
 - Payment transaction tracking
 - Token transaction management
 - Token profit configuration
@@ -454,6 +487,7 @@ Each module has a dedicated service file:
 - `feature-endpoint.service.ts` - Feature endpoint management
 - `package.service.ts` - Package management
 - `package-history.service.ts` - Package history
+- `payment-method.service.ts` - Payment method management
 - `payment-transaction.service.ts` - Payment transactions
 - `token-transaction.service.ts` - Token transactions
 - `token-profit.service.ts` - Token profit management
@@ -481,6 +515,15 @@ Each module has a dedicated service file:
 - **Duration**: Optional package duration in days
 - **Package History**: Complete change history tracking
 
+### Payment Methods Management
+
+- **Payment Method CRUD**: Create, read, update, and delete payment gateway configurations
+- **Gateway Support**: Configure Stripe and SSL Commerz payment methods
+- **Test Mode**: Enable/disable test/sandbox mode for payment gateways
+- **Active Status**: Enable or disable payment methods
+- **Currency Configuration**: Set up USD and BDT payment methods
+- **Secret Management**: Secure storage of payment gateway credentials
+
 ### Transaction Management
 
 - **Payment Transactions**: Complete payment history with gateway integration
@@ -488,6 +531,15 @@ Each module has a dedicated service file:
 - **Status Tracking**: Monitor transaction statuses in real-time
 - **Filtering**: Advanced filtering by user, status, date range
 - **Details View**: Comprehensive transaction details via modals
+
+### Client-Side Payment Flow
+
+- **Pricing Page**: Browse all available packages with pricing information
+- **Checkout Page**: Select payment method and initiate payment
+- **Payment Initiation**: Seamless integration with backend payment API
+- **Gateway Redirects**: Handle Stripe and SSL Commerz redirects
+- **Success/Cancel Pages**: Display payment outcome with transaction details
+- **Status Management**: Complete payment status handling (idle, processing, success, failed, pending)
 
 ### User Experience
 
