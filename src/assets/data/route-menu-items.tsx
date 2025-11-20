@@ -6,6 +6,7 @@ import PackagesDetailsPage from "@/pages/(common)/PackagesDetailsPage";
 import PackagesPage from "@/pages/(common)/PackagesPage";
 import PaymentTransactionsDetailsPage from "@/pages/(common)/PaymentTransactionsDetailsPage";
 import PaymentTransactionsPage from "@/pages/(common)/PaymentTransactionsPage";
+import RecycleBinPage from "@/pages/(common)/RecycleBinPage";
 import TokenProfitsDetailsPage from "@/pages/(common)/TokenProfitsDetailsPage";
 import TokenProfitsPage from "@/pages/(common)/TokenProfitsPage";
 import TokenTransactionsDetailsPage from "@/pages/(common)/TokenTransactionsDetailsPage";
@@ -291,8 +292,8 @@ export const items: TItem[] = [
     path: "bin",
     name: "Recycle Bin",
     element: (
-      <AuthWrapper>
-        <>{/*TODO: Add your recycle bin page here  */}</>
+      <AuthWrapper roles={["supper-admin", "admin"]}>
+        <RecycleBinPage />
       </AuthWrapper>
     ),
   },

@@ -11,6 +11,7 @@ import tokenTransactionsPageReducer from "./slices/token-transactions-page-slice
 import userReducer from "./slices/user-slice";
 import userWalletsPageReducer from "./slices/user-wallets-page-slice";
 import usersPageReducer from "./slices/users-page-slice";
+import recycleBinPageReducer from "./slices/recycle-bin-page-slice";
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     tokenTransactionsPage: tokenTransactionsPageReducer,
     tokenProfitsPage: tokenProfitsPageReducer,
     userWalletsPage: userWalletsPageReducer,
+    recycleBinPage: recycleBinPageReducer,
   },
 });
 
