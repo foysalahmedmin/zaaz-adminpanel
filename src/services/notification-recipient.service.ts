@@ -19,7 +19,7 @@ export async function fetchNotificationRecipientsBySelf(query?: {
     }
   });
 
-  const url = `/api/notification-recipient/bulk/self?${params.toString()}`;
+  const url = `/api/notification-recipients/bulk/self?${params.toString()}`;
   const response = await api.get(url);
 
   return response.data;
@@ -28,7 +28,7 @@ export async function fetchNotificationRecipientsBySelf(query?: {
 export async function fetchNotificationRecipientBySelf(
   _id: string,
 ): Promise<TNotificationRecipientResponse> {
-  const url = `/api/notification-recipient/${_id}/self`;
+  const url = `/api/notification-recipients/${_id}/self`;
   const response = await api.get(url);
 
   return response.data;
@@ -38,14 +38,14 @@ export async function updateNotificationRecipientBySelf(
   _id: string,
   payload: { is_read?: boolean },
 ): Promise<TNotificationRecipientResponse> {
-  const url = `/api/notification-recipient/${_id}/self`;
+  const url = `/api/notification-recipients/${_id}/self`;
   const response = await api.patch(url, payload);
 
   return response.data;
 }
 
 export async function readAllNotificationRecipientBySelf(): Promise<TNotificationRecipientReadAllResponse> {
-  const url = `/api/notification-recipient/read-all/self`;
+  const url = `/api/notification-recipients/read-all/self`;
   const response = await api.patch(url);
 
   return response.data;
@@ -54,6 +54,6 @@ export async function readAllNotificationRecipientBySelf(): Promise<TNotificatio
 export async function deleteNotificationRecipientBySelf(
   id: string,
 ): Promise<TNotificationRecipientResponse> {
-  const response = await api.delete(`/api/notification-recipient/${id}/self`);
+  const response = await api.delete(`/api/notification-recipients/${id}/self`);
   return response.data;
 }
