@@ -41,7 +41,7 @@ const SigninForm: React.FC = () => {
           <div className="flex flex-col items-center text-center">
             <h1 className="text-2xl font-bold">Welcome Back</h1>
             <p className="text-muted-foreground text-balance">
-              Sign in to your z-news account
+              Sign in to your account
             </p>
           </div>
 

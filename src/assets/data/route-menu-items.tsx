@@ -1,18 +1,17 @@
 import AuthWrapper from "@/components/wrappers/AuthWrapper";
 import Dashboard from "@/pages/(common)/Dashboard";
-import EventsPage from "@/pages/(common)/EventsPage";
-import FeaturesPage from "@/pages/(common)/FeaturesPage";
 import FeaturesDetailsPage from "@/pages/(common)/FeaturesDetailsPage";
-import PackagesPage from "@/pages/(common)/PackagesPage";
+import FeaturesPage from "@/pages/(common)/FeaturesPage";
 import PackagesDetailsPage from "@/pages/(common)/PackagesDetailsPage";
-import PaymentTransactionsPage from "@/pages/(common)/PaymentTransactionsPage";
+import PackagesPage from "@/pages/(common)/PackagesPage";
 import PaymentTransactionsDetailsPage from "@/pages/(common)/PaymentTransactionsDetailsPage";
-import TokenTransactionsPage from "@/pages/(common)/TokenTransactionsPage";
-import TokenTransactionsDetailsPage from "@/pages/(common)/TokenTransactionsDetailsPage";
-import TokenProfitsPage from "@/pages/(common)/TokenProfitsPage";
+import PaymentTransactionsPage from "@/pages/(common)/PaymentTransactionsPage";
 import TokenProfitsDetailsPage from "@/pages/(common)/TokenProfitsDetailsPage";
-import UserWalletsPage from "@/pages/(common)/UserWalletsPage";
+import TokenProfitsPage from "@/pages/(common)/TokenProfitsPage";
+import TokenTransactionsDetailsPage from "@/pages/(common)/TokenTransactionsDetailsPage";
+import TokenTransactionsPage from "@/pages/(common)/TokenTransactionsPage";
 import UserWalletsDetailsPage from "@/pages/(common)/UserWalletsDetailsPage";
+import UserWalletsPage from "@/pages/(common)/UserWalletsPage";
 import UsersPage from "@/pages/(common)/UsersPage";
 import ProfilePage from "@/pages/(user)/ProfilePage";
 import type { TItem } from "@/types/route-menu.type";
@@ -66,36 +65,6 @@ export const items: TItem[] = [
         element: (
           <AuthWrapper roles={["supper-admin", "admin"]}>
             <ProfilePage isUserView={true} />
-          </AuthWrapper>
-        ),
-        menuType: "invisible",
-      },
-    ],
-  },
-  {
-    roles: ["supper-admin", "admin"],
-    menuType: "title",
-    name: "Events",
-  },
-  {
-    roles: ["supper-admin", "admin"],
-    icon: "calendar",
-    path: "events",
-    name: "Events",
-    routeType: "layout",
-    menuType: "item-without-children",
-    element: (
-      <AuthWrapper roles={["supper-admin", "admin"]}>
-        <Outlet />
-      </AuthWrapper>
-    ),
-    children: [
-      {
-        index: true,
-        name: "Events",
-        element: (
-          <AuthWrapper roles={["supper-admin", "admin"]}>
-            <EventsPage />
           </AuthWrapper>
         ),
         menuType: "invisible",

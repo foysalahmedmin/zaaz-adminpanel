@@ -35,7 +35,7 @@ const Sidebar: React.FC<SidebarProps> = memo(({ className, onClose }) => {
             <img
               className="size-full rounded-md object-contain"
               src="/logo.svg"
-              alt="Z-News Logo"
+              alt="Logo"
               loading="lazy"
             />
           </div>

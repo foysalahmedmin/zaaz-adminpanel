@@ -69,7 +69,7 @@ const SignupForm: React.FC = () => {
           <div className="flex flex-col items-center text-center">
             <h1 className="text-2xl font-bold">Create Account</h1>
             <p className="text-muted-foreground text-balance">
-              Sign up for your z-news account
+              Sign up for your account
             </p>
           </div>
 
