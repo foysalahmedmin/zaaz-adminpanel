@@ -1,9 +1,16 @@
+import PaymentTransactionViewModal from "@/components/modals/PaymentTransactionViewModal";
+import TokenTransactionViewModal from "@/components/modals/TokenTransactionViewModal";
 import Loader from "@/components/partials/Loader";
 import PageHeader from "@/components/sections/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { FormControl } from "@/components/ui/FormControl";
+import { Tabs } from "@/components/ui/Tabs";
 import { URLS } from "@/config";
+import {
+  closeViewModal as closePaymentViewModal,
+  openViewModal as openPaymentViewModal,
+} from "@/redux/slices/payment-transactions-page-slice";
 import {
   setIsChangingPassword,
   setIsEditing,
@@ -12,17 +19,28 @@ import {
   stopEditing,
   toggleShowPassword,
 } from "@/redux/slices/profile-page-slice";
+import {
+  closeViewModal as closeTokenViewModal,
+  openViewModal as openTokenViewModal,
+} from "@/redux/slices/token-transactions-page-slice";
 import type { RootState } from "@/redux/store";
 import { changePassword } from "@/services/auth.service";
+import { fetchSelfPaymentTransactions } from "@/services/payment-transaction.service";
+import { fetchSelfTokenTransactions } from "@/services/token-transaction.service";
+import { fetchSelfWallet } from "@/services/user-wallet.service";
 import { fetchSelf, fetchUser, updateSelf } from "@/services/user.service";
 import type { ChangePasswordPayload } from "@/types/auth.type";
+import type { TPaymentTransaction } from "@/types/payment-transaction.type";
 import type { ErrorResponse } from "@/types/response.type";
+import type { TTokenTransaction } from "@/types/token-transaction.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import {
   AlertCircle,
   Camera,
   CheckCircle,
+  Coins,
+  CreditCard,
   Edit,
   Eye,
   EyeOff,
@@ -33,6 +51,7 @@ import {
   Save,
   Shield,
   User,
+  Wallet,
   X,
 } from "lucide-react";
 import React from "react";
@@ -60,6 +79,43 @@ const ProfilePage = ({ isUserView }: { isUserView?: boolean }) => {
   });
 
   const user = userResponse?.data;
+  const userId = isUserView ? id : user?._id;
+
+  // Fetch wallet data
+  const { data: walletResponse } = useQuery({
+    queryKey: ["user-wallet", "self", userId],
+    queryFn: () => fetchSelfWallet(),
+    enabled: !!userId && !isUserView,
+  });
+
+  const wallet = walletResponse?.data;
+
+  // Fetch payment transactions
+  const { data: paymentTransactionsResponse } = useQuery({
+    queryKey: ["payment-transactions", "self", userId],
+    queryFn: () =>
+      fetchSelfPaymentTransactions({ sort: "-created_at", limit: 10 }),
+    enabled: !!userId && !isUserView,
+  });
+
+  const paymentTransactions = paymentTransactionsResponse?.data || [];
+
+  // Fetch token transactions
+  const { data: tokenTransactionsResponse } = useQuery({
+    queryKey: ["token-transactions", "self", userId],
+    queryFn: () =>
+      fetchSelfTokenTransactions({ sort: "-created_at", limit: 10 }),
+    enabled: !!userId && !isUserView,
+  });
+
+  const tokenTransactions = tokenTransactionsResponse?.data || [];
+
+  const {
+    isViewModalOpen: isPaymentViewModalOpen,
+    selectedPaymentTransaction,
+  } = useSelector((state: RootState) => state.paymentTransactionsPage);
+  const { isViewModalOpen: isTokenViewModalOpen, selectedTokenTransaction } =
+    useSelector((state: RootState) => state.tokenTransactionsPage);
 
   // Profile form
   const {
@@ -449,6 +505,183 @@ const ProfilePage = ({ isUserView }: { isUserView?: boolean }) => {
           </div>
         </Card>
 
+        {/* Wallet & Transactions Card */}
+        {!isUserView && wallet && (
+          <Card>
+            <Card.Header className="border-b">
+              <h2 className="text-foreground text-xl font-semibold">
+                Wallet & Transactions
+              </h2>
+            </Card.Header>
+            <Card.Content className="p-6">
+              <Tabs defaultValue="wallet">
+                <Tabs.List>
+                  <Tabs.Trigger value="wallet">
+                    <Wallet className="mr-2 h-4 w-4" />
+                    Wallet
+                  </Tabs.Trigger>
+                  <Tabs.Trigger value="payments">
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Payment Transactions
+                  </Tabs.Trigger>
+                  <Tabs.Trigger value="tokens">
+                    <Coins className="mr-2 h-4 w-4" />
+                    Token Transactions
+                  </Tabs.Trigger>
+                </Tabs.List>
+                <Tabs.Content>
+                  <Tabs.Item value="wallet">
+                    <div className="mt-4 space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-muted rounded-lg p-4">
+                          <div className="text-muted-foreground mb-1 text-sm">
+                            Tokens
+                          </div>
+                          <div className="text-foreground text-2xl font-bold">
+                            {wallet?.token || 0}
+                          </div>
+                        </div>
+                        <div className="bg-muted rounded-lg p-4">
+                          <div className="text-muted-foreground mb-1 text-sm">
+                            Package
+                          </div>
+                          <div className="text-foreground text-sm">
+                            {typeof wallet?.package === "object" &&
+                            wallet.package
+                              ? (wallet.package as any).name
+                              : wallet?.package || "N/A"}
+                          </div>
+                        </div>
+                        {wallet?.expires_at && (
+                          <div className="bg-muted rounded-lg p-4">
+                            <div className="text-muted-foreground mb-1 text-sm">
+                              Expires At
+                            </div>
+                            <div
+                              className={`text-sm font-semibold ${
+                                new Date(wallet.expires_at) < new Date()
+                                  ? "text-red-600"
+                                  : "text-green-600"
+                              }`}
+                            >
+                              {new Date(wallet.expires_at).toLocaleString()}
+                              {new Date(wallet.expires_at) < new Date() &&
+                                " (Expired)"}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Tabs.Item>
+                  <Tabs.Item value="payments">
+                    <div className="mt-4 space-y-4">
+                      {paymentTransactions.length === 0 ? (
+                        <div className="text-muted-foreground py-8 text-center">
+                          No payment transactions found
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          {paymentTransactions.map(
+                            (transaction: TPaymentTransaction) => (
+                              <div
+                                key={transaction._id}
+                                className="border-border hover:bg-muted flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors"
+                                onClick={() =>
+                                  dispatch(openPaymentViewModal(transaction))
+                                }
+                              >
+                                <div>
+                                  <p className="font-semibold">
+                                    {transaction.currency === "USD" ? "$" : "৳"}
+                                    {transaction.amount}
+                                  </p>
+                                  <p className="text-muted-foreground text-sm">
+                                    {transaction.gateway_transaction_id}
+                                  </p>
+                                </div>
+                                <div className="text-right">
+                                  <span
+                                    className={`rounded-full px-2 py-1 text-xs font-medium capitalize ${
+                                      transaction.status === "success"
+                                        ? "bg-green-100 text-green-800"
+                                        : transaction.status === "pending"
+                                          ? "bg-yellow-100 text-yellow-800"
+                                          : "bg-red-100 text-red-800"
+                                    }`}
+                                  >
+                                    {transaction.status}
+                                  </span>
+                                  {transaction.created_at && (
+                                    <p className="text-muted-foreground mt-1 text-xs">
+                                      {new Date(
+                                        transaction.created_at,
+                                      ).toLocaleDateString()}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </Tabs.Item>
+                  <Tabs.Item value="tokens">
+                    <div className="mt-4 space-y-4">
+                      {tokenTransactions.length === 0 ? (
+                        <div className="text-muted-foreground py-8 text-center">
+                          No token transactions found
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          {tokenTransactions.map(
+                            (transaction: TTokenTransaction) => (
+                              <div
+                                key={transaction._id}
+                                className="border-border hover:bg-muted flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors"
+                                onClick={() =>
+                                  dispatch(openTokenViewModal(transaction))
+                                }
+                              >
+                                <div>
+                                  <p
+                                    className={`font-semibold ${
+                                      transaction.type === "increase"
+                                        ? "text-green-600"
+                                        : "text-red-600"
+                                    }`}
+                                  >
+                                    {transaction.type === "increase"
+                                      ? "+"
+                                      : "-"}
+                                    {transaction.amount} tokens
+                                  </p>
+                                  {transaction.increase_source && (
+                                    <p className="text-muted-foreground text-sm capitalize">
+                                      Source: {transaction.increase_source}
+                                    </p>
+                                  )}
+                                </div>
+                                {transaction.created_at && (
+                                  <p className="text-muted-foreground text-sm">
+                                    {new Date(
+                                      transaction.created_at,
+                                    ).toLocaleDateString()}
+                                  </p>
+                                )}
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </Tabs.Item>
+                </Tabs.Content>
+              </Tabs>
+            </Card.Content>
+          </Card>
+        )}
+
         {/* Password Change Card */}
         {!isUserView && (
           <Card>
@@ -648,6 +881,41 @@ const ProfilePage = ({ isUserView }: { isUserView?: boolean }) => {
               )}
             </Card.Content>
           </Card>
+        )}
+
+        {/* Modals */}
+        {!isUserView && (
+          <>
+            <PaymentTransactionViewModal
+              default={
+                selectedPaymentTransaction || ({} as TPaymentTransaction)
+              }
+              isOpen={isPaymentViewModalOpen}
+              setIsOpen={(value: boolean) =>
+                dispatch(
+                  value
+                    ? openPaymentViewModal(
+                        selectedPaymentTransaction ||
+                          ({} as TPaymentTransaction),
+                      )
+                    : closePaymentViewModal(),
+                )
+              }
+            />
+            <TokenTransactionViewModal
+              default={selectedTokenTransaction || ({} as TTokenTransaction)}
+              isOpen={isTokenViewModalOpen}
+              setIsOpen={(value: boolean) =>
+                dispatch(
+                  value
+                    ? openTokenViewModal(
+                        selectedTokenTransaction || ({} as TTokenTransaction),
+                      )
+                    : closeTokenViewModal(),
+                )
+              }
+            />
+          </>
         )}
       </div>
     </div>
