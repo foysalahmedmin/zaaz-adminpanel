@@ -3,7 +3,7 @@ import type { TUserResponse, TUsersResponse } from "@/types/user.type";
 
 // GET Self
 export async function fetchSelf(): Promise<TUserResponse> {
-  const response = await api.get("/api/user/self");
+  const response = await api.get("/api/users/self");
   return response.data as TUserResponse;
 }
 
@@ -11,7 +11,7 @@ export async function fetchSelf(): Promise<TUserResponse> {
 export async function fetchWritersUsers(
   query?: Record<string, any>,
 ): Promise<TUsersResponse> {
-  const response = await api.get("/api/user/writers", { params: query });
+  const response = await api.get("/api/users/writers", { params: query });
   return response.data as TUsersResponse;
 }
 
@@ -25,7 +25,7 @@ export async function fetchUsers(
 
 // GET Single User by ID (Admin)
 export async function fetchUser(id: string): Promise<TUserResponse> {
-  const response = await api.get(`/api/user/${id}`);
+  const response = await api.get(`/api/users/${id}`);
   return response.data as TUserResponse;
 }
 
@@ -41,7 +41,7 @@ export async function updateSelf(
   if (payload.name) formData.append("name", payload.name);
   if (payload.email) formData.append("email", payload.email);
   if (payload.image) formData.append("image", payload.image);
-  const response = await api.patch("/api/user/self", formData, {
+  const response = await api.patch("/api/users/self", formData, {
     headers: { "Content-Type": "multipart/form-data" },
     withCredentials: true,
   });
@@ -55,7 +55,7 @@ export async function updateUsers(payload: {
   role?: "editor" | "author";
   is_verified?: boolean;
 }): Promise<TUsersResponse> {
-  const response = await api.patch("/api/user/bulk", payload);
+  const response = await api.patch("/api/users/bulk", payload);
   return response.data as TUsersResponse;
 }
 
@@ -80,7 +80,7 @@ export async function updateUser(
   if (typeof payload.is_verified === "boolean")
     formData.append("is_verified", payload.is_verified.toString());
 
-  const response = await api.patch(`/api/user/${id}`, formData, {
+  const response = await api.patch(`/api/users/${id}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
     withCredentials: true,
   });
@@ -91,7 +91,7 @@ export async function updateUser(
 export async function deleteUsersPermanent(payload: {
   ids: string[];
 }): Promise<TUsersResponse> {
-  const response = await api.delete("/api/user/bulk/permanent", {
+  const response = await api.delete("/api/users/bulk/permanent", {
     data: payload,
   });
   return response.data as TUsersResponse;
@@ -101,19 +101,19 @@ export async function deleteUsersPermanent(payload: {
 export async function deleteUsers(payload: {
   ids: string[];
 }): Promise<TUsersResponse> {
-  const response = await api.delete("/api/user/bulk", { data: payload });
+  const response = await api.delete("/api/users/bulk", { data: payload });
   return response.data as TUsersResponse;
 }
 
 // DELETE Single Permanent (Admin)
 export async function deleteUserPermanent(id: string): Promise<TUserResponse> {
-  const response = await api.delete(`/api/user/${id}/permanent`);
+  const response = await api.delete(`/api/users/${id}/permanent`);
   return response.data as TUserResponse;
 }
 
 // DELETE Single Soft Delete (Admin)
 export async function deleteUser(id: string): Promise<TUserResponse> {
-  const response = await api.delete(`/api/user/${id}`);
+  const response = await api.delete(`/api/users/${id}`);
   return response.data as TUserResponse;
 }
 
@@ -121,12 +121,12 @@ export async function deleteUser(id: string): Promise<TUserResponse> {
 export async function restoreUsers(payload: {
   ids: string[];
 }): Promise<TUsersResponse> {
-  const response = await api.post("/api/user/bulk/restore", payload);
+  const response = await api.post("/api/users/bulk/restore", payload);
   return response.data as TUsersResponse;
 }
 
 // POST Single Restore (Admin)
 export async function restoreUser(id: string): Promise<TUserResponse> {
-  const response = await api.post(`/api/user/${id}/restore`);
+  const response = await api.post(`/api/users/${id}/restore`);
   return response.data as TUserResponse;
 }
