@@ -2,6 +2,7 @@ import PaymentMethodsDataTableSection from "@/components/(common)/payment-method
 import PaymentMethodsStatisticsSection from "@/components/(common)/payment-methods-page/PaymentMethodsStatisticsSection";
 import PaymentMethodAddModal from "@/components/modals/PaymentMethodAddModal";
 import PaymentMethodEditModal from "@/components/modals/PaymentMethodEditModal";
+import PaymentMethodViewModal from "@/components/modals/PaymentMethodViewModal";
 import PageHeader from "@/components/sections/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -9,8 +10,10 @@ import useAlert from "@/hooks/ui/useAlert";
 import {
   closeAddModal,
   closeEditModal,
+  closeViewModal,
   openAddModal,
   openEditModal,
+  openViewModal,
 } from "@/redux/slices/payment-methods-page-slice";
 import type { RootState } from "@/redux/store";
 import {
@@ -30,7 +33,7 @@ const PaymentMethodsPage = () => {
   const confirm = useAlert();
   const dispatch = useDispatch();
 
-  const { isAddModalOpen, isEditModalOpen, selectedPaymentMethod } =
+  const { isAddModalOpen, isEditModalOpen, isViewModalOpen, selectedPaymentMethod } =
     useSelector((state: RootState) => state.paymentMethodsPage);
 
   const onOpenAddModal = () => {
@@ -39,6 +42,10 @@ const PaymentMethodsPage = () => {
 
   const onOpenEditModal = (paymentMethod: TPaymentMethod) => {
     dispatch(openEditModal(paymentMethod));
+  };
+
+  const onOpenViewModal = (paymentMethod: TPaymentMethod) => {
+    dispatch(openViewModal(paymentMethod));
   };
 
   const delete_mutation = useMutation({
@@ -88,6 +95,7 @@ const PaymentMethodsPage = () => {
             data={data?.data || []}
             isLoading={isLoading}
             isError={isError}
+            onView={onOpenViewModal}
             onEdit={onOpenEditModal}
             onDelete={onDelete}
           />
@@ -107,6 +115,17 @@ const PaymentMethodsPage = () => {
             value
               ? openEditModal(selectedPaymentMethod || ({} as TPaymentMethod))
               : closeEditModal(),
+          )
+        }
+      />
+      <PaymentMethodViewModal
+        default={selectedPaymentMethod || ({} as TPaymentMethod)}
+        isOpen={isViewModalOpen}
+        setIsOpen={(value: boolean) =>
+          dispatch(
+            value
+              ? openViewModal(selectedPaymentMethod || ({} as TPaymentMethod))
+              : closeViewModal(),
           )
         }
       />

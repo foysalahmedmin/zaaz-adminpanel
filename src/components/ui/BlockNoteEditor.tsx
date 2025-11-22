@@ -1,3 +1,4 @@
+import useIsDark from "@/hooks/ui/useIsDark";
 import { cn } from "@/lib/utils";
 import { BlockNoteView } from "@blocknote/mantine";
 import { useCreateBlockNote } from "@blocknote/react";
@@ -19,6 +20,7 @@ const BlockNoteEditorComponent: React.FC<BlockNoteEditorProps> = ({
   className,
   editable = true,
 }) => {
+  const isDark = useIsDark();
   const editor = useCreateBlockNote({
     initialContent: [
       {
@@ -119,7 +121,11 @@ const BlockNoteEditorComponent: React.FC<BlockNoteEditorProps> = ({
         className,
       )}
     >
-      <BlockNoteView editor={editor} onChange={handleChange} theme="light" />
+      <BlockNoteView
+        editor={editor}
+        onChange={handleChange}
+        theme={isDark ? "dark" : "light"}
+      />
     </div>
   );
 };

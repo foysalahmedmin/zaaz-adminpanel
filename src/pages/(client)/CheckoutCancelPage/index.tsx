@@ -35,7 +35,7 @@ const CheckoutCancelPage = () => {
 
       {packageData && (
         <Card>
-          <Card.Header>
+          <Card.Header className="border-b">
             <h3 className="text-xl font-semibold">Package Details</h3>
           </Card.Header>
           <Card.Content className="space-y-4">
@@ -62,15 +62,18 @@ const CheckoutCancelPage = () => {
             </Link>
           </Button>
         )}
-        <Button asChild variant="outline" size="lg">
-          <Link to="/client/pricing">Back to Pricing</Link>
-        </Button>
-        <Button asChild variant="outline" size="lg">
-          <Link to="/client/profile">
-            <User className="mr-2 h-4 w-4" />
+        <Link to="/client/pricing">
+          <Button asChild variant="outline" size="lg">
+            Back to Pricing
+          </Button>
+        </Link>
+
+        <Link to="/client/profile">
+          <Button asChild size="lg">
+            <User className="h-4 w-4" />
             View Profile
-          </Link>
-        </Button>
+          </Button>
+        </Link>
       </div>
     </div>
   );

@@ -5,12 +5,14 @@ import { createSlice } from "@reduxjs/toolkit";
 interface PaymentMethodsPageState {
   isEditModalOpen: boolean;
   isAddModalOpen: boolean;
+  isViewModalOpen: boolean;
   selectedPaymentMethod: TPaymentMethod | null;
 }
 
 const initialState: PaymentMethodsPageState = {
   isEditModalOpen: false,
   isAddModalOpen: false,
+  isViewModalOpen: false,
   selectedPaymentMethod: null,
 };
 
@@ -46,6 +48,14 @@ export const paymentMethodsPageSlice = createSlice({
       state.isAddModalOpen = false;
       state.selectedPaymentMethod = null;
     },
+    openViewModal: (state, action: PayloadAction<TPaymentMethod>) => {
+      state.selectedPaymentMethod = action.payload;
+      state.isViewModalOpen = true;
+    },
+    closeViewModal: (state) => {
+      state.isViewModalOpen = false;
+      state.selectedPaymentMethod = null;
+    },
     resetPaymentMethodsPageState: () => initialState,
   },
 });
@@ -58,6 +68,8 @@ export const {
   closeEditModal,
   openAddModal,
   closeAddModal,
+  openViewModal,
+  closeViewModal,
   resetPaymentMethodsPageState,
 } = paymentMethodsPageSlice.actions;
 

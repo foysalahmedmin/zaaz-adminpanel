@@ -516,16 +516,25 @@ const ProfilePage = ({ isUserView }: { isUserView?: boolean }) => {
             <Card.Content className="p-6">
               <Tabs defaultValue="wallet">
                 <Tabs.List>
-                  <Tabs.Trigger value="wallet">
-                    <Wallet className="mr-2 h-4 w-4" />
+                  <Tabs.Trigger
+                    className="flex items-center gap-2"
+                    value="wallet"
+                  >
+                    <Wallet className="h-4 w-4" />
                     Wallet
                   </Tabs.Trigger>
-                  <Tabs.Trigger value="payments">
-                    <CreditCard className="mr-2 h-4 w-4" />
+                  <Tabs.Trigger
+                    className="flex items-center gap-2"
+                    value="payments"
+                  >
+                    <CreditCard className="h-4 w-4" />
                     Payment Transactions
                   </Tabs.Trigger>
-                  <Tabs.Trigger value="tokens">
-                    <Coins className="mr-2 h-4 w-4" />
+                  <Tabs.Trigger
+                    className="flex items-center gap-2"
+                    value="tokens"
+                  >
+                    <Coins className="h-4 w-4" />
                     Token Transactions
                   </Tabs.Trigger>
                 </Tabs.List>

@@ -3,20 +3,21 @@ import type { TColumn } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
 import type { TPaymentMethod } from "@/types/payment-method.type";
-import { Edit, Trash } from "lucide-react";
+import { Eye, Edit, Trash } from "lucide-react";
 import React from "react";
 
 type PaymentMethodsDataTableSectionProps = {
   data?: TPaymentMethod[];
   isLoading: boolean;
   isError: boolean;
+  onView?: (row: TPaymentMethod) => void;
   onEdit: (row: TPaymentMethod) => void;
   onDelete: (row: TPaymentMethod) => void;
 };
 
 const PaymentMethodsDataTableSection: React.FC<
   PaymentMethodsDataTableSectionProps
-> = ({ data = [], isLoading, isError, onEdit, onDelete }) => {
+> = ({ data = [], isLoading, isError, onView, onEdit, onDelete }) => {
   const columns: TColumn<TPaymentMethod>[] = [
     {
       name: "Name",
@@ -94,11 +95,21 @@ const PaymentMethodsDataTableSection: React.FC<
       ),
     },
     {
-      style: { width: "120px", textAlign: "center" },
+      style: { width: onView ? "160px" : "120px", textAlign: "center" },
       name: "Actions",
       field: "_id",
       cell: ({ row }) => (
         <div className="flex w-full items-center justify-center gap-2">
+          {onView && (
+            <Button
+              onClick={() => onView(row)}
+              size={"sm"}
+              variant="outline"
+              shape={"icon"}
+            >
+              <Eye className="size-4" />
+            </Button>
+          )}
           <Button
             onClick={() => onEdit(row)}
             size={"sm"}

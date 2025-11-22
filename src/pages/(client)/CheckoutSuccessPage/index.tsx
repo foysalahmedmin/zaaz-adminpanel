@@ -67,10 +67,10 @@ const CheckoutSuccessPage = () => {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <Card className="border-green-200 bg-green-50 dark:bg-green-950">
+      <Card className="border-green-600/50 bg-green-600/5">
         <Card.Content className="space-y-4 py-12 text-center">
-          <CheckCircle className="mx-auto h-16 w-16 text-green-600" />
-          <h2 className="text-3xl font-bold text-green-900 dark:text-green-100">
+          <CheckCircle className="mx-auto h-16 w-16 text-green-500" />
+          <h2 className="text-3xl font-bold text-green-500">
             Payment Successful!
           </h2>
           <p className="text-muted-foreground">
@@ -86,7 +86,7 @@ const CheckoutSuccessPage = () => {
 
       {packageData && (
         <Card>
-          <Card.Header>
+          <Card.Header className="border-b">
             <h3 className="text-xl font-semibold">Package Details</h3>
           </Card.Header>
           <Card.Content className="space-y-4">
@@ -107,15 +107,17 @@ const CheckoutSuccessPage = () => {
       )}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-        <Button asChild size="lg">
-          <Link to="/client/profile">
-            <User className="mr-2 h-4 w-4" />
+        <Link to="/client/profile">
+          <Button asChild size="lg">
+            <User className="h-4 w-4" />
             View Profile
-          </Link>
-        </Button>
-        <Button asChild variant="outline" size="lg">
-          <Link to="/client/pricing">Browse More Packages</Link>
-        </Button>
+          </Button>
+        </Link>
+        <Link to="/client/pricing">
+          <Button asChild size="lg" variant="outline">
+            Browse More Packages
+          </Button>
+        </Link>
       </div>
     </div>
   );
