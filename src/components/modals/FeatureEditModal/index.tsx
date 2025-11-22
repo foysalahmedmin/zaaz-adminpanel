@@ -39,6 +39,7 @@ const FeatureEditModal: React.FC<FeatureEditModalProps> = ({
       path: feature?.path || "",
       prefix: feature?.prefix || "",
       type: feature?.type || "other",
+      sequence: feature?.sequence || 0,
       is_active: feature?.is_active ?? true,
       parent: feature?.parent || null,
     },
@@ -51,6 +52,7 @@ const FeatureEditModal: React.FC<FeatureEditModalProps> = ({
       path: feature?.path || "",
       prefix: feature?.prefix || "",
       type: feature?.type || "other",
+      sequence: feature?.sequence || 0,
       is_active: feature?.is_active ?? true,
       parent: feature?.parent || null,
     });
@@ -74,15 +76,16 @@ const FeatureEditModal: React.FC<FeatureEditModalProps> = ({
   });
 
   const onSubmit = (data: Partial<TFeature>) => {
-    const updatedFields = Object.entries(data).reduce<
-      Partial<TFeature>
-    >((acc, [key, value]) => {
-      const fieldKey = key as keyof TFeature;
-      if (value !== feature[fieldKey]) {
-        (acc as Record<string, unknown>)[fieldKey] = value;
-      }
-      return acc;
-    }, {});
+    const updatedFields = Object.entries(data).reduce<Partial<TFeature>>(
+      (acc, [key, value]) => {
+        const fieldKey = key as keyof TFeature;
+        if (value !== feature[fieldKey]) {
+          (acc as Record<string, unknown>)[fieldKey] = value;
+        }
+        return acc;
+      },
+      {},
+    );
 
     if (Object.keys(updatedFields).length === 0) {
       toast.info("No changes detected");
@@ -166,6 +169,27 @@ const FeatureEditModal: React.FC<FeatureEditModalProps> = ({
               </div>
 
               <div>
+                <FormControl.Label>Sequence</FormControl.Label>
+                <FormControl
+                  type="number"
+                  placeholder="0"
+                  min="0"
+                  {...register("sequence", {
+                    valueAsNumber: true,
+                    min: { value: 0, message: "Sequence must be 0 or greater" },
+                  })}
+                />
+                {errors.sequence && (
+                  <FormControl.Error>
+                    {errors.sequence.message}
+                  </FormControl.Error>
+                )}
+                <FormControl.Helper>
+                  Lower numbers appear first when sorting by sequence
+                </FormControl.Helper>
+              </div>
+
+              <div>
                 <label className="inline-flex items-center gap-2">
                   <input
                     className="accent-accent size-5"
@@ -202,4 +226,3 @@ const FeatureEditModal: React.FC<FeatureEditModalProps> = ({
 };
 
 export default FeatureEditModal;
-

@@ -52,6 +52,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
       duration: pkg?.duration || undefined,
       priceUSD: pkg?.price?.USD || 0,
       priceBDT: pkg?.price?.BDT || 0,
+      sequence: pkg?.sequence || 0,
       is_active: pkg?.is_active ?? true,
     },
   });
@@ -66,6 +67,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
       duration: pkg?.duration || undefined,
       priceUSD: pkg?.price?.USD || 0,
       priceBDT: pkg?.price?.BDT || 0,
+      sequence: pkg?.sequence || 0,
       is_active: pkg?.is_active ?? true,
     });
   }, [pkg, reset]);
@@ -109,6 +111,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
         BDT: data.priceBDT,
       };
     }
+    if (data.sequence !== pkg.sequence) updatedFields.sequence = data.sequence;
     if (data.is_active !== pkg.is_active)
       updatedFields.is_active = data.is_active;
 
@@ -284,6 +287,25 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
                     </FormControl.Error>
                   )}
                 </div>
+              </div>
+
+              <div>
+                <FormControl.Label>Sequence</FormControl.Label>
+                <FormControl
+                  type="number"
+                  placeholder="0"
+                  min="0"
+                  {...register("sequence", {
+                    valueAsNumber: true,
+                    min: { value: 0, message: "Sequence must be 0 or greater" },
+                  })}
+                />
+                {errors.sequence && (
+                  <FormControl.Error>{errors.sequence.message}</FormControl.Error>
+                )}
+                <FormControl.Helper>
+                  Lower numbers appear first when sorting by sequence
+                </FormControl.Helper>
               </div>
 
               <div>

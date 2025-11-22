@@ -51,6 +51,14 @@ const FeaturesDataTableSection: React.FC<FeaturesDataTableSectionProps> = ({
       ),
     },
     {
+      name: "Sequence",
+      field: "sequence",
+      isSortable: true,
+      cell: ({ cell }) => (
+        <span className="font-semibold">{cell?.toString() || "0"}</span>
+      ),
+    },
+    {
       name: "Status",
       field: "is_active",
       isSortable: true,

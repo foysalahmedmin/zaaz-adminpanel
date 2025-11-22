@@ -59,6 +59,7 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
         public_key: paymentMethod?.public_key || "",
         webhook_key: paymentMethod?.webhook_key || "",
         webhook_url: paymentMethod?.webhook_url || "",
+        sequence: paymentMethod?.sequence || 0,
         is_test: paymentMethod?.is_test ?? false,
         is_active: paymentMethod?.is_active ?? true,
       });
@@ -248,6 +249,27 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
                 )}
                 <FormControl.Helper>
                   Optional: Webhook URL for this payment method
+                </FormControl.Helper>
+              </div>
+
+              <div>
+                <FormControl.Label>Sequence</FormControl.Label>
+                <FormControl
+                  type="number"
+                  placeholder="0"
+                  min="0"
+                  {...register("sequence", {
+                    valueAsNumber: true,
+                    min: { value: 0, message: "Sequence must be 0 or greater" },
+                  })}
+                />
+                {errors.sequence && (
+                  <FormControl.Error>
+                    {errors.sequence.message}
+                  </FormControl.Error>
+                )}
+                <FormControl.Helper>
+                  Lower numbers appear first when sorting by sequence
                 </FormControl.Helper>
               </div>
 

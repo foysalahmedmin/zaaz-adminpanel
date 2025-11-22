@@ -10,6 +10,7 @@ export type TFeature = {
   path?: string;
   prefix?: string;
   type?: TFeatureType;
+  sequence?: number;
   is_active: boolean;
   is_deleted?: boolean;
   created_at?: string;
@@ -18,4 +19,3 @@ export type TFeature = {
 
 export type TFeatureResponse = Response<TFeature>;
 export type TFeaturesResponse = Response<TFeature[]>;
-

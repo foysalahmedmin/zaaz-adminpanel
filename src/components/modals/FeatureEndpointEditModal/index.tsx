@@ -39,6 +39,7 @@ const FeatureEndpointEditModal: React.FC<FeatureEndpointEditModalProps> = ({
       endpoint: endpoint?.endpoint || "",
       method: endpoint?.method || "GET",
       token: endpoint?.token || 0,
+      sequence: endpoint?.sequence || 0,
       is_active: endpoint?.is_active ?? true,
     },
   });
@@ -50,6 +51,7 @@ const FeatureEndpointEditModal: React.FC<FeatureEndpointEditModalProps> = ({
       endpoint: endpoint?.endpoint || "",
       method: endpoint?.method || "GET",
       token: endpoint?.token || 0,
+      sequence: endpoint?.sequence || 0,
       is_active: endpoint?.is_active ?? true,
     });
   }, [endpoint, reset]);
@@ -174,6 +176,25 @@ const FeatureEndpointEditModal: React.FC<FeatureEndpointEditModalProps> = ({
                 {errors.token && (
                   <FormControl.Error>{errors.token.message}</FormControl.Error>
                 )}
+              </div>
+
+              <div>
+                <FormControl.Label>Sequence</FormControl.Label>
+                <FormControl
+                  type="number"
+                  placeholder="0"
+                  min="0"
+                  {...register("sequence", {
+                    valueAsNumber: true,
+                    min: { value: 0, message: "Sequence must be 0 or greater" },
+                  })}
+                />
+                {errors.sequence && (
+                  <FormControl.Error>{errors.sequence.message}</FormControl.Error>
+                )}
+                <FormControl.Helper>
+                  Lower numbers appear first when sorting by sequence
+                </FormControl.Helper>
               </div>
 
               <div>

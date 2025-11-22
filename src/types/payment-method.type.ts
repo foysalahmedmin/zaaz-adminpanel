@@ -13,6 +13,7 @@ export type TPaymentMethod = {
   currencies?: string[];
   config?: Record<string, unknown>;
   is_test?: boolean;
+  sequence?: number;
   is_active: boolean;
   is_deleted?: boolean;
   created_at?: string;

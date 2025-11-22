@@ -1,6 +1,11 @@
 import type { Response } from "./response.type";
 
-export type TFeatureEndpointMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+export type TFeatureEndpointMethod =
+  | "GET"
+  | "POST"
+  | "PUT"
+  | "PATCH"
+  | "DELETE";
 
 export type TFeatureEndpoint = {
   _id: string;
@@ -10,6 +15,7 @@ export type TFeatureEndpoint = {
   endpoint: string;
   method: TFeatureEndpointMethod;
   token: number;
+  sequence?: number;
   is_active: boolean;
   is_deleted?: boolean;
   created_at?: string;
@@ -18,4 +24,3 @@ export type TFeatureEndpoint = {
 
 export type TFeatureEndpointResponse = Response<TFeatureEndpoint>;
 export type TFeatureEndpointsResponse = Response<TFeatureEndpoint[]>;
-

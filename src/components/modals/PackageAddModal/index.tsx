@@ -52,6 +52,7 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
       duration: pkg?.duration || undefined,
       priceUSD: pkg?.price?.USD || 0,
       priceBDT: pkg?.price?.BDT || 0,
+      sequence: pkg?.sequence || 0,
       is_active: pkg?.is_active ?? true,
     },
   });
@@ -85,6 +86,7 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
         USD: data.priceUSD,
         BDT: data.priceBDT,
       },
+      sequence: data.sequence,
       is_active: data.is_active,
     });
   };
@@ -253,6 +255,25 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
                     </FormControl.Error>
                   )}
                 </div>
+              </div>
+
+              <div>
+                <FormControl.Label>Sequence</FormControl.Label>
+                <FormControl
+                  type="number"
+                  placeholder="0"
+                  min="0"
+                  {...register("sequence", {
+                    valueAsNumber: true,
+                    min: { value: 0, message: "Sequence must be 0 or greater" },
+                  })}
+                />
+                {errors.sequence && (
+                  <FormControl.Error>{errors.sequence.message}</FormControl.Error>
+                )}
+                <FormControl.Helper>
+                  Lower numbers appear first when sorting by sequence
+                </FormControl.Helper>
               </div>
 
               <div>

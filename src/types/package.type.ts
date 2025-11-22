@@ -17,6 +17,7 @@ export type TPackage = {
   duration?: number;
   price: TPackagePrice;
   price_previous?: TPackagePrice;
+  sequence?: number;
   is_active: boolean;
   is_deleted?: boolean;
   created_at?: string;
@@ -25,4 +26,3 @@ export type TPackage = {
 
 export type TPackageResponse = Response<TPackage>;
 export type TPackagesResponse = Response<TPackage[]>;
-
