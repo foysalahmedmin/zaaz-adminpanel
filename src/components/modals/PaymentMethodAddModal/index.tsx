@@ -40,6 +40,7 @@ const PaymentMethodAddModal: React.FC<PaymentMethodAddModalProps> = ({
       description: paymentMethod?.description || "",
       secret: paymentMethod?.secret || "",
       public_key: paymentMethod?.public_key || "",
+      webhook_key: paymentMethod?.webhook_key || "",
       webhook_url: paymentMethod?.webhook_url || "",
       is_test: paymentMethod?.is_test ?? false,
       is_active: paymentMethod?.is_active ?? true,
@@ -164,6 +165,28 @@ const PaymentMethodAddModal: React.FC<PaymentMethodAddModalProps> = ({
                     {errors.public_key.message}
                   </FormControl.Error>
                 )}
+                <FormControl.Helper>
+                  Publishable key for frontend use (e.g., Stripe publishable
+                  key)
+                </FormControl.Helper>
+              </div>
+
+              <div>
+                <FormControl.Label>Webhook Secret Key</FormControl.Label>
+                <FormControl
+                  type="text"
+                  placeholder="Enter webhook secret key (optional)"
+                  {...register("webhook_key")}
+                />
+                {errors.webhook_key && (
+                  <FormControl.Error>
+                    {errors.webhook_key.message}
+                  </FormControl.Error>
+                )}
+                <FormControl.Helper>
+                  Webhook secret key for signature verification (e.g., Stripe
+                  webhook secret: whsec_...)
+                </FormControl.Helper>
               </div>
 
               <div>

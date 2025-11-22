@@ -45,7 +45,7 @@ const ErrorPage: React.FC = () => {
           <p className="text-muted-foreground">{description}</p>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex items-center justify-center gap-4">
           <Link to="/">
             <Button asChild variant="default">
               Go to Dashboard

@@ -7,7 +7,7 @@ import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -40,11 +40,30 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
       description: paymentMethod?.description || "",
       secret: paymentMethod?.secret || "",
       public_key: paymentMethod?.public_key || "",
+      webhook_key: paymentMethod?.webhook_key || "",
       webhook_url: paymentMethod?.webhook_url || "",
       is_test: paymentMethod?.is_test ?? false,
       is_active: paymentMethod?.is_active ?? true,
     },
   });
+
+  // Reset form when paymentMethod changes or modal opens
+  useEffect(() => {
+    if (isOpen && paymentMethod) {
+      reset({
+        name: paymentMethod?.name || "",
+        value: paymentMethod?.value || "",
+        currency: paymentMethod?.currency || "USD",
+        description: paymentMethod?.description || "",
+        secret: paymentMethod?.secret || "",
+        public_key: paymentMethod?.public_key || "",
+        webhook_key: paymentMethod?.webhook_key || "",
+        webhook_url: paymentMethod?.webhook_url || "",
+        is_test: paymentMethod?.is_test ?? false,
+        is_active: paymentMethod?.is_active ?? true,
+      });
+    }
+  }, [paymentMethod, isOpen, reset]);
 
   const mutation = useMutation({
     mutationFn: (data: Partial<TPaymentMethod>) =>
@@ -133,14 +152,16 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
                   <option value="BDT">BDT</option>
                 </FormControl>
                 {errors.currency && (
-                  <FormControl.Error>{errors.currency.message}</FormControl.Error>
+                  <FormControl.Error>
+                    {errors.currency.message}
+                  </FormControl.Error>
                 )}
               </div>
 
               <div>
                 <FormControl.Label>Secret</FormControl.Label>
                 <FormControl
-                  type="password"
+                  type="text"
                   placeholder="Enter new secret key (leave empty to keep current)"
                   {...register("secret")}
                 />
@@ -160,8 +181,32 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
                   {...register("public_key")}
                 />
                 {errors.public_key && (
-                  <FormControl.Error>{errors.public_key.message}</FormControl.Error>
+                  <FormControl.Error>
+                    {errors.public_key.message}
+                  </FormControl.Error>
                 )}
+                <FormControl.Helper>
+                  Publishable key for frontend use (e.g., Stripe publishable
+                  key)
+                </FormControl.Helper>
+              </div>
+
+              <div>
+                <FormControl.Label>Webhook Secret Key</FormControl.Label>
+                <FormControl
+                  type="text"
+                  placeholder="Enter webhook secret key (leave empty to keep current)"
+                  {...register("webhook_key")}
+                />
+                {errors.webhook_key && (
+                  <FormControl.Error>
+                    {errors.webhook_key.message}
+                  </FormControl.Error>
+                )}
+                <FormControl.Helper>
+                  Webhook secret key for signature verification (e.g., Stripe
+                  webhook secret: whsec_...). Leave empty to keep current.
+                </FormControl.Helper>
               </div>
 
               <div>
@@ -178,7 +223,9 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
                   })}
                 />
                 {errors.description && (
-                  <FormControl.Error>{errors.description.message}</FormControl.Error>
+                  <FormControl.Error>
+                    {errors.description.message}
+                  </FormControl.Error>
                 )}
               </div>
 
@@ -195,8 +242,13 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
                   })}
                 />
                 {errors.webhook_url && (
-                  <FormControl.Error>{errors.webhook_url.message}</FormControl.Error>
+                  <FormControl.Error>
+                    {errors.webhook_url.message}
+                  </FormControl.Error>
                 )}
+                <FormControl.Helper>
+                  Optional: Webhook URL for this payment method
+                </FormControl.Helper>
               </div>
 
               <div className="flex items-center gap-4">
@@ -218,7 +270,10 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
                     id="is_active"
                     {...register("is_active")}
                   />
-                  <FormControl.Label htmlFor="is_active" className="font-normal">
+                  <FormControl.Label
+                    htmlFor="is_active"
+                    className="font-normal"
+                  >
                     Active
                   </FormControl.Label>
                 </div>
@@ -252,4 +307,3 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
 };
 
 export default PaymentMethodEditModal;
-

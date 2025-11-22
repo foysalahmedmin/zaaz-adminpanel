@@ -8,6 +8,7 @@ export type TPaymentMethod = {
   secret?: string;
   description?: string;
   public_key?: string;
+  webhook_key?: string;
   webhook_url?: string;
   currencies?: string[];
   config?: Record<string, unknown>;

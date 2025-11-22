@@ -138,26 +138,42 @@ const PricingCard: React.FC<PricingCardProps> = ({ package: pkg }) => {
           <div className="space-y-2">
             <h4 className="font-semibold">Features:</h4>
             <ul className="space-y-1">
-              {pkg.features.map((feature, index) => (
-                <li key={index} className="flex items-center gap-2 text-sm">
-                  <Check className="text-primary h-4 w-4 flex-shrink-0" />
-                  <span>{feature}</span>
-                </li>
-              ))}
+              {pkg.features.map((feature, index) => {
+                // Handle both string and object formats
+                const featureName =
+                  typeof feature === "string"
+                    ? feature
+                    : (feature as any)?.name || "Feature";
+                const featureId =
+                  typeof feature === "string"
+                    ? feature
+                    : (feature as any)?._id || index;
+
+                return (
+                  <li
+                    key={featureId}
+                    className="flex items-center gap-2 text-sm"
+                  >
+                    <Check className="text-primary h-4 w-4 flex-shrink-0" />
+                    <span>{featureName}</span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         )}
       </Card.Content>
       <Card.Footer>
-        <Button asChild className="w-full" size="lg">
-          <Link
-            to={`/client/checkout?package_id=${pkg._id}`}
-            state={{ package: pkg }}
-          >
-            <ShoppingCart className="mr-2 h-4 w-4" />
+        <Link
+          to={`/client/checkout?package_id=${pkg._id}`}
+          state={{ package: pkg }}
+          className="w-full"
+        >
+          <Button size="lg" className="w-full">
+            <ShoppingCart className="size-5" />
             Checkout
-          </Link>
-        </Button>
+          </Button>
+        </Link>
       </Card.Footer>
     </Card>
   );
