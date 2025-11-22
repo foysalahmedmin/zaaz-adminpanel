@@ -19,7 +19,7 @@ export async function fetchWritersUsers(
 export async function fetchUsers(
   query?: Record<string, any>,
 ): Promise<TUsersResponse> {
-  const response = await api.get("/api/user", { params: query });
+  const response = await api.get("/api/users", { params: query });
   return response.data as TUsersResponse;
 }
 

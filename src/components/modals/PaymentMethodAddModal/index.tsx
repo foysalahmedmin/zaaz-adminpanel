@@ -141,7 +141,7 @@ const PaymentMethodAddModal: React.FC<PaymentMethodAddModalProps> = ({
               <div>
                 <FormControl.Label>Secret *</FormControl.Label>
                 <FormControl
-                  type="password"
+                  type="text"
                   placeholder="Enter secret key"
                   {...register("secret", {
                     required: "Secret is required",
