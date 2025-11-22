@@ -39,7 +39,7 @@ const CheckoutCancelPage = () => {
             <h3 className="text-xl font-semibold">Package Details</h3>
           </Card.Header>
           <Card.Content className="space-y-4">
-            <div>
+            <div className="space-y-1">
               <h4 className="font-semibold">{packageData.name}</h4>
               {packageData.description && (
                 <p className="text-muted-foreground text-sm">

@@ -1,0 +1,28 @@
+<!-- public/redirect.html -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting...</title>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const packageId = params.get("package_id");
+      const status = params.get("status"); // success/fail/cancel
+      // Map status to React route
+      let redirectPath = "/";
+
+      if (status === "success") {
+        redirectPath = `/client/checkout/success?package_id=${packageId}`;
+      } else if (status === "fail") {
+        redirectPath = `/client/checkout/fail?package_id=${packageId}`;
+      } else if (status === "cancel") {
+        redirectPath = `/client/checkout/cancel?package_id=${packageId}`;
+      }
+
+      window.location.href = redirectPath;
+    </script>
+  </head>
+  <body>
+    Redirecting...
+  </body>
+</html>

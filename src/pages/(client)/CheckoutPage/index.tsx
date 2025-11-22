@@ -11,6 +11,7 @@ import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import {
+  Check,
   CheckCircle,
   CreditCard,
   Loader2,
@@ -201,11 +202,11 @@ const CheckoutPage = () => {
       <div className="grid gap-6 md:grid-cols-2">
         {/* Package Summary */}
         <Card>
-          <Card.Header>
+          <Card.Header className="border-b">
             <h2 className="text-xl font-semibold">Package Summary</h2>
           </Card.Header>
           <Card.Content className="space-y-4">
-            <div>
+            <div className="space-y-1">
               <h3 className="text-lg font-semibold">{currentPackage.name}</h3>
               {currentPackage.description && (
                 <p className="text-muted-foreground text-sm">
@@ -227,12 +228,41 @@ const CheckoutPage = () => {
                 </div>
               )}
             </div>
+            {/* Features */}
+            {currentPackage.features && currentPackage.features.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="font-semibold">Features:</h4>
+                <ul className="space-y-1">
+                  {currentPackage.features.map((feature, index) => {
+                    // Handle both string and object formats
+                    const featureName =
+                      typeof feature === "string"
+                        ? feature
+                        : (feature as any)?.name || "Feature";
+                    const featureId =
+                      typeof feature === "string"
+                        ? feature
+                        : (feature as any)?._id || index;
+
+                    return (
+                      <li
+                        key={featureId}
+                        className="flex items-center gap-2 text-sm"
+                      >
+                        <Check className="text-primary h-4 w-4 flex-shrink-0" />
+                        <span>{featureName}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           </Card.Content>
         </Card>
 
         {/* Payment Method Selection */}
         <Card>
-          <Card.Header>
+          <Card.Header className="border-b">
             <h2 className="text-xl font-semibold">Select Payment Method</h2>
           </Card.Header>
           <Card.Content className="space-y-4">
@@ -441,7 +471,7 @@ const PaymentFailedView: React.FC<PaymentFailedViewProps> = ({
             <h3 className="text-xl font-semibold">Package Details</h3>
           </Card.Header>
           <Card.Content className="space-y-4">
-            <div className="space-y-2">
+            <div className="space-y-1">
               <h4 className="font-semibold">{pkg.name}</h4>
               {pkg.description && (
                 <p className="text-muted-foreground text-sm">
@@ -467,28 +497,33 @@ const PaymentFailedView: React.FC<PaymentFailedViewProps> = ({
       )}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-        <Button onClick={onRetry} size="lg">
-          Try Again
-        </Button>
+        <Link to="#" onClick={onRetry}>
+          <Button size="lg">Try Again</Button>
+        </Link>
+
         {pkg && (
-          <Button asChild variant="outline" size="lg">
-            <Link
-              to={`/client/checkout?package_id=${pkg._id}`}
-              state={{ package: pkg }}
-            >
+          <Link
+            to={`/client/checkout?package_id=${pkg._id}`}
+            state={{ package: pkg }}
+          >
+            <Button variant="outline" size="lg">
               Retry with Same Package
-            </Link>
-          </Button>
-        )}
-        <Button asChild variant="outline" size="lg">
-          <Link to="/client/pricing">Back to Pricing</Link>
-        </Button>
-        <Button asChild variant="outline" size="lg">
-          <Link to="/client/profile">
-            <User className="mr-2 h-4 w-4" />
-            View Profile
+            </Button>
           </Link>
-        </Button>
+        )}
+
+        <Link to="/client/pricing">
+          <Button variant="outline" size="lg">
+            Back to Pricing
+          </Button>
+        </Link>
+
+        <Link to="/client/profile">
+          <Button variant="outline" size="lg">
+            <User className="h-4 w-4" />
+            View Profile
+          </Button>
+        </Link>
       </div>
     </div>
   );

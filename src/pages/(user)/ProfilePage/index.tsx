@@ -520,22 +520,28 @@ const ProfilePage = ({ isUserView }: { isUserView?: boolean }) => {
                     className="flex items-center gap-2"
                     value="wallet"
                   >
-                    <Wallet className="h-4 w-4" />
-                    Wallet
+                    <div className="flex items-center gap-2">
+                      <Wallet className="h-4 w-4" />
+                      Wallet
+                    </div>
                   </Tabs.Trigger>
                   <Tabs.Trigger
                     className="flex items-center gap-2"
                     value="payments"
                   >
-                    <CreditCard className="h-4 w-4" />
-                    Payment Transactions
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="h-4 w-4" />
+                      Payment Transactions
+                    </div>
                   </Tabs.Trigger>
                   <Tabs.Trigger
                     className="flex items-center gap-2"
                     value="tokens"
                   >
-                    <Coins className="h-4 w-4" />
-                    Token Transactions
+                    <div className="flex items-center gap-2">
+                      <Coins className="h-4 w-4" />
+                      Token Transactions
+                    </div>
                   </Tabs.Trigger>
                 </Tabs.List>
                 <Tabs.Content>
