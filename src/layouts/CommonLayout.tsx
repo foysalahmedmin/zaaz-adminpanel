@@ -3,16 +3,24 @@ import Loader from "@/components/partials/Loader";
 import Settings from "@/components/partials/Setting";
 import Sidebar from "@/components/partials/Sidebar";
 import useSetting from "@/hooks/states/useSetting";
+import useUser from "@/hooks/states/useUser";
 import { useSidebar } from "@/hooks/ui/useSidebar";
 import { cn } from "@/lib/utils";
 import { Suspense } from "react";
-import { Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router";
 
 const CommonLayout = () => {
   const { setting } = useSetting();
   const { isMobileOpen, toggleMobile, closeMobile } = useSidebar();
+  const { user } = useUser();
+  const userRole = user?.info?.role;
 
   const isCompact = setting.sidebar === "compact";
+
+  // Redirect non-admin users to client profile
+  if (userRole && userRole !== "admin" && userRole !== "super-admin") {
+    return <Navigate to="/client/profile" replace />;
+  }
 
   return (
     <div className="bg-background flex h-screen w-screen overflow-hidden">

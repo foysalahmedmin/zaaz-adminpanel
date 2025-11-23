@@ -54,9 +54,9 @@ const TokenTransactionsDetailsPage = () => {
                   {currentTransaction.type}
                 </p>
                 <p>
-                  <span className="font-medium">Amount:</span>{" "}
+                  <span className="font-medium">Token:</span>{" "}
                   {currentTransaction.type === "increase" ? "+" : "-"}
-                  {currentTransaction.amount} tokens
+                  {currentTransaction.token} tokens
                 </p>
                 {currentTransaction.increase_source && (
                   <p>

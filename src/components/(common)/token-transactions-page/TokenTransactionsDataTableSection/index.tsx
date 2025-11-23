@@ -48,8 +48,8 @@ const TokenTransactionsDataTableSection: React.FC<
       ),
     },
     {
-      name: "Amount",
-      field: "amount",
+      name: "Token",
+      field: "token",
       isSortable: true,
       cell: ({ cell, row }) => (
         <div className="space-y-1">

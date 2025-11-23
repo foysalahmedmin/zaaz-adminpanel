@@ -11,12 +11,12 @@ import CheckoutCancelPage from "@/pages/(client)/CheckoutCancelPage";
 import CheckoutPage from "@/pages/(client)/CheckoutPage";
 import CheckoutSuccessPage from "@/pages/(client)/CheckoutSuccessPage";
 import PricingPage from "@/pages/(client)/PricingPage";
-import ProfilePage from "@/pages/(user)/ProfilePage";
 import ErrorPage from "@/pages/(partial)/ErrorPage";
 import MaintenancePage from "@/pages/(partial)/MaintenancePage";
 import NotFoundPage from "@/pages/(partial)/NotFoundPage";
+import ProfilePage from "@/pages/(user)/ProfilePage";
 import { useMemo } from "react";
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import useUser from "./useUser";
 
 const useAppRouter = () => {
@@ -68,6 +68,14 @@ const useAppRouter = () => {
           ),
           children: [
             {
+              index: true,
+              element: <Navigate to="/client/profile" replace />,
+            },
+            {
+              path: "profile",
+              element: <ProfilePage />,
+            },
+            {
               path: "pricing",
               element: <PricingPage />,
             },
@@ -82,10 +90,6 @@ const useAppRouter = () => {
             {
               path: "checkout/cancel",
               element: <CheckoutCancelPage />,
-            },
-            {
-              path: "profile",
-              element: <ProfilePage />,
             },
           ],
         },
