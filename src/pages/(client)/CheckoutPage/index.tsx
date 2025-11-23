@@ -126,8 +126,8 @@ const CheckoutPage = () => {
     // const returnUrl = `${ENV?.app_url || window.location.origin}/client/checkout/success?package_id=${currentPackage._id}`;
     // const cancelUrl = `${ENV?.app_url || window.location.origin}/client/checkout/cancel?package_id=${currentPackage._id}`;
 
-    const returnUrl = `${ENV?.app_url || window.location.origin}/redirect.html?status=success&package_id=${currentPackage._id}`;
-    const cancelUrl = `${ENV?.app_url || window.location.origin}/redirect.html?status=success&package_id=${currentPackage._id}`;
+    const returnUrl = `${ENV?.app_url || window.location.origin}/redirects.html?status=success&package_id=${currentPackage._id}`;
+    const cancelUrl = `${ENV?.app_url || window.location.origin}/redirects.html?status=success&package_id=${currentPackage._id}`;
 
     initiatePaymentMutation.mutate({
       package: currentPackage._id,
