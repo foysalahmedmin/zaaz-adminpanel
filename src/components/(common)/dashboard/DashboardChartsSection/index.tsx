@@ -51,25 +51,25 @@ const DashboardChartsSection: React.FC<DashboardChartsSectionProps> = ({
         </Card.Content>
       </Card>
 
+      {/* Package Sales Performance */}
+      <Card>
+        <Card.Header>
+          <Card.Title>Package Performance</Card.Title>
+          <p>Purchase count per package</p>
+        </Card.Header>
+        <Card.Content>
+          <PackagePerformanceChart data={packageData} />
+        </Card.Content>
+      </Card>
+
       {/* Feature Performance Chart - Full Width */}
-      <Card className="col-span-1 lg:col-span-2">
+      <Card>
         <Card.Header>
           <Card.Title>Feature Performance</Card.Title>
           <p>Top features by usage count (based on token transactions)</p>
         </Card.Header>
         <Card.Content>
           <FeaturePerformanceChart data={featureData} />
-        </Card.Content>
-      </Card>
-
-      {/* Transaction Status Distribution */}
-      <Card>
-        <Card.Header>
-          <Card.Title>Transaction Status</Card.Title>
-          <p>Distribution of transactions by status</p>
-        </Card.Header>
-        <Card.Content>
-          <TransactionStatusChart data={transactionStatusData} />
         </Card.Content>
       </Card>
 
@@ -81,6 +81,17 @@ const DashboardChartsSection: React.FC<DashboardChartsSectionProps> = ({
         </Card.Header>
         <Card.Content>
           <PaymentMethodChart data={paymentMethodData} />
+        </Card.Content>
+      </Card>
+
+      {/* Transaction Status Distribution */}
+      <Card>
+        <Card.Header>
+          <Card.Title>Transaction Status</Card.Title>
+          <p>Distribution of transactions by status</p>
+        </Card.Header>
+        <Card.Content>
+          <TransactionStatusChart data={transactionStatusData} />
         </Card.Content>
       </Card>
 
@@ -103,17 +114,6 @@ const DashboardChartsSection: React.FC<DashboardChartsSectionProps> = ({
         </Card.Header>
         <Card.Content>
           <UserGrowthChart data={userGrowthData} />
-        </Card.Content>
-      </Card>
-
-      {/* Package Sales Performance */}
-      <Card>
-        <Card.Header>
-          <Card.Title>Package Performance</Card.Title>
-          <p>Purchase count per package</p>
-        </Card.Header>
-        <Card.Content>
-          <PackagePerformanceChart data={packageData} />
         </Card.Content>
       </Card>
     </div>
