@@ -6,9 +6,16 @@ A modern, feature-rich admin panel for managing the Payment System platform. Bui
 
 ### 📊 Dashboard
 
-- Dashboard page with customizable content area
-- Quick access to key metrics and insights
-- Real-time data visualization capabilities
+- **Comprehensive Analytics Dashboard**: Modern admin dashboard with real-time statistics and charts
+- **Statistics Cards**: Four key metric cards showing total revenue (USD/BDT), total users, total transactions, and total tokens with month-over-month trends
+- **Revenue Trend Chart**: Area chart displaying daily revenue trends over time (USD and BDT)
+- **Transaction Status Chart**: Bar chart showing distribution of transactions by status
+- **Payment Method Performance Chart**: Bar chart displaying transaction count and revenue by payment method
+- **Token Flow Chart**: Line chart showing daily token increases vs decreases
+- **User Growth Chart**: Area chart displaying daily user registrations
+- **Package Performance Chart**: Bar chart showing purchase count and revenue per package
+- **Feature Performance Chart**: Bar chart displaying usage count and total tokens used per feature
+- **Real-time Updates**: Dashboard data updates in real-time via Socket.io
 
 ### 👥 User Management
 
@@ -18,6 +25,9 @@ A modern, feature-rich admin panel for managing the Payment System platform. Bui
 - Email verification system
 - User statistics and analytics
 - Enhanced user profile with wallet details and transaction history
+- **User Details Page**: Separate admin-only page for viewing user details (read-only)
+- **Profile Page**: User's own profile page with edit capabilities and `/self` API endpoints
+- **Role-based Layout Access**: CommonLayout automatically redirects non-admin users to client profile
 
 ### 🎯 Features Management
 
@@ -111,8 +121,10 @@ A modern, feature-rich admin panel for managing the Payment System platform. Bui
 - **Data Tables**: Sortable, searchable, and paginated data tables
 - **Responsive Design**: Mobile-first, fully responsive interface
 - **Modal-based UX**: All create/edit/view operations via modals
-- **Role-based Access Control**: Strict access control for admin-only features
-- **Rich Text Editing**: BlockNote editor for HTML content
+- **Role-based Access Control**: Strict access control for admin-only features with automatic redirects
+- **Rich Text Editing**: BlockNote editor for HTML content with dark mode support
+- **Dashboard Analytics**: Comprehensive charts and statistics using Recharts
+- **Layout-level Security**: CommonLayout validates user roles and redirects non-admin users
 
 ## 🛠️ Technology Stack
 
@@ -148,6 +160,9 @@ A modern, feature-rich admin panel for managing the Payment System platform. Bui
 ### Data Visualization
 
 - **Recharts** - Charts and data visualization
+  - Area charts for revenue trends and user growth
+  - Bar charts for transaction status, payment methods, packages, and features
+  - Line charts for token flow
 
 ### Additional Libraries
 
@@ -177,6 +192,17 @@ src/
 │   │   ├── token-profits-page/
 │   │   ├── user-wallets-page/
 │   │   ├── users-page/
+│   │   ├── dashboard/
+│   │   │   ├── DashboardStatisticsSection/
+│   │   │   ├── DashboardChartsSection/
+│   │   │   └── charts/
+│   │   │       ├── RevenueChart/
+│   │   │       ├── TransactionStatusChart/
+│   │   │       ├── PaymentMethodChart/
+│   │   │       ├── TokenFlowChart/
+│   │   │       ├── UserGrowthChart/
+│   │   │       ├── PackagePerformanceChart/
+│   │   │       └── FeaturePerformanceChart/
 │   │   └── recycle-bin-page/
 │   ├── appliers/    # State appliers and providers
 │   ├── cards/       # Card components
@@ -220,7 +246,7 @@ src/
 │   ├── ui/          # UI-related hooks
 │   └── utils/       # Utility hooks
 ├── layouts/         # Page layouts
-│   ├── CommonLayout.tsx  # Admin panel layout
+│   ├── CommonLayout.tsx  # Admin panel layout (with role validation)
 │   ├── ClientLayout.tsx  # Client-facing layout
 │   └── AuthLayout.tsx   # Auth pages layout
 ├── lib/             # Library utilities (API, utils)
@@ -242,6 +268,7 @@ src/
 │   │   ├── UserWalletsPage/
 │   │   ├── UserWalletsDetailsPage/
 │   │   ├── UsersPage/
+│   │   ├── UserDetailsPage/
 │   │   └── RecycleBinPage/
 │   ├── (client)/    # Client-facing pages
 │   │   ├── PricingPage/
@@ -256,6 +283,7 @@ src/
 │   └── store.ts     # Redux store configuration
 ├── services/        # API service functions
 │   ├── auth.service.ts
+│   ├── dashboard.service.ts
 │   ├── feature.service.ts
 │   ├── feature-endpoint.service.ts
 │   ├── package.service.ts
@@ -454,11 +482,12 @@ The admin panel implements a robust role-based access control system:
 
 ### Protected Routes
 
-All payment system management pages (Features, Packages, Payment Methods, Transactions, Wallets, etc.) are restricted to **super-admin** and **admin** roles only. Regular users can only access:
+All payment system management pages (Features, Packages, Payment Methods, Transactions, Wallets, Dashboard, etc.) are restricted to **super-admin** and **admin** roles only. 
 
-- Dashboard
-- User Profile (own profile)
-- Client Pages (Pricing, Checkout)
+**CommonLayout** automatically validates user roles and redirects non-admin users to `/client/profile`.
+
+Regular users can only access:
+- Client Pages (Pricing, Checkout, Profile)
 - Own wallet details
 - Own transaction history
 
@@ -477,6 +506,7 @@ The application integrates with a RESTful API for:
 - Package and profit history tracking
 - Soft-deleted items management (restore/permanent delete)
 - Notifications and real-time updates
+- Dashboard analytics and statistics
 
 ### API Service Structure
 
@@ -494,6 +524,7 @@ Each module has a dedicated service file:
 - `token-profit-history.service.ts` - Profit history
 - `user-wallet.service.ts` - User wallet management
 - `user.service.ts` - User management
+- `dashboard.service.ts` - Dashboard analytics and statistics
 
 ## 🎯 Key Features in Detail
 
