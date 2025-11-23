@@ -665,7 +665,7 @@ const ProfilePage = () => {
                                     {transaction.type === "increase"
                                       ? "+"
                                       : "-"}
-                                    {transaction.amount} tokens
+                                    {transaction.token} tokens
                                   </p>
                                   {transaction.increase_source && (
                                     <p className="text-muted-foreground text-sm capitalize">

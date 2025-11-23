@@ -38,7 +38,7 @@ const TokenTransactionViewModal: React.FC<TokenTransactionViewModalProps> = ({
                   }`}
                 >
                   {transaction.type === "increase" ? "+" : "-"}
-                  {transaction.amount} tokens
+                  {transaction.token} tokens
                 </p>
               </div>
               {transaction.increase_source && (
@@ -71,7 +71,9 @@ const TokenTransactionViewModal: React.FC<TokenTransactionViewModalProps> = ({
               )}
               {transaction.created_at && (
                 <div>
-                  <span className="text-muted-foreground text-sm">Created At</span>
+                  <span className="text-muted-foreground text-sm">
+                    Created At
+                  </span>
                   <p className="text-sm">
                     {new Date(transaction.created_at).toLocaleString()}
                   </p>
@@ -96,4 +98,3 @@ const TokenTransactionViewModal: React.FC<TokenTransactionViewModalProps> = ({
 };
 
 export default TokenTransactionViewModal;
-

@@ -34,7 +34,6 @@ import {
   User,
   Wallet,
 } from "lucide-react";
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 
@@ -429,7 +428,7 @@ const UserDetailsPage = () => {
                                     {transaction.type === "increase"
                                       ? "+"
                                       : "-"}
-                                    {transaction.amount} tokens
+                                    {transaction.token} tokens
                                   </p>
                                   {transaction.increase_source && (
                                     <p className="text-muted-foreground text-sm capitalize">
@@ -459,16 +458,13 @@ const UserDetailsPage = () => {
 
         {/* Modals */}
         <PaymentTransactionViewModal
-          default={
-            selectedPaymentTransaction || ({} as TPaymentTransaction)
-          }
+          default={selectedPaymentTransaction || ({} as TPaymentTransaction)}
           isOpen={isPaymentViewModalOpen}
           setIsOpen={(value: boolean) =>
             dispatch(
               value
                 ? openPaymentViewModal(
-                    selectedPaymentTransaction ||
-                      ({} as TPaymentTransaction),
+                    selectedPaymentTransaction || ({} as TPaymentTransaction),
                   )
                 : closePaymentViewModal(),
             )
@@ -493,4 +489,3 @@ const UserDetailsPage = () => {
 };
 
 export default UserDetailsPage;
-

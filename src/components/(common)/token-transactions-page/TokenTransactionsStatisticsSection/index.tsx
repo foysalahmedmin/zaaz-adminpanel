@@ -13,11 +13,9 @@ const TokenTransactionsStatisticsSection: React.FC<
   TokenTransactionsStatisticsSectionProps
 > = ({ data }) => {
   const total = data?.length || 0;
-  const totalIncrease =
-    data?.filter((d) => d?.type === "increase").length || 0;
-  const totalDecrease =
-    data?.filter((d) => d?.type === "decrease").length || 0;
-  const totalTokens = data?.reduce((sum, d) => sum + (d?.amount || 0), 0) || 0;
+  const totalIncrease = data?.filter((d) => d?.type === "increase").length || 0;
+  const totalDecrease = data?.filter((d) => d?.type === "decrease").length || 0;
+  const totalTokens = data?.reduce((sum, d) => sum + (d?.token || 0), 0) || 0;
 
   const statistics: TStatistic[] = [
     {
@@ -59,4 +57,3 @@ const TokenTransactionsStatisticsSection: React.FC<
 };
 
 export default TokenTransactionsStatisticsSection;
-

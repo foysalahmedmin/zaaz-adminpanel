@@ -8,7 +8,7 @@ export type TTokenTransaction = {
   user: string;
   user_wallet: string;
   type: TTokenTransactionType;
-  amount: number;
+  token: number;
   increase_source?: TTokenTransactionIncreaseSource;
   decrease_source?: string; // FeatureEndpoint ID
   payment_transaction?: string;
@@ -19,4 +19,3 @@ export type TTokenTransaction = {
 
 export type TTokenTransactionResponse = Response<TTokenTransaction>;
 export type TTokenTransactionsResponse = Response<TTokenTransaction[]>;
-
