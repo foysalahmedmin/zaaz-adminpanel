@@ -16,6 +16,7 @@ import UserWalletsDetailsPage from "@/pages/(common)/UserWalletsDetailsPage";
 import UserWalletsPage from "@/pages/(common)/UserWalletsPage";
 import UsersPage from "@/pages/(common)/UsersPage";
 import ProfilePage from "@/pages/(user)/ProfilePage";
+import UserDetailsPage from "@/pages/(common)/UserDetailsPage";
 import type { TItem } from "@/types/route-menu.type";
 import { Outlet } from "react-router";
 
@@ -66,7 +67,7 @@ export const items: TItem[] = [
         path: ":id",
         element: (
           <AuthWrapper roles={["supper-admin", "admin"]}>
-            <ProfilePage isUserView={true} />
+            <UserDetailsPage />
           </AuthWrapper>
         ),
         menuType: "invisible",

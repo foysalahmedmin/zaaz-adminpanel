@@ -28,7 +28,7 @@ import { changePassword } from "@/services/auth.service";
 import { fetchSelfPaymentTransactions } from "@/services/payment-transaction.service";
 import { fetchSelfTokenTransactions } from "@/services/token-transaction.service";
 import { fetchSelfWallet } from "@/services/user-wallet.service";
-import { fetchSelf, fetchUser, updateSelf } from "@/services/user.service";
+import { fetchSelf, updateSelf } from "@/services/user.service";
 import type { ChangePasswordPayload } from "@/types/auth.type";
 import type { TPaymentTransaction } from "@/types/payment-transaction.type";
 import type { ErrorResponse } from "@/types/response.type";
@@ -57,55 +57,53 @@ import {
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
 import { toast } from "react-toastify";
 
-const ProfilePage = ({ isUserView }: { isUserView?: boolean }) => {
+const ProfilePage = () => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
-  const { id } = useParams();
 
   const { isEditing, isChangingPassword, showPassword, previewImage } =
     useSelector((state: RootState) => state.profilePage);
 
-  // Fetch user data
+  // Fetch user data (self only)
   const {
     data: userResponse,
     isLoading,
     error,
   } = useQuery({
     queryKey: ["user", "self"],
-    queryFn: isUserView ? () => fetchUser(id || "") : fetchSelf,
+    queryFn: fetchSelf,
   });
 
   const user = userResponse?.data;
-  const userId = isUserView ? id : user?._id;
+  const userId = user?._id;
 
-  // Fetch wallet data
+  // Fetch wallet data (self only)
   const { data: walletResponse } = useQuery({
-    queryKey: ["user-wallet", "self", userId],
+    queryKey: ["user-wallet", "self"],
     queryFn: () => fetchSelfWallet(),
-    enabled: !!userId && !isUserView,
+    enabled: !!userId,
   });
 
   const wallet = walletResponse?.data;
 
-  // Fetch payment transactions
+  // Fetch payment transactions (self only)
   const { data: paymentTransactionsResponse } = useQuery({
-    queryKey: ["payment-transactions", "self", userId],
+    queryKey: ["payment-transactions", "self"],
     queryFn: () =>
       fetchSelfPaymentTransactions({ sort: "-created_at", limit: 10 }),
-    enabled: !!userId && !isUserView,
+    enabled: !!userId,
   });
 
   const paymentTransactions = paymentTransactionsResponse?.data || [];
 
-  // Fetch token transactions
+  // Fetch token transactions (self only)
   const { data: tokenTransactionsResponse } = useQuery({
-    queryKey: ["token-transactions", "self", userId],
+    queryKey: ["token-transactions", "self"],
     queryFn: () =>
       fetchSelfTokenTransactions({ sort: "-created_at", limit: 10 }),
-    enabled: !!userId && !isUserView,
+    enabled: !!userId,
   });
 
   const tokenTransactions = tokenTransactionsResponse?.data || [];
@@ -283,27 +281,25 @@ const ProfilePage = ({ isUserView }: { isUserView?: boolean }) => {
 
         {/* Profile Information Card */}
         <Card>
-          {!isUserView && (
-            <Card.Header className="border-b">
-              <div className="flex items-center justify-between">
-                <h2 className="text-foreground text-xl font-semibold">
-                  Profile Information
-                </h2>
-                {!isEditing && (
-                  <Button
-                    onClick={() => dispatch(setIsEditing(true))}
-                    className="flex items-center gap-2"
-                  >
-                    <Edit className="h-4 w-4" />
-                    Edit Profile
-                  </Button>
-                )}
-              </div>
-            </Card.Header>
-          )}
+          <Card.Header className="border-b">
+            <div className="flex items-center justify-between">
+              <h2 className="text-foreground text-xl font-semibold">
+                Profile Information
+              </h2>
+              {!isEditing && (
+                <Button
+                  onClick={() => dispatch(setIsEditing(true))}
+                  className="flex items-center gap-2"
+                >
+                  <Edit className="h-4 w-4" />
+                  Edit Profile
+                </Button>
+              )}
+            </div>
+          </Card.Header>
 
           <Card.Content className="p-6">
-            {!isEditing || isUserView ? (
+            {!isEditing ? (
               // View Mode
               <div className="space-y-6">
                 {/* Profile Picture and Basic Info */}
@@ -506,7 +502,7 @@ const ProfilePage = ({ isUserView }: { isUserView?: boolean }) => {
         </Card>
 
         {/* Wallet & Transactions Card */}
-        {!isUserView && wallet && (
+        {wallet && (
           <Card>
             <Card.Header className="border-b">
               <h2 className="text-foreground text-xl font-semibold">
@@ -698,240 +694,223 @@ const ProfilePage = ({ isUserView }: { isUserView?: boolean }) => {
         )}
 
         {/* Password Change Card */}
-        {!isUserView && (
-          <Card>
-            <Card.Header className="border-b">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-foreground text-xl font-semibold">
-                    Password & Security
-                  </h2>
-                  <p className="text-muted-foreground text-sm">
-                    Ensure your account is using a strong password
-                  </p>
-                </div>
-                {!isChangingPassword && (
-                  <Button
-                    onClick={() => dispatch(setIsChangingPassword(true))}
-                    className="flex items-center gap-2"
-                  >
-                    <Lock className="h-4 w-4" />
-                    Change Password
-                  </Button>
-                )}
+        <Card>
+          <Card.Header className="border-b">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-foreground text-xl font-semibold">
+                  Password & Security
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  Ensure your account is using a strong password
+                </p>
               </div>
-            </Card.Header>
-
-            <Card.Content>
-              {!isChangingPassword ? (
-                <div className="space-y-4">
-                  <div className="bg-muted rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-foreground font-medium">
-                          Password
-                        </div>
-                        <div className="text-muted-foreground text-sm">
-                          ••••••••••••
-                        </div>
-                      </div>
-                      <div className="text-muted-foreground text-sm">
-                        {user.password_changed_at && (
-                          <span>
-                            Changed{" "}
-                            {new Date(
-                              user.password_changed_at,
-                            ).toLocaleDateString()}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-muted-foreground text-sm">
-                    We recommend changing your password regularly to keep your
-                    account secure.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={handlePasswordSubmit(onPasswordSubmit)}>
-                  <div className="space-y-4">
-                    <div>
-                      <FormControl.Label>Current Password</FormControl.Label>
-                      <div className="relative">
-                        <FormControl
-                          type={showPassword.current ? "text" : "password"}
-                          placeholder="Enter current password"
-                          {...registerPassword("current_password", {
-                            required: "Current password is required",
-                          })}
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            dispatch(toggleShowPassword("current"))
-                          }
-                          className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2"
-                        >
-                          {showPassword.current ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
-                        </button>
-                      </div>
-                      {passwordErrors.current_password && (
-                        <FormControl.Error>
-                          {passwordErrors.current_password.message}
-                        </FormControl.Error>
-                      )}
-                    </div>
-
-                    <div>
-                      <FormControl.Label>New Password</FormControl.Label>
-                      <div className="relative">
-                        <FormControl
-                          type={showPassword.new ? "text" : "password"}
-                          placeholder="Enter new password"
-                          {...registerPassword("new_password", {
-                            required: "New password is required",
-                            minLength: {
-                              value: 6,
-                              message: "Password must be at least 6 characters",
-                            },
-                          })}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => dispatch(toggleShowPassword("new"))}
-                          className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2"
-                        >
-                          {showPassword.new ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
-                        </button>
-                      </div>
-                      {passwordErrors.new_password && (
-                        <FormControl.Error>
-                          {passwordErrors.new_password.message}
-                        </FormControl.Error>
-                      )}
-                    </div>
-
-                    <div>
-                      <FormControl.Label>
-                        Confirm New Password
-                      </FormControl.Label>
-                      <div className="relative">
-                        <FormControl
-                          type={showPassword.confirm ? "text" : "password"}
-                          placeholder="Confirm new password"
-                          {...registerPassword("confirm_password", {
-                            required: "Please confirm your password",
-                            validate: (value) =>
-                              value === watchPassword("new_password") ||
-                              "Passwords do not match",
-                          })}
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            dispatch(toggleShowPassword("confirm"))
-                          }
-                          className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2"
-                        >
-                          {showPassword.confirm ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
-                        </button>
-                      </div>
-                      {passwordErrors.confirm_password && (
-                        <FormControl.Error>
-                          {passwordErrors.confirm_password.message}
-                        </FormControl.Error>
-                      )}
-                    </div>
-
-                    <div className="bg-muted rounded-lg p-4">
-                      <div className="text-muted-foreground text-sm">
-                        <p className="mb-2 font-medium">
-                          Password requirements:
-                        </p>
-                        <ul className="space-y-1 text-xs">
-                          <li>• At least 6 characters long</li>
-                          <li>• Must not match your current password</li>
-                          <li>
-                            • Should include a mix of letters, numbers, and
-                            symbols
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-3">
-                      <Button
-                        type="submit"
-                        disabled={changePasswordMutation.isPending}
-                      >
-                        {changePasswordMutation.isPending && (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        )}
-                        <Lock className="mr-2 h-4 w-4" />
-                        Change Password
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={cancelPasswordChange}
-                      >
-                        <X className="mr-2 h-4 w-4" />
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                </form>
+              {!isChangingPassword && (
+                <Button
+                  onClick={() => dispatch(setIsChangingPassword(true))}
+                  className="flex items-center gap-2"
+                >
+                  <Lock className="h-4 w-4" />
+                  Change Password
+                </Button>
               )}
-            </Card.Content>
-          </Card>
-        )}
+            </div>
+          </Card.Header>
+
+          <Card.Content>
+            {!isChangingPassword ? (
+              <div className="space-y-4">
+                <div className="bg-muted rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-foreground font-medium">
+                        Password
+                      </div>
+                      <div className="text-muted-foreground text-sm">
+                        ••••••••••••
+                      </div>
+                    </div>
+                    <div className="text-muted-foreground text-sm">
+                      {user.password_changed_at && (
+                        <span>
+                          Changed{" "}
+                          {new Date(
+                            user.password_changed_at,
+                          ).toLocaleDateString()}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <p className="text-muted-foreground text-sm">
+                  We recommend changing your password regularly to keep your
+                  account secure.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handlePasswordSubmit(onPasswordSubmit)}>
+                <div className="space-y-4">
+                  <div>
+                    <FormControl.Label>Current Password</FormControl.Label>
+                    <div className="relative">
+                      <FormControl
+                        type={showPassword.current ? "text" : "password"}
+                        placeholder="Enter current password"
+                        {...registerPassword("current_password", {
+                          required: "Current password is required",
+                        })}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => dispatch(toggleShowPassword("current"))}
+                        className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2"
+                      >
+                        {showPassword.current ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                    {passwordErrors.current_password && (
+                      <FormControl.Error>
+                        {passwordErrors.current_password.message}
+                      </FormControl.Error>
+                    )}
+                  </div>
+
+                  <div>
+                    <FormControl.Label>New Password</FormControl.Label>
+                    <div className="relative">
+                      <FormControl
+                        type={showPassword.new ? "text" : "password"}
+                        placeholder="Enter new password"
+                        {...registerPassword("new_password", {
+                          required: "New password is required",
+                          minLength: {
+                            value: 6,
+                            message: "Password must be at least 6 characters",
+                          },
+                        })}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => dispatch(toggleShowPassword("new"))}
+                        className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2"
+                      >
+                        {showPassword.new ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                    {passwordErrors.new_password && (
+                      <FormControl.Error>
+                        {passwordErrors.new_password.message}
+                      </FormControl.Error>
+                    )}
+                  </div>
+
+                  <div>
+                    <FormControl.Label>Confirm New Password</FormControl.Label>
+                    <div className="relative">
+                      <FormControl
+                        type={showPassword.confirm ? "text" : "password"}
+                        placeholder="Confirm new password"
+                        {...registerPassword("confirm_password", {
+                          required: "Please confirm your password",
+                          validate: (value) =>
+                            value === watchPassword("new_password") ||
+                            "Passwords do not match",
+                        })}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => dispatch(toggleShowPassword("confirm"))}
+                        className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2"
+                      >
+                        {showPassword.confirm ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                    {passwordErrors.confirm_password && (
+                      <FormControl.Error>
+                        {passwordErrors.confirm_password.message}
+                      </FormControl.Error>
+                    )}
+                  </div>
+
+                  <div className="bg-muted rounded-lg p-4">
+                    <div className="text-muted-foreground text-sm">
+                      <p className="mb-2 font-medium">Password requirements:</p>
+                      <ul className="space-y-1 text-xs">
+                        <li>• At least 6 characters long</li>
+                        <li>• Must not match your current password</li>
+                        <li>
+                          • Should include a mix of letters, numbers, and
+                          symbols
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Button
+                      type="submit"
+                      disabled={changePasswordMutation.isPending}
+                    >
+                      {changePasswordMutation.isPending && (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      )}
+                      <Lock className="mr-2 h-4 w-4" />
+                      Change Password
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={cancelPasswordChange}
+                    >
+                      <X className="mr-2 h-4 w-4" />
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            )}
+          </Card.Content>
+        </Card>
 
         {/* Modals */}
-        {!isUserView && (
-          <>
-            <PaymentTransactionViewModal
-              default={
-                selectedPaymentTransaction || ({} as TPaymentTransaction)
-              }
-              isOpen={isPaymentViewModalOpen}
-              setIsOpen={(value: boolean) =>
-                dispatch(
-                  value
-                    ? openPaymentViewModal(
-                        selectedPaymentTransaction ||
-                          ({} as TPaymentTransaction),
-                      )
-                    : closePaymentViewModal(),
-                )
-              }
-            />
-            <TokenTransactionViewModal
-              default={selectedTokenTransaction || ({} as TTokenTransaction)}
-              isOpen={isTokenViewModalOpen}
-              setIsOpen={(value: boolean) =>
-                dispatch(
-                  value
-                    ? openTokenViewModal(
-                        selectedTokenTransaction || ({} as TTokenTransaction),
-                      )
-                    : closeTokenViewModal(),
-                )
-              }
-            />
-          </>
-        )}
+        <PaymentTransactionViewModal
+          default={selectedPaymentTransaction || ({} as TPaymentTransaction)}
+          isOpen={isPaymentViewModalOpen}
+          setIsOpen={(value: boolean) =>
+            dispatch(
+              value
+                ? openPaymentViewModal(
+                    selectedPaymentTransaction || ({} as TPaymentTransaction),
+                  )
+                : closePaymentViewModal(),
+            )
+          }
+        />
+        <TokenTransactionViewModal
+          default={selectedTokenTransaction || ({} as TTokenTransaction)}
+          isOpen={isTokenViewModalOpen}
+          setIsOpen={(value: boolean) =>
+            dispatch(
+              value
+                ? openTokenViewModal(
+                    selectedTokenTransaction || ({} as TTokenTransaction),
+                  )
+                : closeTokenViewModal(),
+            )
+          }
+        />
       </div>
     </div>
   );
