@@ -15,12 +15,7 @@ type PaymentTransactionsDataTableSectionProps = {
 
 const PaymentTransactionsDataTableSection: React.FC<
   PaymentTransactionsDataTableSectionProps
-> = ({
-  data = [],
-  isLoading,
-  isError,
-  onView,
-}) => {
+> = ({ data = [], isLoading, isError, onView }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "success":
@@ -88,9 +83,7 @@ const PaymentTransactionsDataTableSection: React.FC<
       isSortable: true,
       cell: ({ cell }) => (
         <span className="text-sm">
-          {cell
-            ? new Date(cell.toString()).toLocaleDateString()
-            : "N/A"}
+          {cell ? new Date(cell.toString()).toLocaleDateString() : "N/A"}
         </span>
       ),
     },
@@ -130,4 +123,3 @@ const PaymentTransactionsDataTableSection: React.FC<
 };
 
 export default PaymentTransactionsDataTableSection;
-

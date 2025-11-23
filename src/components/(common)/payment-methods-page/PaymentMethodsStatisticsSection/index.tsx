@@ -13,16 +13,11 @@ const PaymentMethodsStatisticsSection: React.FC<
   PaymentMethodsStatisticsSectionProps
 > = ({ data }) => {
   const total = data?.length || 0;
-  const totalActive =
-    data?.filter((d) => d?.is_active === true).length || 0;
-  const totalInactive =
-    data?.filter((d) => d?.is_active === false).length || 0;
-  const totalTest =
-    data?.filter((d) => d?.is_test === true).length || 0;
-  const totalUSD =
-    data?.filter((d) => d?.currency === "USD").length || 0;
-  const totalBDT =
-    data?.filter((d) => d?.currency === "BDT").length || 0;
+  const totalActive = data?.filter((d) => d?.is_active === true).length || 0;
+  const totalInactive = data?.filter((d) => d?.is_active === false).length || 0;
+  const totalTest = data?.filter((d) => d?.is_test === true).length || 0;
+  const totalUSD = data?.filter((d) => d?.currency === "USD").length || 0;
+  const totalBDT = data?.filter((d) => d?.currency === "BDT").length || 0;
 
   const statistics: TStatistic[] = [
     {
@@ -78,4 +73,3 @@ const PaymentMethodsStatisticsSection: React.FC<
 };
 
 export default PaymentMethodsStatisticsSection;
-

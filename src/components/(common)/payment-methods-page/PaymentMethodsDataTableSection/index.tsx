@@ -3,7 +3,7 @@ import type { TColumn } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
 import type { TPaymentMethod } from "@/types/payment-method.type";
-import { Eye, Edit, Trash } from "lucide-react";
+import { Edit, Eye, Trash } from "lucide-react";
 import React from "react";
 
 type PaymentMethodsDataTableSectionProps = {
