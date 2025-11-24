@@ -15,7 +15,16 @@ const PackagesStatisticsSection: React.FC<PackagesStatisticsSectionProps> = ({
   const total = data?.length || 0;
   const totalActive = data?.filter((d) => d?.is_active === true).length || 0;
   const totalInactive = data?.filter((d) => d?.is_active === false).length || 0;
-  const totalTokens = data?.reduce((sum, d) => sum + (d?.token || 0), 0) || 0;
+  // Calculate total tokens from all plans across all packages
+  const totalTokens =
+    data?.reduce((sum, pkg) => {
+      const packageTokens =
+        pkg.plans?.reduce(
+          (planSum: number, pp: any) => planSum + (pp?.token || 0),
+          0,
+        ) || 0;
+      return sum + packageTokens;
+    }, 0) || 0;
 
   const statistics: TStatistic[] = [
     {

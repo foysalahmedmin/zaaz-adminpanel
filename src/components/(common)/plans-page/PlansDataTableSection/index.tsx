@@ -2,30 +2,26 @@ import { Button } from "@/components/ui/Button";
 import type { TColumn } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
-import type { TBreadcrumbs } from "@/types/route-menu.type";
-import type { TPackage } from "@/types/package.type";
+import type { TPlan } from "@/types/plan.type";
 import { Edit, Eye, Trash } from "lucide-react";
 import React from "react";
-import { Link } from "react-router";
 
-type PackagesDataTableSectionProps = {
-  data?: TPackage[];
-  breadcrumbs: TBreadcrumbs[];
+type PlansDataTableSectionProps = {
+  data?: TPlan[];
   isLoading: boolean;
   isError: boolean;
-  onEdit: (row: TPackage) => void;
-  onDelete: (row: TPackage) => void;
+  onEdit: (row: TPlan) => void;
+  onDelete: (row: TPlan) => void;
 };
 
-const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
+const PlansDataTableSection: React.FC<PlansDataTableSectionProps> = ({
   data = [],
-  breadcrumbs,
   isLoading,
   isError,
   onEdit,
   onDelete,
 }) => {
-  const columns: TColumn<TPackage>[] = [
+  const columns: TColumn<TPlan>[] = [
     {
       name: "Name",
       field: "name",
@@ -35,44 +31,13 @@ const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
         <div className="flex items-center gap-2">
           <div className="flex-1 space-y-1">
             <h3 className="text-base font-bold">{row.name}</h3>
-            {row.description && (
-              <p className="text-muted-foreground text-sm">{row.description}</p>
-            )}
           </div>
         </div>
       ),
     },
     {
-      name: "Plans",
-      field: "plans",
-      cell: ({ row }) => {
-        const planCount = row.plans?.length || 0;
-        return (
-          <span className="font-semibold">
-            {planCount} {planCount === 1 ? "plan" : "plans"}
-          </span>
-        );
-      },
-    },
-    {
-      name: "Initial Price",
-      field: "plans",
-      cell: ({ row }) => {
-        const initialPlan = row.plans?.find((pp: any) => pp.is_initial) || row.plans?.[0];
-        if (!initialPlan) return <span className="text-muted-foreground">N/A</span>;
-        return (
-          <div className="text-sm">
-            <div className="font-semibold">${initialPlan.price?.USD || 0}</div>
-            <div className="text-muted-foreground text-xs">
-              ৳{initialPlan.price?.BDT || 0}
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      name: "Sequence",
-      field: "sequence",
+      name: "Duration (Days)",
+      field: "duration",
       isSortable: true,
       cell: ({ cell }) => (
         <span className="font-semibold">{cell?.toString() || "0"}</span>
@@ -101,26 +66,6 @@ const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
       field: "_id",
       cell: ({ row }) => (
         <div className="flex w-full items-center justify-center gap-2">
-          <Button
-            asChild={true}
-            className="[--accent:green]"
-            size={"sm"}
-            variant="outline"
-            shape={"icon"}
-          >
-            <Link
-              to={`/packages/${row._id}`}
-              state={{
-                package: row,
-                breadcrumbs: [
-                  ...(breadcrumbs || []),
-                  { name: row.name, path: `/packages/${row._id}` },
-                ],
-              }}
-            >
-              <Eye className="size-4" />
-            </Link>
-          </Button>
           <Button
             onClick={() => onEdit(row)}
             size={"sm"}
@@ -158,5 +103,5 @@ const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
   );
 };
 
-export default PackagesDataTableSection;
+export default PlansDataTableSection;
 

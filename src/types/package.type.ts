@@ -7,16 +7,27 @@ export type TPackagePrice = {
   BDT: number;
 };
 
+export type TPackagePlanItem = {
+  _id: string;
+  plan: {
+    _id: string;
+    name: string;
+    duration: number;
+  };
+  price: TPackagePrice;
+  previous_price?: TPackagePrice;
+  token: number;
+  is_initial: boolean;
+  is_active: boolean;
+};
+
 export type TPackage = {
   _id: string;
   name: string;
   description?: string;
   content?: string;
-  token: number;
   features: string[];
-  duration?: number;
-  price: TPackagePrice;
-  price_previous?: TPackagePrice;
+  plans: TPackagePlanItem[];
   sequence?: number;
   is_active: boolean;
   is_deleted?: boolean;

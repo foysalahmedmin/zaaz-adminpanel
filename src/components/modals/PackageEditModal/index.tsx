@@ -1,10 +1,13 @@
 import BlockNoteEditor from "@/components/ui/BlockNoteEditor";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { FormControl } from "@/components/ui/FormControl";
 import { Modal } from "@/components/ui/Modal";
 import { fetchFeatures } from "@/services/feature.service";
+import { fetchPlans } from "@/services/plan.service";
 import { updatePackage } from "@/services/package.service";
 import type { TPackage } from "@/types/package.type";
+import type { TPlan } from "@/types/plan.type";
 import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -21,6 +24,19 @@ type PackageEditModalProps = {
   mutationKey?: string[];
 };
 
+type PackagePlanFormData = {
+  plan: string;
+  priceUSD: number;
+  priceBDT: number;
+  token: number;
+  is_initial: boolean;
+  is_active: boolean;
+};
+
+type TPackageFormInput = Partial<TPackage> & {
+  packagePlans: PackagePlanFormData[];
+};
+
 const PackageEditModal: React.FC<PackageEditModalProps> = ({
   isOpen,
   setIsOpen,
@@ -34,6 +50,23 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
     queryFn: () => fetchFeatures({ sort: "name" }),
   });
 
+  const { data: plansData } = useQuery({
+    queryKey: ["plans"],
+    queryFn: () => fetchPlans({ is_active: true, sort: "name" }),
+  });
+
+  // Normalize features to string array (extract _id if object array)
+  const normalizeFeatures = (features: any[] | undefined): string[] => {
+    if (!features || !Array.isArray(features)) return [];
+    return features.map((feature) => {
+      if (typeof feature === "string") {
+        return feature;
+      }
+      // If it's an object, extract _id
+      return feature?._id || feature?.id || feature;
+    });
+  };
+
   const {
     register,
     handleSubmit,
@@ -42,16 +75,21 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
     setValue,
     control,
     formState: { errors },
-  } = useForm<Partial<TPackage> & { priceUSD: number; priceBDT: number }>({
+  } = useForm<TPackageFormInput>({
     defaultValues: {
       name: pkg?.name || "",
       description: pkg?.description || "",
       content: pkg?.content || "",
-      token: pkg?.token || 0,
-      features: pkg?.features || [],
-      duration: pkg?.duration || undefined,
-      priceUSD: pkg?.price?.USD || 0,
-      priceBDT: pkg?.price?.BDT || 0,
+      features: normalizeFeatures(pkg?.features),
+      packagePlans:
+        pkg?.plans?.map((pp: any) => ({
+          plan: pp.plan?._id || pp.plan || "",
+          priceUSD: pp.price?.USD || 0,
+          priceBDT: pp.price?.BDT || 0,
+          token: pp.token || 0,
+          is_initial: pp.is_initial || false,
+          is_active: pp.is_active !== undefined ? pp.is_active : true,
+        })) || [],
       sequence: pkg?.sequence || 0,
       is_active: pkg?.is_active ?? true,
     },
@@ -62,24 +100,42 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
       name: pkg?.name || "",
       description: pkg?.description || "",
       content: pkg?.content || "",
-      token: pkg?.token || 0,
-      features: pkg?.features || [],
-      duration: pkg?.duration || undefined,
-      priceUSD: pkg?.price?.USD || 0,
-      priceBDT: pkg?.price?.BDT || 0,
+      features: normalizeFeatures(pkg?.features),
+      packagePlans:
+        pkg?.plans?.map((pp: any) => ({
+          plan: pp.plan?._id || pp.plan || "",
+          priceUSD: pp.price?.USD || 0,
+          priceBDT: pp.price?.BDT || 0,
+          token: pp.token || 0,
+          is_initial: pp.is_initial || false,
+          is_active: pp.is_active !== undefined ? pp.is_active : true,
+        })) || [],
       sequence: pkg?.sequence || 0,
       is_active: pkg?.is_active ?? true,
     });
   }, [pkg, reset]);
 
   const selectedFeatures = watch("features") || [];
+  const packagePlans = watch("packagePlans") || [];
 
   const mutation = useMutation({
-    mutationFn: (data: Partial<TPackage>) => {
+    mutationFn: (data: TPackageFormInput) => {
       if (!pkg._id) {
         throw new Error("Package ID is missing");
       }
-      return updatePackage(pkg._id, data);
+      const payload: any = {
+        plans: data.packagePlans.map((pp) => ({
+          plan: pp.plan,
+          price: {
+            USD: pp.priceUSD,
+            BDT: pp.priceBDT,
+          },
+          token: pp.token,
+          is_initial: pp.is_initial,
+          is_active: pp.is_active,
+        })),
+      };
+      return updatePackage(pkg._id, payload);
     },
     onSuccess: (data) => {
       toast.success(data?.message || "Package updated successfully!");
@@ -87,31 +143,67 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
       setIsOpen(false);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
-      toast.error(error.response?.data?.message || "Failed to update package");
+      toast.error(
+        error.response?.data?.message || "Failed to update package",
+      );
     },
   });
 
-  const onSubmit = (
-    data: Partial<TPackage> & { priceUSD: number; priceBDT: number },
-  ) => {
-    const updatedFields: Partial<TPackage> = {};
+  const onSubmit = (data: TPackageFormInput) => {
+    if (!data.packagePlans || data.packagePlans.length === 0) {
+      toast.error("At least one plan is required");
+      return;
+    }
+
+    // Ensure at least one is_initial
+    const hasInitial = data.packagePlans.some((pp) => pp.is_initial);
+    if (!hasInitial) {
+      data.packagePlans[0].is_initial = true;
+    }
+
+    // Ensure only one is_initial
+    const initialCount = data.packagePlans.filter((pp) => pp.is_initial).length;
+    if (initialCount > 1) {
+      toast.error("Only one plan can be marked as 'Initial'.");
+      return;
+    }
+
+    const updatedFields: Partial<TPackageFormInput> = {};
 
     if (data.name !== pkg.name) updatedFields.name = data.name;
     if (data.description !== pkg.description)
       updatedFields.description = data.description;
     if (data.content !== pkg.content) updatedFields.content = data.content;
-    if (data.token !== pkg.token) updatedFields.token = data.token;
     if (JSON.stringify(data.features) !== JSON.stringify(pkg.features)) {
       updatedFields.features = data.features;
     }
-    if (data.duration !== pkg.duration) updatedFields.duration = data.duration;
-    if (data.priceUSD !== pkg.price?.USD || data.priceBDT !== pkg.price?.BDT) {
-      updatedFields.price = {
-        USD: data.priceUSD,
-        BDT: data.priceBDT,
-      };
+
+    // Compare plans array for changes
+    const oldPlansSerialized = JSON.stringify(
+      pkg.plans?.map((p) => ({
+        plan: p.plan?._id || p.plan,
+        price: p.price,
+        token: p.token,
+        is_initial: p.is_initial,
+        is_active: p.is_active,
+      })) || [],
+    );
+    const newPlansSerialized = JSON.stringify(
+      data.packagePlans.map((p) => ({
+        plan: p.plan,
+        price: { USD: p.priceUSD, BDT: p.priceBDT },
+        token: p.token,
+        is_initial: p.is_initial,
+        is_active: p.is_active,
+      })),
+    );
+
+    if (oldPlansSerialized !== newPlansSerialized) {
+      updatedFields.packagePlans = data.packagePlans;
     }
-    if (data.sequence !== pkg.sequence) updatedFields.sequence = data.sequence;
+
+    if (data.sequence !== pkg.sequence)
+      updatedFields.sequence = data.sequence;
     if (data.is_active !== pkg.is_active)
       updatedFields.is_active = data.is_active;
 
@@ -120,7 +212,46 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
       return;
     }
 
-    mutation.mutate(updatedFields);
+    // If plans changed, send only plans update
+    if (updatedFields.packagePlans) {
+      mutation.mutate({
+        ...data,
+        packagePlans: updatedFields.packagePlans,
+      });
+    } else {
+      // Otherwise send other fields
+      const { packagePlans: _, ...otherFields } = updatedFields;
+      mutation.mutate({
+        ...data,
+        ...otherFields,
+      });
+    }
+  };
+
+  const togglePlan = (planId: string) => {
+    const current = packagePlans;
+    const existingIndex = current.findIndex((pp) => pp.plan === planId);
+
+    if (existingIndex >= 0) {
+      // Remove plan
+      setValue("packagePlans", current.filter((_, i) => i !== existingIndex));
+    } else {
+      // Add plan with default values
+      const plan = plansData?.data?.find((p) => p._id === planId);
+      if (plan) {
+        setValue("packagePlans", [
+          ...current,
+          {
+            plan: planId,
+            priceUSD: 0,
+            priceBDT: 0,
+            token: 0,
+            is_initial: current.length === 0, // First plan is initial
+            is_active: true,
+          },
+        ]);
+      }
+    }
   };
 
   const toggleFeature = (featureId: string) => {
@@ -138,7 +269,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <Modal.Backdrop>
-        <Modal.Content className="max-w-2xl">
+        <Modal.Content className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <Modal.Header>
             <Modal.Title>Edit Package</Modal.Title>
             <Modal.Close />
@@ -183,23 +314,6 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
               </div>
 
               <div>
-                <FormControl.Label>Token</FormControl.Label>
-                <FormControl
-                  type="number"
-                  placeholder="0"
-                  min="0"
-                  {...register("token", {
-                    required: "Token is required",
-                    valueAsNumber: true,
-                    min: { value: 0, message: "Token must be 0 or greater" },
-                  })}
-                />
-                {errors.token && (
-                  <FormControl.Error>{errors.token.message}</FormControl.Error>
-                )}
-              </div>
-
-              <div>
                 <FormControl.Label>Features</FormControl.Label>
                 <div className="border-input bg-card max-h-40 space-y-2 overflow-y-auto rounded-md border p-3">
                   {featuresData?.data?.map((feature) => (
@@ -225,68 +339,165 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
               </div>
 
               <div>
-                <FormControl.Label>
-                  Duration (Optional, in days)
-                </FormControl.Label>
-                <FormControl
-                  type="number"
-                  placeholder="30"
-                  min="1"
-                  {...register("duration", {
-                    valueAsNumber: true,
-                    min: {
-                      value: 1,
-                      message: "Duration must be at least 1 day",
-                    },
+                <FormControl.Label>Plans (Required - At least one)</FormControl.Label>
+                <FormControl.Helper>
+                  Select plans and configure their prices, tokens, and settings.
+                </FormControl.Helper>
+                <div className="border-input bg-card space-y-3 rounded-md border p-3 max-h-60 overflow-y-auto">
+                  {plansData?.data?.map((plan) => {
+                    const planData = packagePlans.find(
+                      (pp) => pp.plan === plan._id,
+                    );
+                    const isSelected = !!planData;
+
+                    return (
+                      <div
+                        key={plan._id}
+                        className={`space-y-3 rounded-lg border p-3 ${
+                          isSelected
+                            ? "border-primary bg-primary/5"
+                            : "border-border"
+                        }`}
+                      >
+                        <label className="flex cursor-pointer items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => togglePlan(plan._id)}
+                            className="accent-accent size-4"
+                          />
+                          <span className="font-semibold">
+                            {plan.name} ({plan.duration} days)
+                          </span>
+                        </label>
+
+                        {isSelected && planData && (
+                          <div className="ml-6 grid gap-3 border-t pt-3">
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <FormControl.Label>Price (USD) *</FormControl.Label>
+                                <FormControl
+                                  type="number"
+                                  placeholder="0.00"
+                                  min="0"
+                                  step="0.01"
+                                  value={planData.priceUSD}
+                                  onChange={(e) => {
+                                    const updated = [...packagePlans];
+                                    const index = updated.findIndex(
+                                      (pp) => pp.plan === plan._id,
+                                    );
+                                    if (index >= 0) {
+                                      updated[index].priceUSD =
+                                        parseFloat(e.target.value) || 0;
+                                      setValue("packagePlans", updated);
+                                    }
+                                  }}
+                                />
+                              </div>
+                              <div>
+                                <FormControl.Label>Price (BDT) *</FormControl.Label>
+                                <FormControl
+                                  type="number"
+                                  placeholder="0.00"
+                                  min="0"
+                                  step="0.01"
+                                  value={planData.priceBDT}
+                                  onChange={(e) => {
+                                    const updated = [...packagePlans];
+                                    const index = updated.findIndex(
+                                      (pp) => pp.plan === plan._id,
+                                    );
+                                    if (index >= 0) {
+                                      updated[index].priceBDT =
+                                        parseFloat(e.target.value) || 0;
+                                      setValue("packagePlans", updated);
+                                    }
+                                  }}
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <FormControl.Label>Token *</FormControl.Label>
+                              <FormControl
+                                type="number"
+                                placeholder="0"
+                                min="0"
+                                value={planData.token}
+                                onChange={(e) => {
+                                  const updated = [...packagePlans];
+                                  const index = updated.findIndex(
+                                    (pp) => pp.plan === plan._id,
+                                  );
+                                  if (index >= 0) {
+                                    updated[index].token =
+                                      parseInt(e.target.value) || 0;
+                                    setValue("packagePlans", updated);
+                                  }
+                                }}
+                              />
+                            </div>
+
+                            <div className="flex items-center gap-4">
+                              <label className="inline-flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  checked={planData.is_initial}
+                                  onChange={(e) => {
+                                    const updated = [...packagePlans];
+                                    const index = updated.findIndex(
+                                      (pp) => pp.plan === plan._id,
+                                    );
+                                    if (index >= 0) {
+                                      // Unset other initial plans
+                                      updated.forEach((pp, i) => {
+                                        pp.is_initial = i === index ? e.target.checked : false;
+                                      });
+                                      setValue("packagePlans", updated);
+                                    }
+                                  }}
+                                  className="accent-accent size-4"
+                                />
+                                <span className="text-sm font-medium">
+                                  Initial Plan
+                                </span>
+                              </label>
+                              <label className="inline-flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  checked={planData.is_active}
+                                  onChange={(e) => {
+                                    const updated = [...packagePlans];
+                                    const index = updated.findIndex(
+                                      (pp) => pp.plan === plan._id,
+                                    );
+                                    if (index >= 0) {
+                                      updated[index].is_active = e.target.checked;
+                                      setValue("packagePlans", updated);
+                                    }
+                                  }}
+                                  className="accent-accent size-4"
+                                />
+                                <span className="text-sm font-medium">Active</span>
+                              </label>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
                   })}
-                />
-                {errors.duration && (
+                </div>
+                {packagePlans.length === 0 && (
                   <FormControl.Error>
-                    {errors.duration.message}
+                    At least one plan is required
                   </FormControl.Error>
                 )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <FormControl.Label>Price (USD)</FormControl.Label>
-                  <FormControl
-                    type="number"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                    {...register("priceUSD", {
-                      required: "Price USD is required",
-                      valueAsNumber: true,
-                      min: { value: 0, message: "Price must be 0 or greater" },
-                    })}
-                  />
-                  {errors.priceUSD && (
-                    <FormControl.Error>
-                      {errors.priceUSD.message}
-                    </FormControl.Error>
-                  )}
-                </div>
-
-                <div>
-                  <FormControl.Label>Price (BDT)</FormControl.Label>
-                  <FormControl
-                    type="number"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                    {...register("priceBDT", {
-                      required: "Price BDT is required",
-                      valueAsNumber: true,
-                      min: { value: 0, message: "Price must be 0 or greater" },
-                    })}
-                  />
-                  {errors.priceBDT && (
-                    <FormControl.Error>
-                      {errors.priceBDT.message}
-                    </FormControl.Error>
-                  )}
-                </div>
+                {plansData?.data?.length === 0 && (
+                  <FormControl.Helper>
+                    No active plans available. Create plans first.
+                  </FormControl.Helper>
+                )}
               </div>
 
               <div>
@@ -297,11 +508,16 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
                   min="0"
                   {...register("sequence", {
                     valueAsNumber: true,
-                    min: { value: 0, message: "Sequence must be 0 or greater" },
+                    min: {
+                      value: 0,
+                      message: "Sequence must be 0 or greater",
+                    },
                   })}
                 />
                 {errors.sequence && (
-                  <FormControl.Error>{errors.sequence.message}</FormControl.Error>
+                  <FormControl.Error>
+                    {errors.sequence.message}
+                  </FormControl.Error>
                 )}
                 <FormControl.Helper>
                   Lower numbers appear first when sorting by sequence

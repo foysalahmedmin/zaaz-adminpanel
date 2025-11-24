@@ -7,16 +7,18 @@ import PackagesPage from "@/pages/(common)/PackagesPage";
 import PaymentMethodsPage from "@/pages/(common)/PaymentMethodsPage";
 import PaymentTransactionsDetailsPage from "@/pages/(common)/PaymentTransactionsDetailsPage";
 import PaymentTransactionsPage from "@/pages/(common)/PaymentTransactionsPage";
+import PackagePlansPage from "@/pages/(common)/PackagePlansPage";
+import PlansPage from "@/pages/(common)/PlansPage";
 import RecycleBinPage from "@/pages/(common)/RecycleBinPage";
 import TokenProfitsDetailsPage from "@/pages/(common)/TokenProfitsDetailsPage";
 import TokenProfitsPage from "@/pages/(common)/TokenProfitsPage";
 import TokenTransactionsDetailsPage from "@/pages/(common)/TokenTransactionsDetailsPage";
 import TokenTransactionsPage from "@/pages/(common)/TokenTransactionsPage";
+import UserDetailsPage from "@/pages/(common)/UserDetailsPage";
 import UserWalletsDetailsPage from "@/pages/(common)/UserWalletsDetailsPage";
 import UserWalletsPage from "@/pages/(common)/UserWalletsPage";
 import UsersPage from "@/pages/(common)/UsersPage";
 import ProfilePage from "@/pages/(user)/ProfilePage";
-import UserDetailsPage from "@/pages/(common)/UserDetailsPage";
 import type { TItem } from "@/types/route-menu.type";
 import { Outlet } from "react-router";
 
@@ -107,6 +109,56 @@ export const items: TItem[] = [
         element: (
           <AuthWrapper roles={["supper-admin", "admin"]}>
             <FeaturesDetailsPage />
+          </AuthWrapper>
+        ),
+        menuType: "invisible",
+      },
+    ],
+  },
+  {
+    roles: ["supper-admin", "admin"],
+    icon: "calendar",
+    path: "plans",
+    name: "Plans",
+    routeType: "layout",
+    menuType: "item-without-children",
+    element: (
+      <AuthWrapper roles={["supper-admin", "admin"]}>
+        <Outlet />
+      </AuthWrapper>
+    ),
+    children: [
+      {
+        index: true,
+        name: "Plans",
+        element: (
+          <AuthWrapper roles={["supper-admin", "admin"]}>
+            <PlansPage />
+          </AuthWrapper>
+        ),
+        menuType: "invisible",
+      },
+    ],
+  },
+  {
+    roles: ["supper-admin", "admin"],
+    icon: "link",
+    path: "package-plans",
+    name: "Package Plans",
+    routeType: "layout",
+    menuType: "item-without-children",
+    element: (
+      <AuthWrapper roles={["supper-admin", "admin"]}>
+        <Outlet />
+      </AuthWrapper>
+    ),
+    children: [
+      {
+        index: true,
+        name: "Package Plans",
+        element: (
+          <AuthWrapper roles={["supper-admin", "admin"]}>
+            <PackagePlansPage />
           </AuthWrapper>
         ),
         menuType: "invisible",

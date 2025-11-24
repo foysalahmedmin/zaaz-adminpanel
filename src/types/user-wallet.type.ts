@@ -3,7 +3,8 @@ import type { Response } from "./response.type";
 export type TUserWallet = {
   _id: string;
   user: string;
-  package: string;
+  package?: string | null;
+  plan?: string | null;
   token: number;
   expires_at?: string;
   created_at?: string;

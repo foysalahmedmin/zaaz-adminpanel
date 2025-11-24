@@ -17,6 +17,8 @@ export type TPaymentTransaction = {
   gateway_session_id?: string;
   gateway_status?: string;
   package: string;
+  plan: string;
+  price: string; // PackagePlan document _id
   amount: number;
   currency: TCurrency;
   gateway_fee?: number;

@@ -29,10 +29,18 @@ const CheckoutPage = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const packageId = searchParams.get("package_id");
-  const packageData = (location.state as { package?: TPackage })?.package;
+  const planIdFromQuery = searchParams.get("plan_id");
+  const packageData = (location.state as {
+    package?: TPackage;
+    initialPlan?: any;
+  })?.package;
+  const initialPlanFromState = (location.state as {
+    initialPlan?: any;
+  })?.initialPlan;
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>("");
+  const [selectedPlanId, setSelectedPlanId] = useState<string>("");
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("idle");
   const [paymentResult, setPaymentResult] = useState<{
     redirectUrl?: string;
@@ -59,10 +67,41 @@ const CheckoutPage = () => {
   const currentPackage = packageData || packageResponse?.data?.[0];
   const paymentMethods = paymentMethodsResponse?.data || [];
 
+  // Determine initial plan - filter only active plans
+  const allPlans = currentPackage?.plans || [];
+  const availablePlans = allPlans.filter((pp: any) => pp.is_active !== false);
+  const initialPlan =
+    initialPlanFromState ||
+    availablePlans.find((pp: any) => pp.is_initial) ||
+    availablePlans[0];
+
+  // Set selected plan on mount
+  useEffect(() => {
+    if (planIdFromQuery) {
+      setSelectedPlanId(planIdFromQuery);
+    } else if (initialPlan) {
+      const planId =
+        typeof initialPlan.plan === "object"
+          ? initialPlan.plan?._id
+          : initialPlan.plan;
+      if (planId) {
+        setSelectedPlanId(planId);
+      }
+    }
+  }, [planIdFromQuery, initialPlan]);
+
+  // Get selected plan details
+  const selectedPlan = availablePlans.find((pp: any) => {
+    const planId =
+      typeof pp.plan === "object" ? pp.plan?._id : pp.plan;
+    return planId === selectedPlanId;
+  }) || initialPlan;
+
   // Payment initiation mutation
   const initiatePaymentMutation = useMutation({
     mutationFn: (payload: {
       package: string;
+      plan: string;
       payment_method: string;
       return_url: string;
       cancel_url: string;
@@ -107,8 +146,8 @@ const CheckoutPage = () => {
   });
 
   const handlePaymentInitiation = () => {
-    if (!currentPackage || !selectedPaymentMethod) {
-      toast.error("Please select a payment method");
+    if (!currentPackage || !selectedPaymentMethod || !selectedPlanId) {
+      toast.error("Please select a payment method and plan");
       return;
     }
 
@@ -121,16 +160,21 @@ const CheckoutPage = () => {
       return;
     }
 
+    if (!selectedPlan) {
+      toast.error("Invalid plan selected");
+      return;
+    }
+
     setPaymentStatus("processing");
 
-    // const returnUrl = `${ENV?.app_url || window.location.origin}/client/checkout/success?package_id=${currentPackage._id}`;
-    // const cancelUrl = `${ENV?.app_url || window.location.origin}/client/checkout/cancel?package_id=${currentPackage._id}`;
+    const returnUrl = `${ENV?.app_url || window.location.origin}/client/checkout/success?package_id=${currentPackage._id}&transaction_id=`;
+    const cancelUrl = `${ENV?.app_url || window.location.origin}/client/checkout/cancel?package_id=${currentPackage._id}`;
 
-    const returnUrl = `${ENV?.app_url || window.location.origin}/redirects.html?status=success&package_id=${currentPackage._id}`;
-    const cancelUrl = `${ENV?.app_url || window.location.origin}/redirects.html?status=success&package_id=${currentPackage._id}`;
-
+    // Backend expects: package, plan, payment_method, return_url, cancel_url
+    // Optional: customer_email, customer_name, customer_phone
     initiatePaymentMutation.mutate({
       package: currentPackage._id,
+      plan: selectedPlanId,
       payment_method: selectedPaymentMethod,
       return_url: returnUrl,
       cancel_url: cancelUrl,
@@ -217,20 +261,112 @@ const CheckoutPage = () => {
                 </p>
               )}
             </div>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Tokens:</span>
-                <span className="font-semibold">{currentPackage.token}</span>
+
+            {/* Plan Selection */}
+            {availablePlans.length > 0 && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Select Plan:</label>
+                <div className="space-y-2">
+                  {availablePlans.map((pp: any) => {
+                    const plan = pp.plan;
+                    const planId =
+                      typeof plan === "object" ? plan?._id : plan;
+                    const planName =
+                      typeof plan === "object" ? plan?.name : "N/A";
+                    const planDuration =
+                      typeof plan === "object" ? plan?.duration : 0;
+                    const isSelected = selectedPlanId === planId;
+                    return (
+                      <label
+                        key={planId || pp._id}
+                        className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors ${
+                          isSelected
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:bg-accent"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="plan"
+                          value={planId}
+                          checked={isSelected}
+                          onChange={(e) => setSelectedPlanId(e.target.value)}
+                          className="mt-1"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold">{planName}</span>
+                            {pp.is_initial && (
+                              <span className="bg-blue-100 text-blue-800 rounded-full px-2 py-0.5 text-xs font-medium">
+                                Initial
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-muted-foreground text-sm">
+                            {planDuration} days • {pp.token} tokens
+                          </div>
+                          <div className="mt-1 text-sm font-medium">
+                            {new Intl.NumberFormat("en-US", {
+                              style: "currency",
+                              currency: "USD",
+                            }).format(pp.price?.USD || 0)}{" "}
+                            /{" "}
+                            {new Intl.NumberFormat("en-US", {
+                              style: "currency",
+                              currency: "BDT",
+                            }).format(pp.price?.BDT || 0)}
+                          </div>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
-              {currentPackage.duration && (
+            )}
+
+            {/* Selected Plan Details */}
+            {selectedPlan && (
+              <div className="space-y-2 border-t pt-4">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Duration:</span>
+                  <span className="text-muted-foreground">Plan:</span>
                   <span className="font-semibold">
-                    {currentPackage.duration} days
+                    {typeof selectedPlan.plan === "object"
+                      ? selectedPlan.plan?.name
+                      : "N/A"}
                   </span>
                 </div>
-              )}
-            </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Tokens:</span>
+                  <span className="font-semibold">{selectedPlan.token}</span>
+                </div>
+                {typeof selectedPlan.plan === "object" &&
+                  selectedPlan.plan?.duration && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Duration:</span>
+                      <span className="font-semibold">
+                        {selectedPlan.plan.duration} days
+                      </span>
+                    </div>
+                  )}
+                <div className="flex justify-between border-t pt-2">
+                  <span className="text-muted-foreground">Price:</span>
+                  <div className="text-right">
+                    <div className="font-semibold">
+                      {new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      }).format(selectedPlan.price?.USD || 0)}
+                    </div>
+                    <div className="text-muted-foreground text-sm">
+                      {new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "BDT",
+                      }).format(selectedPlan.price?.BDT || 0)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             {/* Features */}
             {currentPackage.features && currentPackage.features.length > 0 && (
               <div className="space-y-2">
@@ -317,7 +453,7 @@ const CheckoutPage = () => {
               </div>
             )}
 
-            {selectedPaymentMethod && (
+            {selectedPaymentMethod && selectedPlan && (
               <div className="border-t pt-4">
                 <div className="space-y-2">
                   <div className="flex justify-between text-lg font-semibold">
@@ -328,11 +464,11 @@ const CheckoutPage = () => {
                           (m: TPaymentMethod) =>
                             m._id === selectedPaymentMethod,
                         );
-                        if (!selectedMethod) return "";
+                        if (!selectedMethod || !selectedPlan) return "";
                         const amount =
                           selectedMethod.currency === "USD"
-                            ? currentPackage.price.USD
-                            : currentPackage.price.BDT;
+                            ? selectedPlan.price.USD
+                            : selectedPlan.price.BDT;
                         return new Intl.NumberFormat("en-US", {
                           style: "currency",
                           currency: selectedMethod.currency,
@@ -349,6 +485,8 @@ const CheckoutPage = () => {
               onClick={handlePaymentInitiation}
               disabled={
                 !selectedPaymentMethod ||
+                !selectedPlan ||
+                !selectedPlanId ||
                 paymentStatus === "processing" ||
                 initiatePaymentMutation.isPending
               }
@@ -481,10 +619,6 @@ const PaymentFailedView: React.FC<PaymentFailedViewProps> = ({
                   {pkg.description}
                 </p>
               )}
-            </div>
-            <div className="flex items-center gap-2">
-              <Wallet className="text-primary h-5 w-5" />
-              <span className="font-semibold">{pkg.token} Tokens</span>
             </div>
             {pkg.content && (
               <div className="prose">

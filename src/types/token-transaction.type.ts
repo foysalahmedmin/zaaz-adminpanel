@@ -12,6 +12,7 @@ export type TTokenTransaction = {
   increase_source?: TTokenTransactionIncreaseSource;
   decrease_source?: string; // FeatureEndpoint ID
   payment_transaction?: string;
+  plan?: string;
   is_deleted?: boolean;
   created_at?: string;
   updated_at?: string;

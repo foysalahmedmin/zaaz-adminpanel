@@ -5,6 +5,8 @@ import notificationReducer from "./slices/notification-slice";
 import packagesPageReducer from "./slices/packages-page-slice";
 import paymentMethodsPageReducer from "./slices/payment-methods-page-slice";
 import paymentTransactionsPageReducer from "./slices/payment-transactions-page-slice";
+import plansPageReducer from "./slices/plans-page-slice";
+import packagePlansPageReducer from "./slices/package-plans-page-slice";
 import profilePageReducer from "./slices/profile-page-slice";
 import settingReducer from "./slices/setting-slice";
 import tokenProfitsPageReducer from "./slices/token-profits-page-slice";
@@ -23,6 +25,8 @@ export const store = configureStore({
     usersPage: usersPageReducer,
     profilePage: profilePageReducer,
     featuresPage: featuresPageReducer,
+    plansPage: plansPageReducer,
+    packagePlansPage: packagePlansPageReducer,
     packagesPage: packagesPageReducer,
     paymentMethodsPage: paymentMethodsPageReducer,
     paymentTransactionsPage: paymentTransactionsPageReducer,

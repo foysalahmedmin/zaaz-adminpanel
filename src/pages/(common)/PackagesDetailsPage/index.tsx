@@ -67,27 +67,54 @@ const PackagesDetailsPage = () => {
                   </p>
                 )}
                 <p>
-                  <span className="font-medium">Tokens:</span>{" "}
-                  {currentPackage?.token}
-                </p>
-                <p>
-                  <span className="font-medium">Price (USD):</span> $
-                  {currentPackage?.price?.USD || 0}
-                </p>
-                <p>
-                  <span className="font-medium">Price (BDT):</span> ৳
-                  {currentPackage?.price?.BDT || 0}
-                </p>
-                {currentPackage?.duration && (
-                  <p>
-                    <span className="font-medium">Duration:</span>{" "}
-                    {currentPackage?.duration} days
-                  </p>
-                )}
-                <p>
                   <span className="font-medium">Status:</span>{" "}
                   {currentPackage?.is_active ? "Active" : "Inactive"}
                 </p>
+                {currentPackage?.plans && currentPackage.plans.length > 0 && (
+                  <div className="mt-4">
+                    <span className="font-medium">Plans:</span>
+                    <div className="mt-2 space-y-3">
+                      {currentPackage.plans.map((pp: any, index: number) => {
+                        const plan = pp.plan;
+                        const planName =
+                          typeof plan === "object" && plan?.name
+                            ? plan.name
+                            : "N/A";
+                        const planDuration =
+                          typeof plan === "object" && plan?.duration
+                            ? plan.duration
+                            : 0;
+                        return (
+                          <div
+                            key={pp._id || index}
+                            className="rounded-lg border p-3"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="font-semibold">
+                                  {planName} ({planDuration} days)
+                                </p>
+                                {pp.is_initial && (
+                                  <span className="bg-blue-100 text-blue-800 rounded-full px-2 py-0.5 text-xs font-medium">
+                                    Initial Plan
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-right">
+                                <p className="font-semibold">
+                                  ${pp.price?.USD || 0} / ৳{pp.price?.BDT || 0}
+                                </p>
+                                <p className="text-muted-foreground text-sm">
+                                  {pp.token} tokens
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

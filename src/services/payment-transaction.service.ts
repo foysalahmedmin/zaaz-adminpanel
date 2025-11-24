@@ -53,6 +53,7 @@ export async function createPaymentTransaction(
 // POST Initiate Payment (User/Admin)
 export async function initiatePayment(payload: {
   package: string;
+  plan: string;
   payment_method: string;
   return_url: string;
   cancel_url: string;
