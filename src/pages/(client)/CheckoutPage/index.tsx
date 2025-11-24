@@ -167,8 +167,10 @@ const CheckoutPage = () => {
 
     setPaymentStatus("processing");
 
-    const returnUrl = `${ENV?.app_url || window.location.origin}/client/checkout/success?package_id=${currentPackage._id}&transaction_id=`;
-    const cancelUrl = `${ENV?.app_url || window.location.origin}/client/checkout/cancel?package_id=${currentPackage._id}`;
+    // Use redirect.html to handle payment gateway redirects properly
+    const baseUrl = ENV?.app_url || window.location.origin;
+    const returnUrl = `${baseUrl}/redirect.html?package_id=${currentPackage._id}&plan_id=${selectedPlanId}&status=success`;
+    const cancelUrl = `${baseUrl}/redirect.html?package_id=${currentPackage._id}&plan_id=${selectedPlanId}&status=cancel`;
 
     // Backend expects: package, plan, payment_method, return_url, cancel_url
     // Optional: customer_email, customer_name, customer_phone
