@@ -31,6 +31,11 @@ const PlansDataTableSection: React.FC<PlansDataTableSectionProps> = ({
         <div className="flex items-center gap-2">
           <div className="flex-1 space-y-1">
             <h3 className="text-base font-bold">{row.name}</h3>
+            {row.description && (
+              <p className="text-muted-foreground text-sm line-clamp-1">
+                {row.description}
+              </p>
+            )}
           </div>
         </div>
       ),

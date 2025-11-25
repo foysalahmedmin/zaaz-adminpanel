@@ -40,12 +40,30 @@ A modern, feature-rich admin panel for managing the Payment System platform. Bui
 ### 📦 Package Management
 
 - **Packages Page**: Complete CRUD operations for token packages
-- **Packages Details Page**: View package details and history
+- **Packages Details Page**: View package details and all associated plans
 - **Rich Text Editor**: BlockNote integration for HTML content editing
 - **Feature Association**: Link packages to multiple features
-- **Pricing**: Set USD and BDT prices
-- **Token Allocation**: Configure token amounts per package
-- **Package History**: View complete change history via modal
+- **Plan Selection**: Select multiple plans per package with individual pricing and token amounts
+- **Package-Plan Management**: Manage plan associations, set initial plan, configure prices and tokens per plan
+- **Package History**: View complete change history with embedded feature and plan data via modal
+
+### 📋 Plan Management
+
+- **Plans Page**: Complete CRUD operations for reusable plan templates
+- **Plan Templates**: Create plans with name, description, and duration
+- **Plan Reusability**: Use same plan across multiple packages
+- **Status Control**: Activate/deactivate plans
+- **Soft Delete**: Plans can be soft-deleted and restored
+
+### 🔗 Package-Plan Management
+
+- **Package Plans Page**: Manage links between packages and plans
+- **Plan Linking**: Associate plans with packages
+- **Pricing Configuration**: Set individual prices (USD/BDT) per plan per package
+- **Token Configuration**: Set individual token amounts per plan per package
+- **Initial Plan**: Designate one plan as initial per package
+- **Status Control**: Activate/deactivate package-plan associations
+- **Filtering**: Filter by package or plan
 
 ### 💳 Payment Methods Management
 
@@ -90,8 +108,16 @@ A modern, feature-rich admin panel for managing the Payment System platform. Bui
 
 ### 🛒 Client-Side Payment Flow
 
-- **Pricing Page** (`/client/pricing`): Display all public packages as pricing cards
-- **Checkout Page** (`/client/checkout`): Select payment method and initiate payment
+- **Pricing Page** (`/client/pricing`): Display all public packages with plan tabs (All + individual plans)
+  - Plan filtering via tabs
+  - Display all plans or specific plan based on selection
+  - Initial plan price/duration shown on package cards
+  - Checkout link includes `plan_id` parameter
+- **Checkout Page** (`/client/checkout`): Select plan and payment method, initiate payment
+  - Plan selection UI with all available plans
+  - Display plan details (price, duration, tokens)
+  - Payment initiation requires `plan_id`
+  - Plan ID included in return/cancel URLs
 - **Checkout Success Page** (`/client/checkout/success`): Display payment success confirmation
 - **Checkout Cancel Page** (`/client/checkout/cancel`): Handle payment cancellation/failure
 - **Client Layout**: Dedicated layout for user-facing pages
@@ -256,8 +282,10 @@ src/
 │   │   ├── Dashboard/
 │   │   ├── FeaturesPage/
 │   │   ├── FeaturesDetailsPage/
+│   │   ├── PlansPage/
 │   │   ├── PackagesPage/
 │   │   ├── PackagesDetailsPage/
+│   │   ├── PackagePlansPage/
 │   │   ├── PaymentMethodsPage/
 │   │   ├── PaymentTransactionsPage/
 │   │   ├── PaymentTransactionsDetailsPage/
@@ -286,7 +314,9 @@ src/
 │   ├── dashboard.service.ts
 │   ├── feature.service.ts
 │   ├── feature-endpoint.service.ts
+│   ├── plan.service.ts
 │   ├── package.service.ts
+│   ├── package-plan.service.ts
 │   ├── package-history.service.ts
 │   ├── payment-method.service.ts
 │   ├── payment-transaction.service.ts
@@ -515,7 +545,9 @@ Each module has a dedicated service file:
 - `auth.service.ts` - Authentication endpoints
 - `feature.service.ts` - Feature management
 - `feature-endpoint.service.ts` - Feature endpoint management
+- `plan.service.ts` - Plan management
 - `package.service.ts` - Package management
+- `package-plan.service.ts` - Package-plan linking
 - `package-history.service.ts` - Package history
 - `payment-method.service.ts` - Payment method management
 - `payment-transaction.service.ts` - Payment transactions
@@ -536,15 +568,32 @@ Each module has a dedicated service file:
 - **Status Control**: Activate/deactivate features and endpoints
 - **Soft Delete**: Features can be soft-deleted and restored
 
+### Plan Management
+
+- **Plan CRUD**: Create, read, update, and delete reusable plan templates
+- **Plan Properties**: Name, description (optional), and duration
+- **Status Control**: Activate/deactivate plans
+- **Soft Delete**: Plans can be soft-deleted and restored
+- **Reusability**: Same plan can be used across multiple packages
+
+### Package-Plan Management
+
+- **Package-Plan CRUD**: Create, read, update, and delete package-plan associations
+- **Plan Linking**: Associate plans with packages
+- **Individual Pricing**: Set USD and BDT prices per plan per package
+- **Token Configuration**: Set token amounts per plan per package
+- **Initial Plan**: Designate one plan as initial per package
+- **Status Control**: Activate/deactivate package-plan associations
+- **Filtering**: Filter by package or plan
+
 ### Package Management
 
 - **Package CRUD**: Create, read, update, and delete packages
 - **Rich Text Content**: BlockNote editor for HTML content
 - **Feature Association**: Link packages to multiple features
-- **Pricing**: Set USD and BDT prices
-- **Token Allocation**: Configure token amounts per package
-- **Duration**: Optional package duration in days
-- **Package History**: Complete change history tracking
+- **Plan Management**: Select and manage multiple plans per package
+- **Package-Plan Sync**: Automatic synchronization of package-plan documents
+- **Package History**: Complete change history with embedded feature and plan data
 
 ### Payment Methods Management
 

@@ -35,6 +35,7 @@ const PlanEditModal: React.FC<PlanEditModalProps> = ({
   } = useForm<Partial<TPlan>>({
     defaultValues: {
       name: plan?.name || "",
+      description: plan?.description || "",
       duration: plan?.duration || 1,
       is_active: plan?.is_active ?? true,
     },
@@ -43,6 +44,7 @@ const PlanEditModal: React.FC<PlanEditModalProps> = ({
   React.useEffect(() => {
     reset({
       name: plan?.name || "",
+      description: plan?.description || "",
       duration: plan?.duration || 1,
       is_active: plan?.is_active ?? true,
     });
@@ -90,6 +92,29 @@ const PlanEditModal: React.FC<PlanEditModalProps> = ({
                 {errors.name && (
                   <FormControl.Error>{errors.name.message}</FormControl.Error>
                 )}
+              </div>
+
+              <div>
+                <FormControl.Label>Description</FormControl.Label>
+                <FormControl
+                  as="textarea"
+                  placeholder="Plan description (optional)"
+                  className="h-auto min-h-20 py-2 resize-none"
+                  {...register("description", {
+                    maxLength: {
+                      value: 500,
+                      message: "Description cannot exceed 500 characters",
+                    },
+                  })}
+                />
+                {errors.description && (
+                  <FormControl.Error>
+                    {errors.description.message}
+                  </FormControl.Error>
+                )}
+                <FormControl.Helper>
+                  Optional description for this plan
+                </FormControl.Helper>
               </div>
 
               <div>

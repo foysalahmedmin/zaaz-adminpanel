@@ -38,26 +38,40 @@ const PackageHistoriesDataTableSection: React.FC<
       ),
     },
     {
-      name: "Tokens",
-      field: "token",
-      isSortable: true,
-      cell: ({ cell }) => (
-        <span className="font-semibold">{cell?.toString() || "0"}</span>
+      name: "Features",
+      field: "features",
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.features?.length || 0} feature
+          {(row.features?.length || 0) !== 1 ? "s" : ""}
+        </span>
       ),
     },
     {
-      name: "Price (USD)",
-      field: "price",
+      name: "Plans",
+      field: "plans",
       cell: ({ row }) => (
-        <span className="font-semibold">${row.price?.USD || 0}</span>
+        <span className="text-sm">
+          {row.plans?.length || 0} plan{(row.plans?.length || 0) !== 1 ? "s" : ""}
+        </span>
       ),
     },
     {
-      name: "Price (BDT)",
-      field: "price",
-      cell: ({ row }) => (
-        <span className="font-semibold">৳{row.price?.BDT || 0}</span>
-      ),
+      name: "Initial Plan",
+      field: "plans",
+      cell: ({ row }) => {
+        const initialPlan = row.plans?.find((pp) => pp.is_initial);
+        return initialPlan ? (
+          <div className="space-y-1">
+            <span className="font-semibold">{initialPlan.plan.name}</span>
+            <div className="text-muted-foreground text-xs">
+              ${initialPlan.price.USD} / ৳{initialPlan.price.BDT}
+            </div>
+          </div>
+        ) : (
+          <span className="text-muted-foreground text-sm">N/A</span>
+        );
+      },
     },
     {
       name: "Created At",

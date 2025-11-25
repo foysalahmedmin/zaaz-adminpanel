@@ -35,6 +35,7 @@ const PlanAddModal: React.FC<PlanAddModalProps> = ({
   } = useForm<Partial<TPlan>>({
     defaultValues: {
       name: plan?.name || "",
+      description: plan?.description || "",
       duration: plan?.duration || 1,
       is_active: plan?.is_active ?? true,
     },
@@ -81,6 +82,29 @@ const PlanAddModal: React.FC<PlanAddModalProps> = ({
               </div>
 
               <div>
+                <FormControl.Label>Description</FormControl.Label>
+                <FormControl
+                  as="textarea"
+                  placeholder="Plan description (optional)"
+                  className="h-auto min-h-20 resize-none py-2"
+                  {...register("description", {
+                    maxLength: {
+                      value: 500,
+                      message: "Description cannot exceed 500 characters",
+                    },
+                  })}
+                />
+                {errors.description && (
+                  <FormControl.Error>
+                    {errors.description.message}
+                  </FormControl.Error>
+                )}
+                <FormControl.Helper>
+                  Optional description for this plan
+                </FormControl.Helper>
+              </div>
+
+              <div>
                 <FormControl.Label>Duration (Days)</FormControl.Label>
                 <FormControl
                   type="number"
@@ -89,7 +113,10 @@ const PlanAddModal: React.FC<PlanAddModalProps> = ({
                   {...register("duration", {
                     required: "Duration is required",
                     valueAsNumber: true,
-                    min: { value: 1, message: "Duration must be at least 1 day" },
+                    min: {
+                      value: 1,
+                      message: "Duration must be at least 1 day",
+                    },
                   })}
                 />
                 {errors.duration && (
@@ -139,4 +166,3 @@ const PlanAddModal: React.FC<PlanAddModalProps> = ({
 };
 
 export default PlanAddModal;
-

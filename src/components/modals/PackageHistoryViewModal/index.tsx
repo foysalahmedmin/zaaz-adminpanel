@@ -61,26 +61,111 @@ const PackageHistoryViewModal: React.FC<PackageHistoryViewModalProps> = ({
                         {history.description}
                       </p>
                     )}
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="font-medium">Tokens:</span>{" "}
-                        {history.token}
+
+                    {/* Features Section */}
+                    {history.features && history.features.length > 0 && (
+                      <div className="mb-4">
+                        <h5 className="mb-2 font-medium">Features:</h5>
+                        <div className="space-y-1">
+                          {history.features.map((feature) => (
+                            <div
+                              key={feature._id}
+                              className="text-muted-foreground rounded bg-muted/50 px-2 py-1 text-sm"
+                            >
+                              <span className="font-medium">{feature.name}</span>
+                              {feature.description && (
+                                <span className="ml-2">
+                                  - {feature.description}
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
+                    )}
+
+                    {/* Plans Section */}
+                    {history.plans && history.plans.length > 0 && (
                       <div>
-                        <span className="font-medium">Price (USD):</span> $
-                        {history.price?.USD || 0}
+                        <h5 className="mb-2 font-medium">Plans:</h5>
+                        <div className="space-y-2">
+                          {history.plans.map((pp) => (
+                            <div
+                              key={pp._id}
+                              className="border-border rounded border p-3"
+                            >
+                              <div className="mb-2 flex items-center justify-between">
+                                <div>
+                                  <span className="font-semibold">
+                                    {pp.plan.name}
+                                  </span>
+                                  {pp.is_initial && (
+                                    <span className="bg-primary/10 text-primary ml-2 rounded px-2 py-0.5 text-xs">
+                                      Initial
+                                    </span>
+                                  )}
+                                  {!pp.is_active && (
+                                    <span className="bg-destructive/10 text-destructive ml-2 rounded px-2 py-0.5 text-xs">
+                                      Inactive
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              {pp.plan.description && (
+                                <p className="text-muted-foreground mb-2 text-sm">
+                                  {pp.plan.description}
+                                </p>
+                              )}
+                              <div className="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                  <span className="font-medium">Duration:</span>{" "}
+                                  {pp.plan.duration} days
+                                </div>
+                                <div>
+                                  <span className="font-medium">Tokens:</span>{" "}
+                                  {pp.token}
+                                </div>
+                                <div>
+                                  <span className="font-medium">
+                                    Price (USD):
+                                  </span>{" "}
+                                  ${pp.price?.USD || 0}
+                                </div>
+                                <div>
+                                  <span className="font-medium">
+                                    Price (BDT):
+                                  </span>{" "}
+                                  ৳{pp.price?.BDT || 0}
+                                </div>
+                                {pp.previous_price && (
+                                  <>
+                                    <div>
+                                      <span className="font-medium">
+                                        Previous Price (USD):
+                                      </span>{" "}
+                                      ${pp.previous_price.USD || 0}
+                                    </div>
+                                    <div>
+                                      <span className="font-medium">
+                                        Previous Price (BDT):
+                                      </span>{" "}
+                                      ৳{pp.previous_price.BDT || 0}
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                      <div>
-                        <span className="font-medium">Price (BDT):</span> ৳
-                        {history.price?.BDT || 0}
-                      </div>
-                      {history.duration && (
-                        <div>
-                          <span className="font-medium">Duration:</span>{" "}
-                          {history.duration} days
+                    )}
+
+                    {(!history.features || history.features.length === 0) &&
+                      (!history.plans || history.plans.length === 0) && (
+                        <div className="text-muted-foreground text-sm">
+                          No features or plans in this history record.
                         </div>
                       )}
-                    </div>
                   </div>
                 ))}
               </div>
