@@ -49,7 +49,19 @@ const PackageHistoryViewModal: React.FC<PackageHistoryViewModalProps> = ({
                     className="border-border rounded-lg border p-4"
                   >
                     <div className="mb-2 flex items-center justify-between">
-                      <h4 className="font-semibold">{history.name}</h4>
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-semibold">{history.name}</h4>
+                        {history.badge && (
+                          <span className="bg-primary/10 text-primary rounded px-2 py-0.5 text-xs font-medium">
+                            {history.badge}
+                          </span>
+                        )}
+                        {history.type && (
+                          <span className="bg-muted text-muted-foreground rounded px-2 py-0.5 text-xs">
+                            {history.type}
+                          </span>
+                        )}
+                      </div>
                       <span className="text-muted-foreground text-sm">
                         {history.created_at
                           ? new Date(history.created_at).toLocaleString()
@@ -60,6 +72,21 @@ const PackageHistoryViewModal: React.FC<PackageHistoryViewModalProps> = ({
                       <p className="text-muted-foreground mb-2 text-sm">
                         {history.description}
                       </p>
+                    )}
+                    {history.points && history.points.length > 0 && (
+                      <div className="mb-4">
+                        <h5 className="mb-2 font-medium">Key Points:</h5>
+                        <ul className="list-disc list-inside space-y-1">
+                          {history.points.map((point, index) => (
+                            <li
+                              key={index}
+                              className="text-muted-foreground text-sm"
+                            >
+                              {point}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
 
                     {/* Features Section */}

@@ -1,17 +1,15 @@
 import BlockNoteEditor from "@/components/ui/BlockNoteEditor";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { FormControl } from "@/components/ui/FormControl";
 import { Modal } from "@/components/ui/Modal";
 import { fetchFeatures } from "@/services/feature.service";
-import { fetchPlans } from "@/services/plan.service";
 import { createPackage } from "@/services/package.service";
+import { fetchPlans } from "@/services/plan.service";
 import type { TPackage } from "@/types/package.type";
-import type { TPlan } from "@/types/plan.type";
 import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { Loader2 } from "lucide-react";
+import { Loader2, Plus, X } from "lucide-react";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -35,6 +33,84 @@ type PackagePlanFormData = {
 
 type TPackageFormInput = Partial<TPackage> & {
   packagePlans: PackagePlanFormData[];
+};
+
+// Points Input Component
+type PointsInputProps = {
+  value?: string[];
+  onChange: (value: string[]) => void;
+};
+
+const PointsInput: React.FC<PointsInputProps> = ({ value = [], onChange }) => {
+  const [inputValue, setInputValue] = React.useState("");
+
+  const handleAddPoint = () => {
+    const trimmedValue = inputValue.trim();
+    if (trimmedValue) {
+      if (!value.includes(trimmedValue)) {
+        onChange([...value, trimmedValue]);
+        setInputValue("");
+      }
+    }
+  };
+
+  const handleRemovePoint = (index: number) => {
+    onChange(value.filter((_, i) => i !== index));
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddPoint();
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex gap-2">
+        <FormControl
+          type="text"
+          placeholder="Enter a point and press Enter or click +"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className="flex-1"
+        />
+        <Button
+          className="size-10"
+          type="button"
+          variant="outline"
+          size="sm"
+          shape="icon"
+          onClick={handleAddPoint}
+          disabled={!inputValue.trim()}
+        >
+          <Plus className="size-4" />
+        </Button>
+      </div>
+      {value && value.length > 0 && (
+        <div className="border-input bg-card space-y-2 rounded-md border p-3">
+          {value.map((point) => (
+            <div
+              key={point}
+              className="bg-muted/50 flex items-center justify-between gap-2 rounded px-3 py-2"
+            >
+              <span className="text-sm">{point}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => handleRemovePoint(value.indexOf(point))}
+                className="text-destructive hover:text-destructive h-6 w-6 p-0"
+              >
+                <X className="size-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };
 
 const PackageAddModal: React.FC<PackageAddModalProps> = ({
@@ -68,6 +144,9 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
       name: pkg?.name || "",
       description: pkg?.description || "",
       content: pkg?.content || "",
+      type: pkg?.type || "token",
+      badge: pkg?.badge || "",
+      points: pkg?.points || [],
       features: pkg?.features || [],
       packagePlans:
         pkg?.plans?.map((pp: any) => ({
@@ -92,6 +171,9 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
         name: data.name,
         description: data.description,
         content: data.content,
+        type: data.type,
+        badge: data.badge,
+        points: data.points,
         features: data.features,
         plans: data.packagePlans.map((pp) => ({
           plan: pp.plan,
@@ -115,9 +197,7 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
       setIsOpen(false);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
-      toast.error(
-        error.response?.data?.message || "Failed to create package",
-      );
+      toast.error(error.response?.data?.message || "Failed to create package");
     },
   });
 
@@ -149,7 +229,10 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
 
     if (existingIndex >= 0) {
       // Remove plan
-      setValue("packagePlans", current.filter((_, i) => i !== existingIndex));
+      setValue(
+        "packagePlans",
+        current.filter((_, i) => i !== existingIndex),
+      );
     } else {
       // Add plan with default values
       const plan = plansData?.data?.find((p) => p._id === planId);
@@ -184,7 +267,7 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <Modal.Backdrop>
-        <Modal.Content className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <Modal.Content className="max-h-[90vh] max-w-4xl overflow-y-auto">
           <Modal.Header>
             <Modal.Title>Add Package</Modal.Title>
             <Modal.Close />
@@ -229,6 +312,46 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
               </div>
 
               <div>
+                <FormControl.Label>Type</FormControl.Label>
+                <FormControl as="select" {...register("type")}>
+                  <option value="token">Token</option>
+                  <option value="subscription">Subscription</option>
+                </FormControl>
+                <FormControl.Helper>
+                  Select package type (default: token)
+                </FormControl.Helper>
+              </div>
+
+              <div>
+                <FormControl.Label>Badge (Optional)</FormControl.Label>
+                <FormControl
+                  type="text"
+                  placeholder="e.g., Popular, Best Value, New"
+                  {...register("badge")}
+                />
+                <FormControl.Helper>
+                  Badge text to display on package card
+                </FormControl.Helper>
+              </div>
+
+              <div>
+                <FormControl.Label>Points (Optional)</FormControl.Label>
+                <FormControl.Helper>
+                  Add key points/benefits one by one
+                </FormControl.Helper>
+                <Controller
+                  name="points"
+                  control={control}
+                  render={({ field }) => (
+                    <PointsInput
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+              </div>
+
+              <div>
                 <FormControl.Label>Features</FormControl.Label>
                 <div className="border-input bg-card max-h-40 space-y-2 overflow-y-auto rounded-md border p-3">
                   {featuresData?.data?.map((feature) => (
@@ -254,11 +377,13 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
               </div>
 
               <div>
-                <FormControl.Label>Plans (Required - At least one)</FormControl.Label>
+                <FormControl.Label>
+                  Plans (Required - At least one)
+                </FormControl.Label>
                 <FormControl.Helper>
                   Select plans and configure their prices, tokens, and settings.
                 </FormControl.Helper>
-                <div className="border-input bg-card space-y-3 rounded-md border p-3 max-h-60 overflow-y-auto">
+                <div className="border-input bg-card max-h-60 space-y-3 overflow-y-auto rounded-md border p-3">
                   {plansData?.data?.map((plan) => {
                     const planData = packagePlans.find(
                       (pp) => pp.plan === plan._id,
@@ -290,7 +415,9 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
                           <div className="ml-6 grid gap-3 border-t pt-3">
                             <div className="grid grid-cols-2 gap-3">
                               <div>
-                                <FormControl.Label>Price (USD) *</FormControl.Label>
+                                <FormControl.Label>
+                                  Price (USD) *
+                                </FormControl.Label>
                                 <FormControl
                                   type="number"
                                   placeholder="0.00"
@@ -311,7 +438,9 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
                                 />
                               </div>
                               <div>
-                                <FormControl.Label>Price (BDT) *</FormControl.Label>
+                                <FormControl.Label>
+                                  Price (BDT) *
+                                </FormControl.Label>
                                 <FormControl
                                   type="number"
                                   placeholder="0.00"
@@ -367,7 +496,10 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
                                     if (index >= 0) {
                                       // Unset other initial plans
                                       updated.forEach((pp, i) => {
-                                        pp.is_initial = i === index ? e.target.checked : false;
+                                        pp.is_initial =
+                                          i === index
+                                            ? e.target.checked
+                                            : false;
                                       });
                                       setValue("packagePlans", updated);
                                     }
@@ -388,13 +520,16 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
                                       (pp) => pp.plan === plan._id,
                                     );
                                     if (index >= 0) {
-                                      updated[index].is_active = e.target.checked;
+                                      updated[index].is_active =
+                                        e.target.checked;
                                       setValue("packagePlans", updated);
                                     }
                                   }}
                                   className="accent-accent size-4"
                                 />
-                                <span className="text-sm font-medium">Active</span>
+                                <span className="text-sm font-medium">
+                                  Active
+                                </span>
                               </label>
                             </div>
                           </div>

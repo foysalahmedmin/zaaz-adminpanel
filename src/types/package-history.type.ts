@@ -29,6 +29,9 @@ export type TPackageHistory = {
   name: string;
   description?: string;
   content?: string;
+  type?: "token" | "subscription";
+  badge?: string;
+  points?: string[];
   features: TFeatureHistory[]; // Embedded feature objects
   plans: TPackagePlanHistory[]; // Embedded package-plan objects with plan
   sequence?: number;

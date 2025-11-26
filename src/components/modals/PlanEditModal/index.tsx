@@ -37,6 +37,7 @@ const PlanEditModal: React.FC<PlanEditModalProps> = ({
       name: plan?.name || "",
       description: plan?.description || "",
       duration: plan?.duration || 1,
+      sequence: plan?.sequence || 0,
       is_active: plan?.is_active ?? true,
     },
   });
@@ -46,6 +47,7 @@ const PlanEditModal: React.FC<PlanEditModalProps> = ({
       name: plan?.name || "",
       description: plan?.description || "",
       duration: plan?.duration || 1,
+      sequence: plan?.sequence || 0,
       is_active: plan?.is_active ?? true,
     });
   }, [plan, reset]);
@@ -136,6 +138,30 @@ const PlanEditModal: React.FC<PlanEditModalProps> = ({
                 )}
                 <FormControl.Helper>
                   Number of days this plan is valid for
+                </FormControl.Helper>
+              </div>
+
+              <div>
+                <FormControl.Label>Sequence</FormControl.Label>
+                <FormControl
+                  type="number"
+                  placeholder="0"
+                  min="0"
+                  {...register("sequence", {
+                    valueAsNumber: true,
+                    min: {
+                      value: 0,
+                      message: "Sequence must be 0 or greater",
+                    },
+                  })}
+                />
+                {errors.sequence && (
+                  <FormControl.Error>
+                    {errors.sequence.message}
+                  </FormControl.Error>
+                )}
+                <FormControl.Helper>
+                  Lower numbers appear first when sorting by sequence
                 </FormControl.Helper>
               </div>
 

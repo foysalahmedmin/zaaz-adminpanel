@@ -56,15 +56,39 @@ const PackagesDetailsPage = () => {
             <div>
               <h3 className="text-lg font-semibold">Package Information</h3>
               <div className="mt-2 space-y-2">
-                <p>
+                <div>
                   <span className="font-medium">Name:</span>{" "}
-                  {currentPackage?.name}
-                </p>
+                  <div className="mt-1 flex items-center gap-2">
+                    <span>{currentPackage?.name}</span>
+                    {currentPackage?.badge && (
+                      <span className="bg-primary/10 text-primary rounded px-2 py-0.5 text-xs font-medium">
+                        {currentPackage.badge}
+                      </span>
+                    )}
+                    {currentPackage?.type && (
+                      <span className="bg-muted text-muted-foreground rounded px-2 py-0.5 text-xs">
+                        {currentPackage.type}
+                      </span>
+                    )}
+                  </div>
+                </div>
                 {currentPackage?.description && (
                   <p>
                     <span className="font-medium">Description:</span>{" "}
                     {currentPackage?.description}
                   </p>
+                )}
+                {currentPackage?.points && currentPackage.points.length > 0 && (
+                  <div>
+                    <span className="font-medium">Key Points:</span>
+                    <ul className="mt-1 list-disc list-inside space-y-1">
+                      {currentPackage.points.map((point: string, index: number) => (
+                        <li key={index} className="text-sm">
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
                 <p>
                   <span className="font-medium">Status:</span>{" "}

@@ -1,11 +1,11 @@
-<!-- public/redirect.html -->
 <!doctype html>
 <html lang="en">
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="UTF-8" />
     <title>Redirecting...</title>
     <script>
-      const params = new URLSearchParams(window.location.search);
+      const params = new URLSearchParams(globalThis.location.search);
       const packageId = params.get("package_id");
       const status = params.get("status"); // success/fail/cancel
       // Map status to React route
@@ -19,7 +19,7 @@
         redirectPath = `/client/checkout/cancel?package_id=${packageId}`;
       }
 
-      window.location.href = redirectPath;
+      globalThis.location.href = redirectPath;
     </script>
   </head>
   <body>

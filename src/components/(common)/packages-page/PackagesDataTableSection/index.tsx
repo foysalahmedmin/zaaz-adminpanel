@@ -34,7 +34,19 @@ const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <div className="flex-1 space-y-1">
-            <h3 className="text-base font-bold">{row.name}</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-base font-bold">{row.name}</h3>
+              {row.badge && (
+                <span className="bg-primary/10 text-primary rounded px-2 py-0.5 text-xs font-medium">
+                  {row.badge}
+                </span>
+              )}
+              {row.type && (
+                <span className="bg-muted text-muted-foreground rounded px-2 py-0.5 text-xs">
+                  {row.type}
+                </span>
+              )}
+            </div>
             {row.description && (
               <p className="text-muted-foreground text-sm">{row.description}</p>
             )}
