@@ -14,7 +14,11 @@ import {
   openEditModal,
 } from "@/redux/slices/packages-page-slice";
 import type { RootState } from "@/redux/store";
-import { deletePackage, fetchPackages } from "@/services/package.service";
+import {
+  deletePackage,
+  fetchPackages,
+  updatePackageIsInitial,
+} from "@/services/package.service";
 import type { TPackage } from "@/types/package.type";
 import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -51,6 +55,27 @@ const PackagesPage = () => {
       toast.error(error.response?.data?.message || "Failed to delete package");
     },
   });
+
+  const toggleInitial_mutation = useMutation({
+    mutationFn: ({ id, is_initial }: { id: string; is_initial: boolean }) =>
+      updatePackageIsInitial(id, is_initial),
+    onSuccess: (data) => {
+      toast.success(
+        data?.message || "Package initial status updated successfully!",
+      );
+      queryClient.invalidateQueries({ queryKey: ["packages"] });
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to update package initial status",
+      );
+    },
+  });
+
+  const onToggleInitial = (pkg: TPackage, is_initial: boolean) => {
+    toggleInitial_mutation.mutate({ id: pkg._id, is_initial });
+  };
 
   const onDelete = async (pkg: TPackage) => {
     const ok = await confirm({
@@ -89,6 +114,7 @@ const PackagesPage = () => {
             isError={isError}
             onEdit={onOpenEditModal}
             onDelete={onDelete}
+            onToggleInitial={onToggleInitial}
           />
         </Card.Content>
       </Card>

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import type { TColumn } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
+import { Switch } from "@/components/ui/Switch";
 import { cn } from "@/lib/utils";
 import type { TBreadcrumbs } from "@/types/route-menu.type";
 import type { TPackage } from "@/types/package.type";
@@ -15,6 +16,7 @@ type PackagesDataTableSectionProps = {
   isError: boolean;
   onEdit: (row: TPackage) => void;
   onDelete: (row: TPackage) => void;
+  onToggleInitial?: (row: TPackage, is_initial: boolean) => void;
 };
 
 const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
@@ -24,6 +26,7 @@ const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
   isError,
   onEdit,
   onDelete,
+  onToggleInitial,
 }) => {
   const columns: TColumn<TPackage>[] = [
     {
@@ -105,6 +108,18 @@ const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
         >
           {cell ? "Active" : "Inactive"}
         </span>
+      ),
+    },
+    {
+      name: "Initial",
+      field: "is_initial",
+      isSortable: true,
+      cell: ({ row }) => (
+        <Switch
+          checked={row.is_initial || false}
+          onChange={(checked) => onToggleInitial?.(row, checked)}
+          disabled={!onToggleInitial}
+        />
       ),
     },
     {

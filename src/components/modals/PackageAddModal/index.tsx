@@ -297,7 +297,7 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
                 />
               </div>
 
-              <div>
+              <div className="hidden">
                 <FormControl.Label>Content (Optional)</FormControl.Label>
                 <Controller
                   name="content"
@@ -383,7 +383,7 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
                 <FormControl.Helper>
                   Select plans and configure their prices, tokens, and settings.
                 </FormControl.Helper>
-                <div className="border-input bg-card max-h-60 space-y-3 overflow-y-auto rounded-md border p-3">
+                <div className="border-input bg-card max-h-68 space-y-3 overflow-y-auto rounded-md border p-3">
                   {plansData?.data?.map((plan) => {
                     const planData = packagePlans.find(
                       (pp) => pp.plan === plan._id,

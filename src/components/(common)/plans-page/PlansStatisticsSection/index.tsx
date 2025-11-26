@@ -27,7 +27,7 @@ const PlansStatisticsSection: React.FC<PlansStatisticsSectionProps> = ({
         <Card.Content className="p-6">
           <div className="space-y-2">
             <p className="text-muted-foreground text-sm">Active Plans</p>
-            <p className="text-3xl font-bold text-green-600">{activePlans}</p>
+            <p className="text-3xl font-bold">{activePlans}</p>
           </div>
         </Card.Content>
       </Card>
@@ -35,7 +35,7 @@ const PlansStatisticsSection: React.FC<PlansStatisticsSectionProps> = ({
         <Card.Content className="p-6">
           <div className="space-y-2">
             <p className="text-muted-foreground text-sm">Inactive Plans</p>
-            <p className="text-3xl font-bold text-red-600">{inactivePlans}</p>
+            <p className="text-3xl font-bold">{inactivePlans}</p>
           </div>
         </Card.Content>
       </Card>
@@ -44,4 +44,3 @@ const PlansStatisticsSection: React.FC<PlansStatisticsSectionProps> = ({
 };
 
 export default PlansStatisticsSection;
-

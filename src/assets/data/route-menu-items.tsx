@@ -2,12 +2,12 @@ import AuthWrapper from "@/components/wrappers/AuthWrapper";
 import Dashboard from "@/pages/(common)/Dashboard";
 import FeaturesDetailsPage from "@/pages/(common)/FeaturesDetailsPage";
 import FeaturesPage from "@/pages/(common)/FeaturesPage";
+import PackagePlansPage from "@/pages/(common)/PackagePlansPage";
 import PackagesDetailsPage from "@/pages/(common)/PackagesDetailsPage";
 import PackagesPage from "@/pages/(common)/PackagesPage";
 import PaymentMethodsPage from "@/pages/(common)/PaymentMethodsPage";
 import PaymentTransactionsDetailsPage from "@/pages/(common)/PaymentTransactionsDetailsPage";
 import PaymentTransactionsPage from "@/pages/(common)/PaymentTransactionsPage";
-import PackagePlansPage from "@/pages/(common)/PackagePlansPage";
 import PlansPage from "@/pages/(common)/PlansPage";
 import RecycleBinPage from "@/pages/(common)/RecycleBinPage";
 import TokenProfitsDetailsPage from "@/pages/(common)/TokenProfitsDetailsPage";
@@ -146,7 +146,7 @@ export const items: TItem[] = [
     path: "package-plans",
     name: "Package Plans",
     routeType: "layout",
-    menuType: "item-without-children",
+    menuType: "invisible",
     element: (
       <AuthWrapper roles={["supper-admin", "admin"]}>
         <Outlet />
@@ -226,7 +226,7 @@ export const items: TItem[] = [
   },
   {
     roles: ["supper-admin", "admin"],
-    icon: "credit-card",
+    icon: "receipt",
     path: "payment-transactions",
     name: "Payment Transactions",
     routeType: "layout",

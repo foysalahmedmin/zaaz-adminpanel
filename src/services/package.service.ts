@@ -99,3 +99,14 @@ export async function restorePackages(payload: {
   return response.data as TPackagesResponse;
 }
 
+// PATCH Update Package Is Initial (Admin)
+export async function updatePackageIsInitial(
+  id: string,
+  is_initial: boolean,
+): Promise<TPackageResponse> {
+  const response = await api.patch(`/api/packages/${id}/is-initial`, {
+    is_initial,
+  });
+  return response.data as TPackageResponse;
+}
+

@@ -33,6 +33,7 @@ export type TPackage = {
   plans: TPackagePlanItem[];
   sequence?: number;
   is_active: boolean;
+  is_initial?: boolean;
   is_deleted?: boolean;
   created_at?: string;
   updated_at?: string;

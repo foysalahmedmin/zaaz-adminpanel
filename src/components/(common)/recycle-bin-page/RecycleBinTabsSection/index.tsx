@@ -2,33 +2,41 @@ import { Button } from "@/components/ui/Button";
 import type { TColumn, TState } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import useAlert from "@/hooks/ui/useAlert";
-import type { TFeature } from "@/types/feature.type";
-import type { TFeatureEndpoint } from "@/types/feature-endpoint.type";
-import type { TPackage } from "@/types/package.type";
-import type { TTokenProfit } from "@/types/token-profit.type";
-import type { TUser } from "@/types/user.type";
-import { RotateCcw, Trash2 } from "lucide-react";
-import React from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
-import { toast } from "react-toastify";
-import type { ErrorResponse } from "@/types/response.type";
 import {
-  restoreFeature,
+  deleteFeatureEndpointPermanent,
+  restoreFeatureEndpoint,
+} from "@/services/feature-endpoint.service";
+import {
   deleteFeaturePermanent,
+  restoreFeature,
 } from "@/services/feature.service";
 import {
-  restoreFeatureEndpoint,
-  deleteFeatureEndpointPermanent,
-} from "@/services/feature-endpoint.service";
-import { restorePackage, deletePackagePermanent } from "@/services/package.service";
+  deletePackagePermanent,
+  restorePackage,
+} from "@/services/package.service";
 import {
-  restoreTokenProfit,
   deleteTokenProfitPermanent,
+  restoreTokenProfit,
 } from "@/services/token-profit.service";
-import { restoreUser, deleteUserPermanent } from "@/services/user.service";
+import { deleteUserPermanent, restoreUser } from "@/services/user.service";
+import type { TFeatureEndpoint } from "@/types/feature-endpoint.type";
+import type { TFeature } from "@/types/feature.type";
+import type { TPackage } from "@/types/package.type";
+import type { ErrorResponse } from "@/types/response.type";
+import type { TTokenProfit } from "@/types/token-profit.type";
+import type { TUser } from "@/types/user.type";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import { RotateCcw, Trash2 } from "lucide-react";
+import React from "react";
+import { toast } from "react-toastify";
 
-type DeletedItemType = "feature" | "feature-endpoint" | "package" | "token-profit" | "user";
+type DeletedItemType =
+  | "feature"
+  | "feature-endpoint"
+  | "package"
+  | "token-profit"
+  | "user";
 
 type RecycleBinTabsSectionProps = {
   type: DeletedItemType;
@@ -69,7 +77,12 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
     },
     onSuccess: (data) => {
       toast.success(data?.message || "Item restored successfully!");
-      queryClient.invalidateQueries({ queryKey: [type === "feature-endpoint" ? "feature-endpoints" : `${type}s`, "deleted"] });
+      queryClient.invalidateQueries({
+        queryKey: [
+          type === "feature-endpoint" ? "feature-endpoints" : `${type}s`,
+          "deleted",
+        ],
+      });
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to restore item");
@@ -96,7 +109,12 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
     },
     onSuccess: (data) => {
       toast.success(data?.message || "Item permanently deleted!");
-      queryClient.invalidateQueries({ queryKey: [type === "feature-endpoint" ? "feature-endpoints" : `${type}s`, "deleted"] });
+      queryClient.invalidateQueries({
+        queryKey: [
+          type === "feature-endpoint" ? "feature-endpoints" : `${type}s`,
+          "deleted",
+        ],
+      });
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to delete item");
@@ -140,7 +158,7 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
             <div className="flex-1 space-y-1">
               <h3 className="text-base font-bold">{row.name}</h3>
               {row.description && (
-                <p className="text-muted-foreground text-sm line-clamp-1">
+                <p className="text-muted-foreground line-clamp-1 text-sm">
                   {row.description}
                 </p>
               )}
@@ -154,9 +172,7 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
         isSortable: true,
         cell: ({ cell }) => (
           <span className="text-sm">
-            {cell
-              ? new Date(cell.toString()).toLocaleDateString()
-              : "N/A"}
+            {cell ? new Date(cell.toString()).toLocaleDateString() : "N/A"}
           </span>
         ),
       },
@@ -171,7 +187,9 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
               className="[--accent:green]"
               size={"sm"}
               variant="outline"
-              disabled={restoreMutation.isPending || deletePermanentMutation.isPending}
+              disabled={
+                restoreMutation.isPending || deletePermanentMutation.isPending
+              }
             >
               <RotateCcw className="mr-2 h-4 w-4" />
               Restore
@@ -181,7 +199,9 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
               className="[--accent:red]"
               size={"sm"}
               variant="outline"
-              disabled={restoreMutation.isPending || deletePermanentMutation.isPending}
+              disabled={
+                restoreMutation.isPending || deletePermanentMutation.isPending
+              }
             >
               <Trash2 className="mr-2 h-4 w-4" />
               Delete
@@ -201,21 +221,6 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
           isSortable: true,
           cell: ({ cell }) => (
             <span className="capitalize">{cell?.toString() || "N/A"}</span>
-          ),
-        },
-        ...baseColumns.slice(1),
-      ];
-    }
-
-    if (type === "package") {
-      return [
-        ...baseColumns.slice(0, 1),
-        {
-          name: "Tokens",
-          field: "token",
-          isSortable: true,
-          cell: ({ cell }) => (
-            <span className="font-semibold">{cell?.toString() || "0"}</span>
           ),
         },
         ...baseColumns.slice(1),
@@ -286,4 +291,3 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
 };
 
 export default RecycleBinTabsSection;
-
