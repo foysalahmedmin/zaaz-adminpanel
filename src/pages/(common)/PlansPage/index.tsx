@@ -2,6 +2,7 @@ import PlansDataTableSection from "@/components/(common)/plans-page/PlansDataTab
 import PlansStatisticsSection from "@/components/(common)/plans-page/PlansStatisticsSection";
 import PlanAddModal from "@/components/modals/PlanAddModal";
 import PlanEditModal from "@/components/modals/PlanEditModal";
+import PlanViewModal from "@/components/modals/PlanViewModal";
 import PageHeader from "@/components/sections/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -19,6 +20,7 @@ import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Plus } from "lucide-react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -26,6 +28,12 @@ const PlansPage = () => {
   const queryClient = useQueryClient();
   const confirm = useAlert();
   const dispatch = useDispatch();
+
+  // View modal state
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [selectedPlanForView, setSelectedPlanForView] = useState<TPlan | null>(
+    null,
+  );
 
   const { isAddModalOpen, isEditModalOpen, selectedPlan } = useSelector(
     (state: RootState) => state.plansPage,
@@ -37,6 +45,11 @@ const PlansPage = () => {
 
   const onOpenEditModal = (plan: TPlan) => {
     dispatch(openEditModal(plan));
+  };
+
+  const onOpenViewModal = (plan: TPlan) => {
+    setSelectedPlanForView(plan);
+    setIsViewModalOpen(true);
   };
 
   const delete_mutation = useMutation({
@@ -86,6 +99,7 @@ const PlansPage = () => {
             isError={isError}
             onEdit={onOpenEditModal}
             onDelete={onDelete}
+            onView={onOpenViewModal}
           />
         </Card.Content>
       </Card>
@@ -105,6 +119,16 @@ const PlansPage = () => {
               : closeEditModal(),
           )
         }
+      />
+      <PlanViewModal
+        default={selectedPlanForView || ({} as TPlan)}
+        isOpen={isViewModalOpen}
+        setIsOpen={(value: boolean) => {
+          setIsViewModalOpen(value);
+          if (!value) {
+            setSelectedPlanForView(null);
+          }
+        }}
       />
     </main>
   );

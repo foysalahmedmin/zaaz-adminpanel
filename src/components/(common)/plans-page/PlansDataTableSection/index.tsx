@@ -12,6 +12,7 @@ type PlansDataTableSectionProps = {
   isError: boolean;
   onEdit: (row: TPlan) => void;
   onDelete: (row: TPlan) => void;
+  onView?: (row: TPlan) => void;
 };
 
 const PlansDataTableSection: React.FC<PlansDataTableSectionProps> = ({
@@ -20,6 +21,7 @@ const PlansDataTableSection: React.FC<PlansDataTableSectionProps> = ({
   isError,
   onEdit,
   onDelete,
+  onView,
 }) => {
   const columns: TColumn<TPlan>[] = [
     {
@@ -74,11 +76,22 @@ const PlansDataTableSection: React.FC<PlansDataTableSectionProps> = ({
       ),
     },
     {
-      style: { width: "150px", textAlign: "center" },
+      style: { width: onView ? "180px" : "150px", textAlign: "center" },
       name: "Actions",
       field: "_id",
       cell: ({ row }) => (
         <div className="flex w-full items-center justify-center gap-2">
+          {onView && (
+            <Button
+              onClick={() => onView(row)}
+              className="[--accent:green]"
+              size={"sm"}
+              variant="outline"
+              shape={"icon"}
+            >
+              <Eye className="size-4" />
+            </Button>
+          )}
           <Button
             onClick={() => onEdit(row)}
             size={"sm"}

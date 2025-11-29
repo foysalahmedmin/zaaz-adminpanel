@@ -1,29 +1,30 @@
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { cn } from "@/lib/utils";
-import type { TPaymentMethod } from "@/types/payment-method.type";
+import type { TFeatureEndpoint } from "@/types/feature-endpoint.type";
 import { Check, Copy } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
-type PaymentMethodViewModalProps = {
-  default: Partial<TPaymentMethod>;
+type FeatureEndpointViewModalProps = {
+  default: Partial<TFeatureEndpoint>;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
 };
 
-const PaymentMethodViewModal: React.FC<PaymentMethodViewModalProps> = ({
+const FeatureEndpointViewModal: React.FC<FeatureEndpointViewModalProps> = ({
   isOpen,
   setIsOpen,
-  default: paymentMethod,
+  default: endpoint,
 }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopyId = async () => {
-    if (!paymentMethod._id) return;
+    if (!endpoint._id) return;
 
     try {
-      await navigator.clipboard.writeText(paymentMethod._id);
+      await navigator.clipboard.writeText(endpoint._id);
       setCopied(true);
       toast.success("ID copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
@@ -37,7 +38,7 @@ const PaymentMethodViewModal: React.FC<PaymentMethodViewModalProps> = ({
       <Modal.Backdrop>
         <Modal.Content className="max-w-2xl">
           <Modal.Header>
-            <Modal.Title>Payment Method Details</Modal.Title>
+            <Modal.Title>Feature Endpoint Details</Modal.Title>
             <Modal.Close />
           </Modal.Header>
 
@@ -45,125 +46,98 @@ const PaymentMethodViewModal: React.FC<PaymentMethodViewModalProps> = ({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <span className="text-muted-foreground text-sm">Name</span>
-                <p className="font-semibold">{paymentMethod.name || "N/A"}</p>
+                <p className="font-semibold">{endpoint.name || "N/A"}</p>
               </div>
-              <div>
-                <span className="text-muted-foreground text-sm">Value</span>
-                <p className="font-mono text-sm font-semibold">
-                  {paymentMethod.value || "N/A"}
-                </p>
-              </div>
-              <div>
-                <span className="text-muted-foreground text-sm">Currency</span>
-                <p className="font-semibold uppercase">
-                  {paymentMethod.currency || "N/A"}
-                </p>
-              </div>
-              <div>
-                <span className="text-muted-foreground text-sm">Sequence</span>
-                <p className="font-semibold">
-                  {paymentMethod.sequence?.toString() || "0"}
-                </p>
-              </div>
-              <div>
-                <span className="text-muted-foreground text-sm">Test Mode</span>
-                <p>
-                  <span
-                    className={cn(
-                      "rounded-full px-2 py-1 text-xs font-medium",
-                      paymentMethod.is_test
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-blue-100 text-blue-800",
-                    )}
-                  >
-                    {paymentMethod.is_test ? "Test" : "Live"}
+              {endpoint.description && (
+                <div className="col-span-2">
+                  <span className="text-muted-foreground text-sm">
+                    Description
                   </span>
+                  <p className="text-sm">{endpoint.description}</p>
+                </div>
+              )}
+              <div>
+                <span className="text-muted-foreground text-sm">Method</span>
+                <div>
+                  <Badge className="bg-blue-100 text-xs text-blue-800">
+                    {endpoint.method || "N/A"}
+                  </Badge>
+                </div>
+              </div>
+              <div>
+                <span className="text-muted-foreground text-sm">Endpoint</span>
+                <p className="font-mono text-sm break-all">
+                  {endpoint.endpoint || "N/A"}
                 </p>
               </div>
+              <div>
+                <span className="text-muted-foreground text-sm">
+                  Token Cost
+                </span>
+                <p className="font-semibold">
+                  {endpoint.token?.toString() || "0"}
+                </p>
+              </div>
+              {endpoint.sequence !== undefined && (
+                <div>
+                  <span className="text-muted-foreground text-sm">
+                    Sequence
+                  </span>
+                  <p className="font-semibold">
+                    {endpoint.sequence.toString() || "0"}
+                  </p>
+                </div>
+              )}
               <div>
                 <span className="text-muted-foreground text-sm">Status</span>
                 <p>
                   <span
                     className={cn(
                       "rounded-full px-2 py-1 text-xs font-medium",
-                      paymentMethod.is_active
+                      endpoint.is_active
                         ? "bg-green-100 text-green-800"
                         : "bg-red-100 text-red-800",
                     )}
                   >
-                    {paymentMethod.is_active ? "Active" : "Inactive"}
+                    {endpoint.is_active ? "Active" : "Inactive"}
                   </span>
                 </p>
               </div>
-              {paymentMethod.description && (
-                <div className="col-span-2">
-                  <span className="text-muted-foreground text-sm">
-                    Description
-                  </span>
-                  <p className="text-sm">{paymentMethod.description}</p>
-                </div>
-              )}
-              {paymentMethod.public_key && (
-                <div className="col-span-2">
-                  <span className="text-muted-foreground text-sm">
-                    Public Key
-                  </span>
-                  <p className="font-mono break-all text-xs">
-                    {paymentMethod.public_key}
+              {endpoint.feature && (
+                <div>
+                  <span className="text-muted-foreground text-sm">Feature</span>
+                  <p className="text-sm">
+                    {typeof endpoint.feature === "object" &&
+                    endpoint.feature !== null
+                      ? (endpoint.feature as any).name || "N/A"
+                      : endpoint.feature}
                   </p>
                 </div>
               )}
-              {paymentMethod.webhook_url && (
-                <div className="col-span-2">
-                  <span className="text-muted-foreground text-sm">
-                    Webhook URL
-                  </span>
-                  <p className="font-mono break-all text-xs">
-                    {paymentMethod.webhook_url}
-                  </p>
-                </div>
-              )}
-              {paymentMethod.currencies && paymentMethod.currencies.length > 0 && (
-                <div className="col-span-2">
-                  <span className="text-muted-foreground text-sm">
-                    Supported Currencies
-                  </span>
-                  <div className="mt-1 flex flex-wrap gap-2">
-                    {paymentMethod.currencies.map((currency, index) => (
-                      <span
-                        key={index}
-                        className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium uppercase"
-                      >
-                        {currency}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {paymentMethod.created_at && (
+              {endpoint.created_at && (
                 <div>
                   <span className="text-muted-foreground text-sm">
                     Created At
                   </span>
                   <p className="text-sm">
-                    {new Date(paymentMethod.created_at).toLocaleString()}
+                    {new Date(endpoint.created_at).toLocaleString()}
                   </p>
                 </div>
               )}
-              {paymentMethod.updated_at && (
+              {endpoint.updated_at && (
                 <div>
                   <span className="text-muted-foreground text-sm">
                     Updated At
                   </span>
                   <p className="text-sm">
-                    {new Date(paymentMethod.updated_at).toLocaleString()}
+                    {new Date(endpoint.updated_at).toLocaleString()}
                   </p>
                 </div>
               )}
             </div>
 
             {/* Document ID Section at Bottom */}
-            {paymentMethod._id && (
+            {endpoint._id && (
               <div className="mt-6 border-t pt-4">
                 <div className="flex items-center justify-between gap-4">
                   <div className="min-w-0 flex-1">
@@ -172,7 +146,7 @@ const PaymentMethodViewModal: React.FC<PaymentMethodViewModalProps> = ({
                     </span>
                     <div className="flex items-center gap-2">
                       <p className="bg-muted/50 flex-1 rounded px-2 py-1.5 font-mono text-xs break-all">
-                        {paymentMethod._id}
+                        {endpoint._id}
                       </p>
                       <Button
                         onClick={handleCopyId}
@@ -210,5 +184,4 @@ const PaymentMethodViewModal: React.FC<PaymentMethodViewModalProps> = ({
   );
 };
 
-export default PaymentMethodViewModal;
-
+export default FeatureEndpointViewModal;

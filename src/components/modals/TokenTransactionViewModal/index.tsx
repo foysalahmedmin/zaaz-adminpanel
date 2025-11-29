@@ -1,6 +1,9 @@
+import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import type { TTokenTransaction } from "@/types/token-transaction.type";
-import React from "react";
+import { Check, Copy } from "lucide-react";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 type TokenTransactionViewModalProps = {
   default: Partial<TTokenTransaction>;
@@ -13,6 +16,21 @@ const TokenTransactionViewModal: React.FC<TokenTransactionViewModalProps> = ({
   setIsOpen,
   default: transaction,
 }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyId = async () => {
+    if (!transaction._id) return;
+
+    try {
+      await navigator.clipboard.writeText(transaction._id);
+      setCopied(true);
+      toast.success("ID copied to clipboard!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      toast.error("Failed to copy ID");
+    }
+  };
+
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <Modal.Backdrop>
@@ -55,7 +73,15 @@ const TokenTransactionViewModal: React.FC<TokenTransactionViewModalProps> = ({
                     Feature Endpoint
                   </span>
                   <p className="font-mono text-sm">
-                    {transaction.decrease_source}
+                    {typeof transaction.decrease_source === "string"
+                      ? transaction.decrease_source
+                      : typeof transaction.decrease_source === "object" &&
+                          transaction.decrease_source !== null
+                        ? (transaction.decrease_source as any).name ||
+                          (transaction.decrease_source as any).endpoint ||
+                          (transaction.decrease_source as any)._id ||
+                          "N/A"
+                        : "N/A"}
                   </p>
                 </div>
               )}
@@ -65,7 +91,15 @@ const TokenTransactionViewModal: React.FC<TokenTransactionViewModalProps> = ({
                     Payment Transaction
                   </span>
                   <p className="font-mono text-sm">
-                    {transaction.payment_transaction}
+                    {typeof transaction.payment_transaction === "string"
+                      ? transaction.payment_transaction
+                      : typeof transaction.payment_transaction === "object" &&
+                          transaction.payment_transaction !== null
+                        ? (transaction.payment_transaction as any)._id ||
+                          (transaction.payment_transaction as any)
+                            .gateway_transaction_id ||
+                          "N/A"
+                        : "N/A"}
                   </p>
                 </div>
               )}
@@ -80,6 +114,38 @@ const TokenTransactionViewModal: React.FC<TokenTransactionViewModalProps> = ({
                 </div>
               )}
             </div>
+
+            {/* Document ID Section at Bottom */}
+            {transaction._id && (
+              <div className="mt-6 border-t pt-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <span className="text-muted-foreground mb-1 block text-sm">
+                      Document ID
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <p className="bg-muted/50 flex-1 rounded px-2 py-1.5 font-mono text-xs break-all">
+                        {transaction._id}
+                      </p>
+                      <Button
+                        onClick={handleCopyId}
+                        size="sm"
+                        variant="outline"
+                        shape="icon"
+                        className="flex-shrink-0"
+                        title="Copy ID"
+                      >
+                        {copied ? (
+                          <Check className="size-4 text-green-600" />
+                        ) : (
+                          <Copy className="size-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </Modal.Body>
 
           <Modal.Footer>
