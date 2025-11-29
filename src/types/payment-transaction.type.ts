@@ -7,6 +7,18 @@ export type TPaymentTransactionStatus =
   | "refunded";
 export type TCurrency = "USD" | "BDT";
 
+// Status response type (for getPaymentTransactionStatus API)
+export type TPaymentTransactionStatusResponse = {
+  status: TPaymentTransactionStatus;
+  gateway_status?: string;
+  amount: number;
+  currency: TCurrency;
+  payment_method_id?: string;
+  payment_method_name?: string;
+  return_url?: string;
+  cancel_url?: string;
+};
+
 export type TPaymentTransaction = {
   _id: string;
   user: string;
@@ -29,6 +41,8 @@ export type TPaymentTransaction = {
   failed_at?: string;
   customer_email?: string;
   customer_name?: string;
+  return_url?: string; // Frontend return URL (stored for redirect after payment)
+  cancel_url?: string; // Frontend cancel URL (stored for redirect after payment)
   gateway_response?: Record<string, any>;
   is_deleted?: boolean;
   created_at?: string;

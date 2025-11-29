@@ -5,6 +5,14 @@ import type { TPlan } from "@/types/plan.type";
 export type TPlanResponse = Response<TPlan>;
 export type TPlansResponse = Response<TPlan[]>;
 
+// GET Public Plans (No Auth Required)
+export async function fetchPublicPlans(
+  query?: Record<string, any>,
+): Promise<TPlansResponse> {
+  const response = await api.get("/api/plans/public", { params: query });
+  return response.data as TPlansResponse;
+}
+
 export const fetchPlans = async (
   query?: Record<string, any>,
 ): Promise<TPlansResponse> => {

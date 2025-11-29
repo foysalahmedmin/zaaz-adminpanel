@@ -3,6 +3,7 @@ import type {
   TInitiatePaymentResponseData,
   TPaymentTransaction,
   TPaymentTransactionResponse,
+  TPaymentTransactionStatusResponse,
   TPaymentTransactionsResponse,
 } from "@/types/payment-transaction.type";
 
@@ -37,9 +38,9 @@ export async function fetchPaymentTransaction(
 // GET Payment Transaction Status (User/Admin)
 export async function fetchPaymentTransactionStatus(
   id: string,
-): Promise<TPaymentTransactionResponse> {
+): Promise<{ data: TPaymentTransactionStatusResponse }> {
   const response = await api.get(`/api/payment-transactions/${id}/status`);
-  return response.data as TPaymentTransactionResponse;
+  return { data: response.data.data as TPaymentTransactionStatusResponse };
 }
 
 // POST Create Payment Transaction (Admin)

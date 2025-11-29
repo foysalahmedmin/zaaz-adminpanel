@@ -8,6 +8,7 @@ import { Link, useSearchParams } from "react-router";
 const CheckoutCancelPage = () => {
   const [searchParams] = useSearchParams();
   const packageId = searchParams.get("package_id");
+  const planId = searchParams.get("plan_id");
 
   // Fetch package details if packageId is provided
   const { data: packageResponse } = useQuery({
@@ -22,7 +23,7 @@ const CheckoutCancelPage = () => {
   const packageData = packageResponse?.data?.[0];
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="container mx-auto max-w-2xl space-y-6 py-12">
       <Card className="border-destructive/50 bg-destructive/5">
         <Card.Content className="space-y-4 py-12 text-center">
           <XCircle className="text-destructive mx-auto h-16 w-16" />
@@ -55,25 +56,22 @@ const CheckoutCancelPage = () => {
         {packageData && (
           <Button asChild size="lg">
             <Link
-              to={`/client/checkout?package_id=${packageData._id}`}
-              state={{ package: packageData }}
+              to={`/client/checkout?package_id=${packageData._id}${planId ? `&plan_id=${planId}` : ""}`}
             >
               Try Again
             </Link>
           </Button>
         )}
-        <Link to="/client/pricing">
-          <Button asChild variant="outline" size="lg">
-            Back to Pricing
-          </Button>
-        </Link>
+        <Button asChild variant="outline" size="lg">
+          <Link to="/client/pricing">Back to Pricing</Link>
+        </Button>
 
-        <Link to="/client/profile">
-          <Button asChild size="lg">
+        <Button asChild variant="outline" size="lg">
+          <Link to="/client/profile">
             <User className="h-4 w-4" />
             View Profile
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
     </div>
   );
