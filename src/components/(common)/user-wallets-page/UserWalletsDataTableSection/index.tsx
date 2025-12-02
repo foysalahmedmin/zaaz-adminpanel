@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import type { TColumn } from "@/components/ui/DataTable";
+import type { TColumn, TState } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
 import type { TBreadcrumbs } from "@/types/route-menu.type";
@@ -14,6 +14,7 @@ type UserWalletsDataTableSectionProps = {
   isLoading: boolean;
   isError: boolean;
   onView: (row: TUserWallet) => void;
+  state?: TState;
 };
 
 const UserWalletsDataTableSection: React.FC<
@@ -24,6 +25,7 @@ const UserWalletsDataTableSection: React.FC<
   isLoading,
   isError,
   onView,
+  state,
 }) => {
   const columns: TColumn<TUserWallet>[] = [
     {
@@ -132,10 +134,11 @@ const UserWalletsDataTableSection: React.FC<
         status={isLoading ? "loading" : isError ? "error" : "success"}
         columns={columns}
         data={data || []}
+        state={state}
         config={{
-          isSearchProcessed: false,
-          isSortProcessed: false,
-          isPaginationProcessed: false,
+          isSearchProcessed: true,
+          isSortProcessed: true,
+          isPaginationProcessed: true,
         }}
       />
     </div>

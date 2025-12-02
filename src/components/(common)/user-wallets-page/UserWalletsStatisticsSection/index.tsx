@@ -7,21 +7,22 @@ import React from "react";
 
 type UserWalletsStatisticsSectionProps = {
   data?: TUserWallet[];
+  meta?: {
+    total?: number;
+    statistics?: {
+      active?: number;
+      expired?: number;
+    };
+  };
 };
 
 const UserWalletsStatisticsSection: React.FC<
   UserWalletsStatisticsSectionProps
-> = ({ data }) => {
-  const total = data?.length || 0;
+> = ({ data, meta }) => {
+  const total = meta?.total || data?.length || 0;
   const totalTokens = data?.reduce((sum, d) => sum + (d?.token || 0), 0) || 0;
-  const expiredWallets =
-    data?.filter(
-      (d) => d?.expires_at && new Date(d.expires_at) < new Date(),
-    ).length || 0;
-  const activeWallets =
-    data?.filter(
-      (d) => !d?.expires_at || new Date(d.expires_at) >= new Date(),
-    ).length || 0;
+  const activeWallets = meta?.statistics?.active || 0;
+  const expiredWallets = meta?.statistics?.expired || 0;
 
   const statistics: TStatistic[] = [
     {

@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import type { TColumn } from "@/components/ui/DataTable";
+import type { TColumn, TState } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
 import type { TTokenTransaction } from "@/types/token-transaction.type";
@@ -12,6 +12,7 @@ type TokenTransactionsDataTableSectionProps = {
   isLoading: boolean;
   isError: boolean;
   onView: (row: TTokenTransaction) => void;
+  state?: TState;
 };
 
 const TokenTransactionsDataTableSection: React.FC<
@@ -21,6 +22,7 @@ const TokenTransactionsDataTableSection: React.FC<
   isLoading,
   isError,
   onView,
+  state,
 }) => {
   const columns: TColumn<TTokenTransaction>[] = [
     {
@@ -102,10 +104,11 @@ const TokenTransactionsDataTableSection: React.FC<
         status={isLoading ? "loading" : isError ? "error" : "success"}
         columns={columns}
         data={data || []}
+        state={state}
         config={{
-          isSearchProcessed: false,
-          isSortProcessed: false,
-          isPaginationProcessed: false,
+          isSearchProcessed: true,
+          isSortProcessed: true,
+          isPaginationProcessed: true,
         }}
       />
     </div>

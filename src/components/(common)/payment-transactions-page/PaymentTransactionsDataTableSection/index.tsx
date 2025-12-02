@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import type { TColumn } from "@/components/ui/DataTable";
+import type { TColumn, TState } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
 import type { TPaymentTransaction } from "@/types/payment-transaction.type";
@@ -11,11 +11,12 @@ type PaymentTransactionsDataTableSectionProps = {
   isLoading: boolean;
   isError: boolean;
   onView: (row: TPaymentTransaction) => void;
+  state?: TState;
 };
 
 const PaymentTransactionsDataTableSection: React.FC<
   PaymentTransactionsDataTableSectionProps
-> = ({ data = [], isLoading, isError, onView }) => {
+> = ({ data = [], isLoading, isError, onView, state }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "success":
@@ -112,10 +113,11 @@ const PaymentTransactionsDataTableSection: React.FC<
         status={isLoading ? "loading" : isError ? "error" : "success"}
         columns={columns}
         data={data || []}
+        state={state}
         config={{
-          isSearchProcessed: false,
-          isSortProcessed: false,
-          isPaginationProcessed: false,
+          isSearchProcessed: true,
+          isSortProcessed: true,
+          isPaginationProcessed: true,
         }}
       />
     </div>

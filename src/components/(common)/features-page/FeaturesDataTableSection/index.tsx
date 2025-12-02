@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/Button";
-import type { TColumn } from "@/components/ui/DataTable";
+import type { TColumn, TState } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
-import type { TBreadcrumbs } from "@/types/route-menu.type";
 import type { TFeature } from "@/types/feature.type";
+import type { TBreadcrumbs } from "@/types/route-menu.type";
 import { Edit, Eye, Trash } from "lucide-react";
 import React from "react";
 import { Link } from "react-router";
@@ -15,6 +15,7 @@ type FeaturesDataTableSectionProps = {
   isError: boolean;
   onEdit: (row: TFeature) => void;
   onDelete: (row: TFeature) => void;
+  state?: TState;
 };
 
 const FeaturesDataTableSection: React.FC<FeaturesDataTableSectionProps> = ({
@@ -24,6 +25,7 @@ const FeaturesDataTableSection: React.FC<FeaturesDataTableSectionProps> = ({
   isError,
   onEdit,
   onDelete,
+  state,
 }) => {
   const columns: TColumn<TFeature>[] = [
     {
@@ -66,9 +68,7 @@ const FeaturesDataTableSection: React.FC<FeaturesDataTableSectionProps> = ({
         <span
           className={cn(
             "rounded-full px-2 py-1 text-xs font-medium",
-            cell
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800",
+            cell ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800",
           )}
         >
           {cell ? "Active" : "Inactive"}
@@ -128,10 +128,11 @@ const FeaturesDataTableSection: React.FC<FeaturesDataTableSectionProps> = ({
         status={isLoading ? "loading" : isError ? "error" : "success"}
         columns={columns}
         data={data || []}
+        state={state}
         config={{
-          isSearchProcessed: false,
-          isSortProcessed: false,
-          isPaginationProcessed: false,
+          isSearchProcessed: true,
+          isSortProcessed: true,
+          isPaginationProcessed: true,
         }}
       />
     </div>
@@ -139,4 +140,3 @@ const FeaturesDataTableSection: React.FC<FeaturesDataTableSectionProps> = ({
 };
 
 export default FeaturesDataTableSection;
-

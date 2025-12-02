@@ -7,18 +7,23 @@ import React from "react";
 
 type PaymentTransactionsStatisticsSectionProps = {
   data?: TPaymentTransaction[];
+  meta?: {
+    total?: number;
+    statistics?: {
+      success?: number;
+      pending?: number;
+      failed?: number;
+    };
+  };
 };
 
 const PaymentTransactionsStatisticsSection: React.FC<
   PaymentTransactionsStatisticsSectionProps
-> = ({ data }) => {
-  const total = data?.length || 0;
-  const totalSuccess =
-    data?.filter((d) => d?.status === "success").length || 0;
-  const totalPending =
-    data?.filter((d) => d?.status === "pending").length || 0;
-  const totalFailed =
-    data?.filter((d) => d?.status === "failed").length || 0;
+> = ({ data, meta }) => {
+  const total = meta?.total || data?.length || 0;
+  const totalSuccess = meta?.statistics?.success || 0;
+  const totalPending = meta?.statistics?.pending || 0;
+  const totalFailed = meta?.statistics?.failed || 0;
 
   const statistics: TStatistic[] = [
     {

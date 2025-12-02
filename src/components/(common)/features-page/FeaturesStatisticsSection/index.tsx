@@ -7,18 +7,24 @@ import React from "react";
 
 type FeaturesStatisticsSectionProps = {
   data?: TFeature[];
+  meta?: {
+    total?: number;
+    statistics?: {
+      active?: number;
+      inactive?: number;
+      with_parent?: number;
+    };
+  };
 };
 
 const FeaturesStatisticsSection: React.FC<FeaturesStatisticsSectionProps> = ({
   data,
+  meta,
 }) => {
-  const total = data?.length || 0;
-  const totalActive =
-    data?.filter((d) => d?.is_active === true).length || 0;
-  const totalInactive =
-    data?.filter((d) => d?.is_active === false).length || 0;
-  const totalWithParent =
-    data?.filter((d) => d?.parent).length || 0;
+  const total = meta?.total || data?.length || 0;
+  const totalActive = meta?.statistics?.active || 0;
+  const totalInactive = meta?.statistics?.inactive || 0;
+  const totalWithParent = meta?.statistics?.with_parent || 0;
 
   const statistics: TStatistic[] = [
     {
@@ -60,4 +66,3 @@ const FeaturesStatisticsSection: React.FC<FeaturesStatisticsSectionProps> = ({
 };
 
 export default FeaturesStatisticsSection;
-

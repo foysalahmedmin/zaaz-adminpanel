@@ -7,17 +7,24 @@ import React from "react";
 
 type UsersStatisticsSectionProps = {
   data?: TUser[];
+  meta?: {
+    total?: number;
+    statistics?: {
+      "in-progress"?: number;
+      blocked?: number;
+      admin?: number;
+    };
+  };
 };
 
 const UsersStatisticsSection: React.FC<UsersStatisticsSectionProps> = ({
   data,
+  meta,
 }) => {
-  const total = data?.length || 0;
-  const totalAuthor = data?.filter((d) => d?.role === "admin").length || 0;
-  const totalActive =
-    data?.filter((d) => d?.status === "in-progress").length || 0;
-  const totalInactive =
-    data?.filter((d) => d?.status === "blocked").length || 0;
+  const total = meta?.total || data?.length || 0;
+  const totalAuthor = meta?.statistics?.admin || 0;
+  const totalActive = meta?.statistics?.["in-progress"] || 0;
+  const totalInactive = meta?.statistics?.blocked || 0;
 
   const statistics: TStatistic[] = [
     {

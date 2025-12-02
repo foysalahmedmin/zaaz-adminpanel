@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import type { TColumn } from "@/components/ui/DataTable";
+import type { TColumn, TState } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { URLS } from "@/config";
 import useUser from "@/hooks/states/useUser";
@@ -18,6 +18,7 @@ type UsersDataTableSectionProps = {
   isError: boolean;
   onEdit: (row: TUser) => void;
   onDelete: (row: TUser) => void;
+  state?: TState;
 };
 
 const UsersDataTableSection: React.FC<UsersDataTableSectionProps> = ({
@@ -27,6 +28,7 @@ const UsersDataTableSection: React.FC<UsersDataTableSectionProps> = ({
   isError,
   onEdit,
   onDelete,
+  state,
 }) => {
   const { user } = useUser();
   const { info } = user || {};
@@ -145,10 +147,11 @@ const UsersDataTableSection: React.FC<UsersDataTableSectionProps> = ({
         status={isLoading ? "loading" : isError ? "error" : "success"}
         columns={columns}
         data={data || []}
+        state={state}
         config={{
-          isSearchProcessed: false,
-          isSortProcessed: false,
-          isPaginationProcessed: false,
+          isSearchProcessed: true,
+          isSortProcessed: true,
+          isPaginationProcessed: true,
         }}
       />
     </div>

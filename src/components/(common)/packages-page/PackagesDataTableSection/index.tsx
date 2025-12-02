@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import type { TColumn } from "@/components/ui/DataTable";
+import type { TColumn, TState } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { Switch } from "@/components/ui/Switch";
 import { cn } from "@/lib/utils";
@@ -17,6 +17,7 @@ type PackagesDataTableSectionProps = {
   onEdit: (row: TPackage) => void;
   onDelete: (row: TPackage) => void;
   onToggleInitial?: (row: TPackage, is_initial: boolean) => void;
+  state?: TState;
 };
 
 const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
@@ -27,6 +28,7 @@ const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
   onEdit,
   onDelete,
   onToggleInitial,
+  state,
 }) => {
   const columns: TColumn<TPackage>[] = [
     {
@@ -175,10 +177,11 @@ const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
         status={isLoading ? "loading" : isError ? "error" : "success"}
         columns={columns}
         data={data || []}
+        state={state}
         config={{
-          isSearchProcessed: false,
-          isSortProcessed: false,
-          isPaginationProcessed: false,
+          isSearchProcessed: true,
+          isSortProcessed: true,
+          isPaginationProcessed: true,
         }}
       />
     </div>

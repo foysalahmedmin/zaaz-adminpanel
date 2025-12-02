@@ -7,15 +7,24 @@ import React from "react";
 
 type TokenTransactionsStatisticsSectionProps = {
   data?: TTokenTransaction[];
+  meta?: {
+    total?: number;
+    statistics?: {
+      increase?: number;
+      decrease?: number;
+      from_payment?: number;
+      from_bonus?: number;
+    };
+  };
 };
 
 const TokenTransactionsStatisticsSection: React.FC<
   TokenTransactionsStatisticsSectionProps
-> = ({ data }) => {
-  const total = data?.length || 0;
-  const totalIncrease = data?.filter((d) => d?.type === "increase").length || 0;
-  const totalDecrease = data?.filter((d) => d?.type === "decrease").length || 0;
-  const totalTokens = data?.reduce((sum, d) => sum + (d?.token || 0), 0) || 0;
+> = ({ data, meta }) => {
+  const total = meta?.total || data?.length || 0;
+  const totalIncrease = meta?.statistics?.increase || 0;
+  const totalDecrease = meta?.statistics?.decrease || 0;
+  const fromPayment = meta?.statistics?.from_payment || 0;
 
   const statistics: TStatistic[] = [
     {
@@ -40,11 +49,11 @@ const TokenTransactionsStatisticsSection: React.FC<
       icon: "arrow-down",
     },
     {
-      value: totalTokens,
-      title: "Total Tokens",
-      subtitle: "Across all transactions",
-      description: "Sum of tokens in all transactions.",
-      icon: "wallet",
+      value: fromPayment,
+      title: "From Payment",
+      subtitle: "Payment-based increases",
+      description: "Token increases from payment transactions.",
+      icon: "credit-card",
     },
   ];
   return (

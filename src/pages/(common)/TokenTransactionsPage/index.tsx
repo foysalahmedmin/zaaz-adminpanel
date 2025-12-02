@@ -12,6 +12,7 @@ import { fetchTokenTransactions } from "@/services/token-transaction.service";
 import type { TTokenTransaction } from "@/types/token-transaction.type";
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
+import { useState, useMemo, useEffect } from "react";
 
 const TokenTransactionsPage = () => {
   const dispatch = useDispatch();
@@ -24,15 +25,53 @@ const TokenTransactionsPage = () => {
     dispatch(openViewModal(transaction));
   };
 
+  // State management for search, sort, pagination
+  const [search, setSearch] = useState<string>("");
+  const [sort, setSort] = useState<string>("-created_at");
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [total, setTotal] = useState<number>(0);
+
+  // Build query parameters from state
+  const queryParams = useMemo(() => {
+    const params: Record<string, any> = {
+      page,
+      limit,
+    };
+
+    if (sort) {
+      params.sort = sort;
+    }
+
+    if (search) {
+      params.search = search;
+    }
+
+    return params;
+  }, [search, sort, page, limit]);
+
+  // Fetch data with query parameters
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["token-transactions"],
-    queryFn: () => fetchTokenTransactions({ sort: "-created_at" }),
+    queryKey: ["token-transactions", queryParams],
+    queryFn: () => fetchTokenTransactions(queryParams),
   });
+
+  // Update total from response
+  useEffect(() => {
+    if (data?.meta?.total !== undefined) {
+      setTotal(data.meta.total);
+    } else if (data?.data) {
+      setTotal(data.data.length);
+    }
+  }, [data]);
 
   return (
     <main className="space-y-6">
       <PageHeader name="Token Transactions" />
-      <TokenTransactionsStatisticsSection data={data?.data || []} />
+      <TokenTransactionsStatisticsSection
+        data={data?.data || []}
+        meta={data?.meta}
+      />
       <Card>
         <Card.Content>
           <TokenTransactionsDataTableSection
@@ -40,6 +79,17 @@ const TokenTransactionsPage = () => {
             isLoading={isLoading}
             isError={isError}
             onView={onOpenViewModal}
+            state={{
+              search,
+              sort,
+              page,
+              limit,
+              total,
+              setSearch,
+              setSort,
+              setPage,
+              setLimit,
+            }}
           />
         </Card.Content>
       </Card>

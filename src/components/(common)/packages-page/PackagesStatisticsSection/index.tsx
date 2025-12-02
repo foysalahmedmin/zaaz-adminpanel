@@ -7,24 +7,24 @@ import React from "react";
 
 type PackagesStatisticsSectionProps = {
   data?: TPackage[];
+  meta?: {
+    total?: number;
+    statistics?: {
+      active?: number;
+      inactive?: number;
+      initial?: number;
+    };
+  };
 };
 
 const PackagesStatisticsSection: React.FC<PackagesStatisticsSectionProps> = ({
   data,
+  meta,
 }) => {
-  const total = data?.length || 0;
-  const totalActive = data?.filter((d) => d?.is_active === true).length || 0;
-  const totalInactive = data?.filter((d) => d?.is_active === false).length || 0;
-  // Calculate total tokens from all plans across all packages
-  const totalTokens =
-    data?.reduce((sum, pkg) => {
-      const packageTokens =
-        pkg.plans?.reduce(
-          (planSum: number, pp: any) => planSum + (pp?.token || 0),
-          0,
-        ) || 0;
-      return sum + packageTokens;
-    }, 0) || 0;
+  const total = meta?.total || data?.length || 0;
+  const totalActive = meta?.statistics?.active || 0;
+  const totalInactive = meta?.statistics?.inactive || 0;
+  const totalInitial = meta?.statistics?.initial || 0;
 
   const statistics: TStatistic[] = [
     {
@@ -49,11 +49,11 @@ const PackagesStatisticsSection: React.FC<PackagesStatisticsSectionProps> = ({
       icon: "x-circle",
     },
     {
-      value: totalTokens,
-      title: "Total Tokens",
-      subtitle: "Across all packages",
-      description: "Sum of tokens in all packages.",
-      icon: "coins",
+      value: totalInitial,
+      title: "Initial Packages",
+      subtitle: "Default packages",
+      description: "Packages marked as initial/default.",
+      icon: "star",
     },
   ];
   return (

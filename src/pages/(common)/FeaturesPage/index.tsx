@@ -20,6 +20,7 @@ import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Plus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -64,10 +65,45 @@ const FeaturesPage = () => {
     }
   };
 
+  // State management for search, sort, pagination
+  const [search, setSearch] = useState<string>("");
+  const [sort, setSort] = useState<string>("sequence,created_at");
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [total, setTotal] = useState<number>(0);
+
+  // Build query parameters from state
+  const queryParams = useMemo(() => {
+    const params: Record<string, any> = {
+      page,
+      limit,
+    };
+
+    if (sort) {
+      params.sort = sort;
+    }
+
+    if (search) {
+      params.search = search;
+    }
+
+    return params;
+  }, [search, sort, page, limit]);
+
+  // Fetch data with query parameters
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["features"],
-    queryFn: () => fetchFeatures({ sort: "sequence,created_at" }),
+    queryKey: ["features", queryParams],
+    queryFn: () => fetchFeatures(queryParams),
   });
+
+  // Update total from response
+  useEffect(() => {
+    if (data?.meta?.total !== undefined) {
+      setTotal(data.meta.total);
+    } else if (data?.data) {
+      setTotal(data.data.length);
+    }
+  }, [data]);
 
   return (
     <main className="space-y-6">
@@ -79,7 +115,7 @@ const FeaturesPage = () => {
           </Button>
         }
       />
-      <FeaturesStatisticsSection data={data?.data || []} />
+      <FeaturesStatisticsSection data={data?.data || []} meta={data?.meta} />
       <Card>
         <Card.Content>
           <FeaturesDataTableSection
@@ -89,6 +125,17 @@ const FeaturesPage = () => {
             isError={isError}
             onEdit={onOpenEditModal}
             onDelete={onDelete}
+            state={{
+              search,
+              sort,
+              page,
+              limit,
+              total,
+              setSearch,
+              setSort,
+              setPage,
+              setLimit,
+            }}
           />
         </Card.Content>
       </Card>
