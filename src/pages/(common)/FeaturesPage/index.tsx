@@ -66,7 +66,7 @@ const FeaturesPage = () => {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["features"],
-    queryFn: () => fetchFeatures({ sort: "created_at" }),
+    queryFn: () => fetchFeatures({ sort: "sequence,created_at" }),
   });
 
   return (
