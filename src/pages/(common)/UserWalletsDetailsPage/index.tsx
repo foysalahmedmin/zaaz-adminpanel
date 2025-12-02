@@ -23,7 +23,6 @@ import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import {
   AlertCircle,
-  CheckCircle,
   Coins,
   CreditCard,
   Package,

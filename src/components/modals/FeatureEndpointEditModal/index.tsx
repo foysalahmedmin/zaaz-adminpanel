@@ -64,9 +64,7 @@ const FeatureEndpointEditModal: React.FC<FeatureEndpointEditModalProps> = ({
       return updateFeatureEndpoint(endpoint._id, data);
     },
     onSuccess: (data) => {
-      toast.success(
-        data?.message || "Feature Endpoint updated successfully!",
-      );
+      toast.success(data?.message || "Feature Endpoint updated successfully!");
       queryClient.invalidateQueries({ queryKey: key || [] });
       setIsOpen(false);
     },
@@ -134,7 +132,9 @@ const FeatureEndpointEditModal: React.FC<FeatureEndpointEditModalProps> = ({
                 <FormControl
                   type="text"
                   placeholder="/api/v1/endpoint"
-                  {...register("endpoint", { required: "Endpoint is required" })}
+                  {...register("endpoint", {
+                    required: "Endpoint is required",
+                  })}
                 />
                 {errors.endpoint && (
                   <FormControl.Error>
@@ -162,15 +162,18 @@ const FeatureEndpointEditModal: React.FC<FeatureEndpointEditModalProps> = ({
               </div>
 
               <div>
-                <FormControl.Label>Token Cost</FormControl.Label>
+                <FormControl.Label>Minimum Token Amount</FormControl.Label>
                 <FormControl
                   type="number"
                   placeholder="0"
                   min="0"
                   {...register("token", {
-                    required: "Token cost is required",
+                    required: "Minimum Token Amount is required",
                     valueAsNumber: true,
-                    min: { value: 0, message: "Token cost must be 0 or greater" },
+                    min: {
+                      value: 0,
+                      message: "Minimum Token Amount must be 0 or greater",
+                    },
                   })}
                 />
                 {errors.token && (
@@ -190,7 +193,9 @@ const FeatureEndpointEditModal: React.FC<FeatureEndpointEditModalProps> = ({
                   })}
                 />
                 {errors.sequence && (
-                  <FormControl.Error>{errors.sequence.message}</FormControl.Error>
+                  <FormControl.Error>
+                    {errors.sequence.message}
+                  </FormControl.Error>
                 )}
                 <FormControl.Helper>
                   Lower numbers appear first when sorting by sequence
@@ -234,4 +239,3 @@ const FeatureEndpointEditModal: React.FC<FeatureEndpointEditModalProps> = ({
 };
 
 export default FeatureEndpointEditModal;
-

@@ -72,7 +72,7 @@ const FeatureEndpointViewModal: React.FC<FeatureEndpointViewModalProps> = ({
               </div>
               <div>
                 <span className="text-muted-foreground text-sm">
-                  Token Cost
+                  Minimum Token Amount
                 </span>
                 <p className="font-semibold">
                   {endpoint.token?.toString() || "0"}

@@ -6,7 +6,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import {
   getPlanId,
-  getPlanDuration,
   getPlanName,
 } from "../utils/plan.utils";
 
@@ -83,7 +82,6 @@ type PricingHeaderProps = {
   previousPrice?: { USD: number; BDT: number };
   tokenAmount?: number;
   planName: string;
-  planDuration: number;
   packageName: string;
   badge?: string;
   isBangladesh?: boolean | null;
@@ -94,7 +92,6 @@ const PricingHeader: React.FC<PricingHeaderProps> = ({
   previousPrice,
   tokenAmount,
   planName,
-  planDuration,
   packageName,
   badge,
   isBangladesh,
@@ -117,14 +114,14 @@ const PricingHeader: React.FC<PricingHeaderProps> = ({
         <div className="space-y-1">
           {hasDiscount && previousPrice && (
             <p className="text-muted-foreground text-xs line-through">
-              {getPriceDisplay(previousPrice, isBangladesh)}
+              {getPriceDisplay(previousPrice, isBangladesh ?? null)}
             </p>
           )}
           <div className="flex items-end gap-1">
             {/* Price - Big and Bold */}
             <div className="space-y-1">
               <p className="text-2xl font-bold md:text-3xl">
-                {getPriceDisplay(price, isBangladesh)}
+                {getPriceDisplay(price, isBangladesh ?? null)}
               </p>
             </div>
             {/* Plan Name with Duration */}
@@ -352,7 +349,6 @@ export const PricingCard: React.FC<PricingCardProps> = ({
   const displayPlan = selectedPlanForDisplay || initialPlan;
   const plan = displayPlan?.plan;
   const planName = getPlanName(plan);
-  const planDuration = getPlanDuration(plan);
   const price = displayPlan?.price;
   const previousPrice = displayPlan?.previous_price;
   const tokenAmount = displayPlan?.token || 0;
@@ -370,7 +366,6 @@ export const PricingCard: React.FC<PricingCardProps> = ({
           previousPrice={previousPrice}
           tokenAmount={tokenAmount}
           planName={planName}
-          planDuration={planDuration}
           packageName={pkg?.name || ""}
           badge={pkg?.badge}
           isBangladesh={isBangladesh}

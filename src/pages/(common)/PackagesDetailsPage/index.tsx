@@ -91,7 +91,6 @@ const PackagesDetailsPage = () => {
   }
 
   const initialPlan = currentPackage.plans?.find((pp) => pp.is_initial);
-  const activePlans = currentPackage.plans?.filter((pp) => pp.is_active) || [];
 
   return (
     <div className="bg-background p-4">

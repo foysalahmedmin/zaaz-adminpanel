@@ -114,7 +114,7 @@ const FeatureEndpointsDataTableSection: React.FC<
       },
     },
     {
-      name: "Token Cost",
+      name: "Minimum Token",
       field: "token",
       isSortable: true,
       cell: ({ cell }) => {

@@ -2,7 +2,6 @@ import type { Response } from "./response.type";
 import type { TPackagePrice } from "./package.type";
 import type { TFeature } from "./feature.type";
 import type { TPlan } from "./plan.type";
-import type { TPackagePlan } from "./package-plan.type";
 
 // Embedded feature data structure for history
 export type TFeatureHistory = TFeature;

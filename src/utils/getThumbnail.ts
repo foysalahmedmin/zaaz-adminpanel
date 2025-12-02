@@ -5,7 +5,7 @@ export const getThumbnail = (thumbnail?: string, youtube?: string): string => {
   const { thumbnails } = youtube ? parseYouTubeUrl(youtube || "") : {};
 
   const result = thumbnail
-    ? URLS.news.thumbnail + "/" + thumbnail
+    ? `${URLS.api}/uploads/thumbnails/${thumbnail}`
     : thumbnails?.default || "/images/thumbnail.png";
 
   return result;

@@ -43,29 +43,27 @@ const PackagePlanAddModal: React.FC<PackagePlanAddModalProps> = ({
     register,
     handleSubmit,
     reset,
-    watch,
     formState: { errors },
   } = useForm<Partial<TPackagePlan>>({
     defaultValues: {
       package:
-        packagePlan?.package ||
-        (typeof packagePlan?.package === "object"
-          ? packagePlan?.package?._id || ""
-          : ""),
+        typeof packagePlan?.package === "string"
+          ? packagePlan.package
+          : typeof packagePlan?.package === "object" && packagePlan?.package
+            ? (packagePlan.package as any)?._id || ""
+            : "",
       plan:
-        packagePlan?.plan ||
-        (typeof packagePlan?.plan === "object"
-          ? packagePlan?.plan?._id || ""
-          : ""),
+        typeof packagePlan?.plan === "string"
+          ? packagePlan.plan
+          : typeof packagePlan?.plan === "object" && packagePlan?.plan
+            ? (packagePlan.plan as any)?._id || ""
+            : "",
       price: packagePlan?.price || { USD: 0, BDT: 0 },
       token: packagePlan?.token || 0,
       is_initial: packagePlan?.is_initial || false,
       is_active: packagePlan?.is_active ?? true,
     },
   });
-
-  const selectedPackage = watch("package");
-  const selectedPlan = watch("plan");
 
   const mutation = useMutation({
     mutationFn: (data: Partial<TPackagePlan>) => createPackagePlan(data),

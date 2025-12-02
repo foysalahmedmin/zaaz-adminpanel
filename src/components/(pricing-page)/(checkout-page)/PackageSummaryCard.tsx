@@ -68,7 +68,7 @@ export const PackageSummaryCard: React.FC<PackageSummaryCardProps> = ({
                         type="radio"
                         id={inputId}
                         name="plan"
-                        value={planId}
+                        value={planId || ""}
                         checked={isSelected}
                         onChange={(e) => onPlanSelect(e.target.value)}
                         className="mt-1"

@@ -24,10 +24,14 @@ const PackagePlansDataTableSection: React.FC<
       field: "package",
       isSortable: true,
       cell: ({ row }) => {
-        const packageName =
-          typeof row.package === "object" && row.package?.name
-            ? row.package.name
-            : row.package || "N/A";
+        const packageName: string =
+          typeof row.package === "object" &&
+          row.package &&
+          "name" in row.package
+            ? String(row.package.name)
+            : typeof row.package === "string"
+              ? row.package
+              : "N/A";
         return (
           <div className="flex items-center gap-2">
             <div className="flex-1 space-y-1">
@@ -45,7 +49,9 @@ const PackagePlansDataTableSection: React.FC<
         const planName =
           typeof row.plan === "object" && row.plan?.name
             ? row.plan.name
-            : row.plan || "N/A";
+            : typeof row.plan === "string"
+              ? row.plan
+              : "N/A";
         const planDuration =
           typeof row.plan === "object" && row.plan?.duration
             ? row.plan.duration
@@ -54,7 +60,7 @@ const PackagePlansDataTableSection: React.FC<
           <div className="space-y-1">
             <p className="font-semibold">{planName}</p>
             {planDuration && (
-              <p className="text-xs text-muted-foreground">
+              <p className="text-muted-foreground text-xs">
                 {planDuration} days
               </p>
             )}
@@ -69,7 +75,7 @@ const PackagePlansDataTableSection: React.FC<
       cell: ({ row }) => (
         <div className="space-y-1">
           <p className="font-semibold">${row.price?.USD || 0}</p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-xs">
             ৳{row.price?.BDT || 0}
           </p>
         </div>
@@ -91,9 +97,7 @@ const PackagePlansDataTableSection: React.FC<
         <span
           className={cn(
             "rounded-full px-2 py-1 text-xs font-medium",
-            cell
-              ? "bg-blue-100 text-blue-800"
-              : "bg-gray-100 text-gray-800",
+            cell ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800",
           )}
         >
           {cell ? "Yes" : "No"}
@@ -108,9 +112,7 @@ const PackagePlansDataTableSection: React.FC<
         <span
           className={cn(
             "rounded-full px-2 py-1 text-xs font-medium",
-            cell
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800",
+            cell ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800",
           )}
         >
           {cell ? "Active" : "Inactive"}
@@ -172,4 +174,3 @@ const PackagePlansDataTableSection: React.FC<
 };
 
 export default PackagePlansDataTableSection;
-

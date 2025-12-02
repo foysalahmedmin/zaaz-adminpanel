@@ -17,7 +17,6 @@ import {
   AlertCircle,
   CheckCircle,
   CreditCard,
-  DollarSign,
   Package,
   User,
   XCircle,

@@ -5,7 +5,7 @@ import type { TPlan } from "./plan.type";
 export type TPackagePlan = {
   _id: string;
   plan: TPlan | string;
-  package: string;
+  package: string | { _id: string; name: string; [key: string]: any };
   previous_price?: TPackagePrice;
   price: TPackagePrice;
   token: number;
