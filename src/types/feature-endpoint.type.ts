@@ -9,6 +9,7 @@ export type TFeatureEndpointMethod =
 
 export type TFeatureEndpoint = {
   _id: string;
+  value: string;
   feature: string;
   name: string;
   description?: string;

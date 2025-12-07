@@ -45,6 +45,12 @@ const FeatureEndpointViewModal: React.FC<FeatureEndpointViewModalProps> = ({
           <Modal.Body className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
+                <span className="text-muted-foreground text-sm">Value</span>
+                <p className="font-mono text-sm font-semibold">
+                  {endpoint.value || "N/A"}
+                </p>
+              </div>
+              <div>
                 <span className="text-muted-foreground text-sm">Name</span>
                 <p className="font-semibold">{endpoint.name || "N/A"}</p>
               </div>

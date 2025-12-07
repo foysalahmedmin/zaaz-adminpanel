@@ -4,6 +4,7 @@ export type TFeatureType = "writing" | "generation" | "other";
 
 export type TFeature = {
   _id: string;
+  value: string;
   parent?: string | null;
   name: string;
   description?: string;

@@ -31,9 +31,11 @@ const FeatureAddModal: React.FC<FeatureAddModalProps> = ({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<Partial<TFeature>>({
     defaultValues: {
+      value: feature?.value || "",
       name: feature?.name || "",
       description: feature?.description || "",
       path: feature?.path || "",
@@ -76,6 +78,33 @@ const FeatureAddModal: React.FC<FeatureAddModalProps> = ({
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <Modal.Body className="grid gap-4">
+              <div>
+                <FormControl.Label>Value</FormControl.Label>
+                <FormControl
+                  type="text"
+                  placeholder="feature-value"
+                  {...register("value", {
+                    required: "Value is required",
+                    pattern: {
+                      value: /^[a-z0-9-_]+$/,
+                      message:
+                        "Value must contain only lowercase letters, numbers, hyphens, and underscores",
+                    },
+                  })}
+                  onChange={(e) => {
+                    const lowerValue = e.target.value.toLowerCase().trim();
+                    setValue("value", lowerValue, { shouldValidate: true });
+                  }}
+                />
+                {errors.value && (
+                  <FormControl.Error>{errors.value.message}</FormControl.Error>
+                )}
+                <FormControl.Helper>
+                  Unique identifier for this feature (lowercase, alphanumeric,
+                  hyphens, underscores only)
+                </FormControl.Helper>
+              </div>
+
               <div>
                 <FormControl.Label>Name</FormControl.Label>
                 <FormControl
