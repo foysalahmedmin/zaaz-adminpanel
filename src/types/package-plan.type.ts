@@ -1,6 +1,6 @@
-import type { Response } from "./response.type";
 import type { TPackagePrice } from "./package.type";
 import type { TPlan } from "./plan.type";
+import type { Response } from "./response.type";
 
 export type TPackagePlan = {
   _id: string;
@@ -8,7 +8,7 @@ export type TPackagePlan = {
   package: string | { _id: string; name: string; [key: string]: any };
   previous_price?: TPackagePrice;
   price: TPackagePrice;
-  token: number;
+  credits: number;
   is_initial: boolean;
   is_active: boolean;
   is_deleted?: boolean;
@@ -18,4 +18,3 @@ export type TPackagePlan = {
 
 export type TPackagePlanResponse = Response<TPackagePlan>;
 export type TPackagePlansResponse = Response<TPackagePlan[]>;
-

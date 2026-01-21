@@ -1,9 +1,6 @@
 import type { Response } from "./response.type";
 
-export type TRole =
-  | "super-admin"
-  | "admin"
-  | "user";
+export type TRole = "super-admin" | "admin" | "user";
 
 export type TStatus = "in-progress" | "blocked";
 
@@ -15,6 +12,8 @@ export type TUser = {
   password_changed_at?: Date;
   role: TRole;
   status: TStatus;
+  auth_source: "email" | "google";
+  google_id?: string;
   is_verified?: boolean;
 };
 

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import type { TColumn } from "@/components/ui/DataTable";
+import type { TColumn, TState } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
 import type { TPackagePlan } from "@/types/package-plan.type";
@@ -13,11 +13,12 @@ type PackagePlansDataTableSectionProps = {
   onEdit: (row: TPackagePlan) => void;
   onDelete: (row: TPackagePlan) => void;
   onView?: (row: TPackagePlan) => void;
+  state?: TState;
 };
 
 const PackagePlansDataTableSection: React.FC<
   PackagePlansDataTableSectionProps
-> = ({ data = [], isLoading, isError, onEdit, onDelete, onView }) => {
+> = ({ data = [], isLoading, isError, onEdit, onDelete, onView, state }) => {
   const columns: TColumn<TPackagePlan>[] = [
     {
       name: "Package",
@@ -82,8 +83,8 @@ const PackagePlansDataTableSection: React.FC<
       ),
     },
     {
-      name: "Token",
-      field: "token",
+      name: "Credits",
+      field: "credits",
       isSortable: true,
       cell: ({ cell }) => (
         <span className="font-semibold">{cell?.toString() || "0"}</span>
@@ -168,6 +169,7 @@ const PackagePlansDataTableSection: React.FC<
           isSortProcessed: false,
           isPaginationProcessed: false,
         }}
+        state={state}
       />
     </div>
   );

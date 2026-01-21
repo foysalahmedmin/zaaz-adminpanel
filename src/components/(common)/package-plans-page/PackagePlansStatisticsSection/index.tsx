@@ -1,18 +1,23 @@
 import { Card } from "@/components/ui/Card";
 import type { TPackagePlan } from "@/types/package-plan.type";
+import type { TMeta } from "@/types/response.type";
 import React from "react";
 
 type PackagePlansStatisticsSectionProps = {
   data: TPackagePlan[];
+  meta?: TMeta;
 };
 
 const PackagePlansStatisticsSection: React.FC<
   PackagePlansStatisticsSectionProps
-> = ({ data }) => {
-  const totalPackagePlans = data.length;
-  const activePackagePlans = data.filter((pp) => pp.is_active).length;
-  const inactivePackagePlans = totalPackagePlans - activePackagePlans;
-  const initialPlans = data.filter((pp) => pp.is_initial).length;
+> = ({ data = [], meta }) => {
+  const totalPackagePlans = meta?.total || data.length || 0;
+  const activePackagePlans =
+    meta?.statistics?.active || data.filter((pp) => pp.is_active).length || 0;
+  const inactivePackagePlans =
+    meta?.statistics?.inactive || totalPackagePlans - activePackagePlans || 0;
+  const initialPlans =
+    meta?.statistics?.initial || data.filter((pp) => pp.is_initial).length || 0;
 
   return (
     <div className="grid gap-4 md:grid-cols-4">

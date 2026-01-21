@@ -26,7 +26,7 @@ const FeaturePerformanceChart: React.FC<FeaturePerformanceChartProps> = ({
   const chartData = data.map((item) => ({
     name: item.feature_name,
     usage_count: item.usage_count,
-    total_tokens_used: item.total_tokens_used,
+    total_credits_used: item.total_credits_used,
   }));
 
   return (

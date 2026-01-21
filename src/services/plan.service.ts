@@ -7,14 +7,14 @@ export type TPlansResponse = Response<TPlan[]>;
 
 // GET Public Plans (No Auth Required)
 export async function fetchPublicPlans(
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
 ): Promise<TPlansResponse> {
   const response = await api.get("/api/plans/public", { params: query });
   return response.data as TPlansResponse;
 }
 
 export const fetchPlans = async (
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
 ): Promise<TPlansResponse> => {
   const response = await api.get("/api/plans", { params: query });
   return response.data as TPlansResponse;

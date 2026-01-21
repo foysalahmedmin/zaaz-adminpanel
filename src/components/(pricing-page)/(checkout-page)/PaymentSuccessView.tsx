@@ -60,8 +60,8 @@ export const PaymentSuccessView: React.FC<PaymentSuccessViewProps> = ({
                 .filter((pp) => pp.is_initial)
                 .map((pp) => (
                   <div key={pp._id} className="flex justify-between">
-                    <span className="text-muted-foreground">Tokens:</span>
-                    <span className="font-semibold">{pp.token}</span>
+                    <span className="text-muted-foreground">Credits:</span>
+                    <span className="font-semibold">{pp.credits}</span>
                   </div>
                 ))}
             </div>
@@ -86,5 +86,3 @@ export const PaymentSuccessView: React.FC<PaymentSuccessViewProps> = ({
     </div>
   );
 };
-
-

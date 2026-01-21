@@ -30,3 +30,7 @@ export type AuthResponse = Response<{
   token?: string;
   info?: TUser;
 }>;
+
+export type GoogleSignInPayload = {
+  id_token: string;
+};

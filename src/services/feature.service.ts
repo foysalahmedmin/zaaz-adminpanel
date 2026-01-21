@@ -7,7 +7,7 @@ import type {
 
 // GET All Features (Admin)
 export async function fetchFeatures(
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
 ): Promise<TFeaturesResponse> {
   const response = await api.get("/api/features", { params: query });
   return response.data as TFeaturesResponse;

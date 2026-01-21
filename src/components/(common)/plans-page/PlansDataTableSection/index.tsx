@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import type { TColumn } from "@/components/ui/DataTable";
+import type { TColumn, TState } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
 import type { TPlan } from "@/types/plan.type";
@@ -13,6 +13,7 @@ type PlansDataTableSectionProps = {
   onEdit: (row: TPlan) => void;
   onDelete: (row: TPlan) => void;
   onView?: (row: TPlan) => void;
+  state?: TState;
 };
 
 const PlansDataTableSection: React.FC<PlansDataTableSectionProps> = ({
@@ -22,6 +23,7 @@ const PlansDataTableSection: React.FC<PlansDataTableSectionProps> = ({
   onEdit,
   onDelete,
   onView,
+  state,
 }) => {
   const columns: TColumn<TPlan>[] = [
     {
@@ -34,7 +36,7 @@ const PlansDataTableSection: React.FC<PlansDataTableSectionProps> = ({
           <div className="flex-1 space-y-1">
             <h3 className="text-base font-bold">{row.name}</h3>
             {row.description && (
-              <p className="text-muted-foreground text-sm line-clamp-1">
+              <p className="text-muted-foreground line-clamp-1 text-sm">
                 {row.description}
               </p>
             )}
@@ -66,9 +68,7 @@ const PlansDataTableSection: React.FC<PlansDataTableSectionProps> = ({
         <span
           className={cn(
             "rounded-full px-2 py-1 text-xs font-medium",
-            cell
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800",
+            cell ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800",
           )}
         >
           {cell ? "Active" : "Inactive"}
@@ -124,10 +124,10 @@ const PlansDataTableSection: React.FC<PlansDataTableSectionProps> = ({
           isSortProcessed: false,
           isPaginationProcessed: false,
         }}
+        state={state}
       />
     </div>
   );
 };
 
 export default PlansDataTableSection;
-

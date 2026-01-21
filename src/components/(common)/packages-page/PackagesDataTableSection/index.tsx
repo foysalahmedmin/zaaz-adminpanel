@@ -3,8 +3,8 @@ import type { TColumn, TState } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { Switch } from "@/components/ui/Switch";
 import { cn } from "@/lib/utils";
-import type { TBreadcrumbs } from "@/types/route-menu.type";
 import type { TPackage } from "@/types/package.type";
+import type { TBreadcrumbs } from "@/types/route-menu.type";
 import { Edit, Eye, Trash } from "lucide-react";
 import React from "react";
 import { Link } from "react-router";
@@ -60,6 +60,17 @@ const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
       ),
     },
     {
+      name: "Value",
+      field: "value",
+      isSortable: true,
+      isSearchable: true,
+      cell: ({ row }) => (
+        <span className="bg-muted text-muted-foreground rounded px-2 py-1 text-xs font-bold uppercase">
+          {row.value}
+        </span>
+      ),
+    },
+    {
       name: "Plans",
       field: "plans",
       cell: ({ row }) => {
@@ -72,17 +83,32 @@ const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
       },
     },
     {
-      name: "Initial Price",
+      name: "Plan Prices",
       field: "plans",
       cell: ({ row }) => {
-        const initialPlan = row.plans?.find((pp: any) => pp.is_initial) || row.plans?.[0];
-        if (!initialPlan) return <span className="text-muted-foreground">N/A</span>;
+        if (!row.plans || row.plans.length === 0)
+          return <span className="text-muted-foreground">No plans</span>;
         return (
-          <div className="text-sm">
-            <div className="font-semibold">${initialPlan.price?.USD || 0}</div>
-            <div className="text-muted-foreground text-xs">
-              ৳{initialPlan.price?.BDT || 0}
-            </div>
+          <div className="flex flex-col gap-2">
+            {row.plans.map((plan: any) => (
+              <div
+                key={plan._id}
+                className="border-muted-foreground/10 border-b pb-1 last:border-0 last:pb-0"
+              >
+                <p className="text-[10px] font-bold tracking-tighter uppercase">
+                  {plan.plan?.name || "Unnamed Plan"}
+                </p>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="text-muted-foreground font-bold">
+                    ${plan.price?.USD || 0}
+                  </span>
+                  <span className="text-muted-foreground">/</span>
+                  <span className="text-muted-foreground font-semibold">
+                    ৳{plan.price?.BDT || 0}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         );
       },
@@ -103,9 +129,7 @@ const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
         <span
           className={cn(
             "rounded-full px-2 py-1 text-xs font-medium",
-            cell
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800",
+            cell ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800",
           )}
         >
           {cell ? "Active" : "Inactive"}
@@ -189,4 +213,3 @@ const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
 };
 
 export default PackagesDataTableSection;
-

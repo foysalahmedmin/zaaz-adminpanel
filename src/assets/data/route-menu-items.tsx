@@ -1,8 +1,18 @@
 import AuthWrapper from "@/components/wrappers/AuthWrapper";
+import AiModelsPage from "@/pages/(common)/AiModelsPage";
+import BillingSettingsPage from "@/pages/(common)/BillingSettingsPage";
+import CouponsPage from "@/pages/(common)/CouponsPage";
+import CreditsProfitsDetailsPage from "@/pages/(common)/CreditsProfitsDetailsPage";
+import CreditsProfitsPage from "@/pages/(common)/CreditsProfitsPage";
+import CreditsTransactionsDetailsPage from "@/pages/(common)/CreditsTransactionsDetailsPage";
+import CreditsTransactionsPage from "@/pages/(common)/CreditsTransactionsPage";
+import CreditsUsagesPage from "@/pages/(common)/CreditsUsagesPage";
 import Dashboard from "@/pages/(common)/Dashboard";
+import FeaturePopupsPage from "@/pages/(common)/FeaturePopupsPage";
+import FeatureUsageLogsPage from "@/pages/(common)/FeatureUsageLogsPage";
 import FeaturesDetailsPage from "@/pages/(common)/FeaturesDetailsPage";
 import FeaturesPage from "@/pages/(common)/FeaturesPage";
-import PackagePlansPage from "@/pages/(common)/PackagePlansPage";
+import PackageTransactionsPage from "@/pages/(common)/PackageTransactionsPage";
 import PackagesDetailsPage from "@/pages/(common)/PackagesDetailsPage";
 import PackagesPage from "@/pages/(common)/PackagesPage";
 import PaymentMethodsPage from "@/pages/(common)/PaymentMethodsPage";
@@ -10,10 +20,6 @@ import PaymentTransactionsDetailsPage from "@/pages/(common)/PaymentTransactions
 import PaymentTransactionsPage from "@/pages/(common)/PaymentTransactionsPage";
 import PlansPage from "@/pages/(common)/PlansPage";
 import RecycleBinPage from "@/pages/(common)/RecycleBinPage";
-import TokenProfitsDetailsPage from "@/pages/(common)/TokenProfitsDetailsPage";
-import TokenProfitsPage from "@/pages/(common)/TokenProfitsPage";
-import TokenTransactionsDetailsPage from "@/pages/(common)/TokenTransactionsDetailsPage";
-import TokenTransactionsPage from "@/pages/(common)/TokenTransactionsPage";
 import UserDetailsPage from "@/pages/(common)/UserDetailsPage";
 import UserWalletsDetailsPage from "@/pages/(common)/UserWalletsDetailsPage";
 import UserWalletsPage from "@/pages/(common)/UserWalletsPage";
@@ -78,14 +84,9 @@ export const items: TItem[] = [
   },
   {
     roles: ["supper-admin", "admin"],
-    menuType: "title",
-    name: "Payment System",
-  },
-  {
-    roles: ["supper-admin", "admin"],
-    icon: "layout-template",
-    path: "features",
-    name: "Features",
+    icon: "wallet",
+    path: "user-wallets",
+    name: "User Wallets",
     routeType: "layout",
     menuType: "item-without-children",
     element: (
@@ -96,10 +97,10 @@ export const items: TItem[] = [
     children: [
       {
         index: true,
-        name: "Features",
+        name: "User Wallets",
         element: (
           <AuthWrapper roles={["supper-admin", "admin"]}>
-            <FeaturesPage />
+            <UserWalletsPage />
           </AuthWrapper>
         ),
         menuType: "invisible",
@@ -108,12 +109,28 @@ export const items: TItem[] = [
         path: ":id",
         element: (
           <AuthWrapper roles={["supper-admin", "admin"]}>
-            <FeaturesDetailsPage />
+            <UserWalletsDetailsPage />
           </AuthWrapper>
         ),
         menuType: "invisible",
       },
     ],
+  },
+  {
+    roles: ["supper-admin", "admin"],
+    menuType: "title",
+    name: "Payment System",
+  },
+  {
+    roles: ["supper-admin", "admin"],
+    icon: "cpu",
+    path: "ai-models",
+    name: "AI Models",
+    element: (
+      <AuthWrapper roles={["supper-admin", "admin"]}>
+        <AiModelsPage />
+      </AuthWrapper>
+    ),
   },
   {
     roles: ["supper-admin", "admin"],
@@ -134,31 +151,6 @@ export const items: TItem[] = [
         element: (
           <AuthWrapper roles={["supper-admin", "admin"]}>
             <PlansPage />
-          </AuthWrapper>
-        ),
-        menuType: "invisible",
-      },
-    ],
-  },
-  {
-    roles: ["supper-admin", "admin"],
-    icon: "link",
-    path: "package-plans",
-    name: "Package Plans",
-    routeType: "layout",
-    menuType: "invisible",
-    element: (
-      <AuthWrapper roles={["supper-admin", "admin"]}>
-        <Outlet />
-      </AuthWrapper>
-    ),
-    children: [
-      {
-        index: true,
-        name: "Package Plans",
-        element: (
-          <AuthWrapper roles={["supper-admin", "admin"]}>
-            <PackagePlansPage />
           </AuthWrapper>
         ),
         menuType: "invisible",
@@ -201,6 +193,76 @@ export const items: TItem[] = [
   },
   {
     roles: ["supper-admin", "admin"],
+    icon: "ticket",
+    path: "coupons",
+    name: "Coupons",
+    element: (
+      <AuthWrapper roles={["supper-admin", "admin"]}>
+        <CouponsPage />
+      </AuthWrapper>
+    ),
+  },
+  {
+    roles: ["supper-admin", "admin"],
+    icon: "layout-template",
+    path: "features",
+    name: "Features",
+    routeType: "layout",
+    menuType: "item-without-children",
+    element: (
+      <AuthWrapper roles={["supper-admin", "admin"]}>
+        <Outlet />
+      </AuthWrapper>
+    ),
+    children: [
+      {
+        index: true,
+        name: "Features",
+        element: (
+          <AuthWrapper roles={["supper-admin", "admin"]}>
+            <FeaturesPage />
+          </AuthWrapper>
+        ),
+        menuType: "invisible",
+      },
+      {
+        path: ":id",
+        element: (
+          <AuthWrapper roles={["supper-admin", "admin"]}>
+            <FeaturesDetailsPage />
+          </AuthWrapper>
+        ),
+        menuType: "invisible",
+      },
+    ],
+  },
+  {
+    roles: ["supper-admin", "admin"],
+    icon: "square-stack",
+    path: "feature-popups",
+    name: "Feature Popups",
+    routeType: "layout",
+    menuType: "item-without-children",
+    element: (
+      <AuthWrapper roles={["supper-admin", "admin"]}>
+        <Outlet />
+      </AuthWrapper>
+    ),
+    children: [
+      {
+        index: true,
+        name: "Feature Popups",
+        element: (
+          <AuthWrapper roles={["supper-admin", "admin"]}>
+            <FeaturePopupsPage />
+          </AuthWrapper>
+        ),
+        menuType: "invisible",
+      },
+    ],
+  },
+  {
+    roles: ["supper-admin", "admin"],
     icon: "credit-card",
     path: "payment-methods",
     name: "Payment Methods",
@@ -223,6 +285,56 @@ export const items: TItem[] = [
         menuType: "invisible",
       },
     ],
+  },
+  {
+    roles: ["supper-admin", "admin"],
+    icon: "percent",
+    path: "credits-profits",
+    name: "Credits Profits",
+    routeType: "layout",
+    menuType: "item-without-children",
+    element: (
+      <AuthWrapper roles={["supper-admin", "admin"]}>
+        <Outlet />
+      </AuthWrapper>
+    ),
+    children: [
+      {
+        index: true,
+        name: "Credits Profits",
+        element: (
+          <AuthWrapper roles={["supper-admin", "admin"]}>
+            <CreditsProfitsPage />
+          </AuthWrapper>
+        ),
+        menuType: "invisible",
+      },
+      {
+        path: ":id",
+        element: (
+          <AuthWrapper roles={["supper-admin", "admin"]}>
+            <CreditsProfitsDetailsPage />
+          </AuthWrapper>
+        ),
+        menuType: "invisible",
+      },
+    ],
+  },
+  {
+    roles: ["supper-admin", "admin"],
+    icon: "settings",
+    path: "billing-settings",
+    name: "Billing Settings",
+    element: (
+      <AuthWrapper roles={["supper-admin", "admin"]}>
+        <BillingSettingsPage />
+      </AuthWrapper>
+    ),
+  },
+  {
+    roles: ["supper-admin", "admin"],
+    menuType: "title",
+    name: "Activities",
   },
   {
     roles: ["supper-admin", "admin"],
@@ -260,9 +372,34 @@ export const items: TItem[] = [
   },
   {
     roles: ["supper-admin", "admin"],
+    icon: "shopping-bag",
+    path: "package-transactions",
+    name: "Package Transactions",
+    routeType: "layout",
+    menuType: "item-without-children",
+    element: (
+      <AuthWrapper roles={["supper-admin", "admin"]}>
+        <Outlet />
+      </AuthWrapper>
+    ),
+    children: [
+      {
+        index: true,
+        name: "Package Transactions",
+        element: (
+          <AuthWrapper roles={["supper-admin", "admin"]}>
+            <PackageTransactionsPage />
+          </AuthWrapper>
+        ),
+        menuType: "invisible",
+      },
+    ],
+  },
+  {
+    roles: ["supper-admin", "admin"],
     icon: "coins",
-    path: "token-transactions",
-    name: "Token Transactions",
+    path: "credits-transactions",
+    name: "Credits Transactions",
     routeType: "layout",
     menuType: "item-without-children",
     element: (
@@ -273,10 +410,10 @@ export const items: TItem[] = [
     children: [
       {
         index: true,
-        name: "Token Transactions",
+        name: "Credits Transactions",
         element: (
           <AuthWrapper roles={["supper-admin", "admin"]}>
-            <TokenTransactionsPage />
+            <CreditsTransactionsPage />
           </AuthWrapper>
         ),
         menuType: "invisible",
@@ -285,7 +422,7 @@ export const items: TItem[] = [
         path: ":id",
         element: (
           <AuthWrapper roles={["supper-admin", "admin"]}>
-            <TokenTransactionsDetailsPage />
+            <CreditsTransactionsDetailsPage />
           </AuthWrapper>
         ),
         menuType: "invisible",
@@ -294,76 +431,35 @@ export const items: TItem[] = [
   },
   {
     roles: ["supper-admin", "admin"],
-    icon: "percent",
-    path: "token-profits",
-    name: "Token Profits",
-    routeType: "layout",
-    menuType: "item-without-children",
+    icon: "activity",
+    path: "credits-usages",
+    name: "Credits Usages",
     element: (
       <AuthWrapper roles={["supper-admin", "admin"]}>
-        <Outlet />
+        <CreditsUsagesPage />
       </AuthWrapper>
     ),
-    children: [
-      {
-        index: true,
-        name: "Token Profits",
-        element: (
-          <AuthWrapper roles={["supper-admin", "admin"]}>
-            <TokenProfitsPage />
-          </AuthWrapper>
-        ),
-        menuType: "invisible",
-      },
-      {
-        path: ":id",
-        element: (
-          <AuthWrapper roles={["supper-admin", "admin"]}>
-            <TokenProfitsDetailsPage />
-          </AuthWrapper>
-        ),
-        menuType: "invisible",
-      },
-    ],
   },
   {
     roles: ["supper-admin", "admin"],
-    icon: "wallet",
-    path: "user-wallets",
-    name: "User Wallets",
-    routeType: "layout",
-    menuType: "item-without-children",
+    icon: "history",
+    path: "feature-usage-logs",
+    name: "Feature Usage Logs",
     element: (
       <AuthWrapper roles={["supper-admin", "admin"]}>
-        <Outlet />
+        <FeatureUsageLogsPage />
       </AuthWrapper>
     ),
-    children: [
-      {
-        index: true,
-        name: "User Wallets",
-        element: (
-          <AuthWrapper roles={["supper-admin", "admin"]}>
-            <UserWalletsPage />
-          </AuthWrapper>
-        ),
-        menuType: "invisible",
-      },
-      {
-        path: ":id",
-        element: (
-          <AuthWrapper roles={["supper-admin", "admin"]}>
-            <UserWalletsDetailsPage />
-          </AuthWrapper>
-        ),
-        menuType: "invisible",
-      },
-    ],
   },
   {
     roles: ["supper-admin", "admin"],
     menuType: "title",
-    name: "Activities",
+    name: "FEATURE CONFIGS",
+  },
+  {
+    roles: ["supper-admin", "admin"],
+    menuType: "title",
+    name: "RECYCLE BIN",
   },
   {
     roles: ["supper-admin", "admin"],

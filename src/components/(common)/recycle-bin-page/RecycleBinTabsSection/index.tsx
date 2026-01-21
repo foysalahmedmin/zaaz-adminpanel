@@ -3,6 +3,10 @@ import type { TColumn, TState } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import useAlert from "@/hooks/ui/useAlert";
 import {
+  deleteAiModelPermanent,
+  restoreAiModel,
+} from "@/services/ai-model.service";
+import {
   deleteFeatureEndpointPermanent,
   restoreFeatureEndpoint,
 } from "@/services/feature-endpoint.service";
@@ -14,16 +18,23 @@ import {
   deletePackagePermanent,
   restorePackage,
 } from "@/services/package.service";
+
 import {
-  deleteTokenProfitPermanent,
-  restoreTokenProfit,
-} from "@/services/token-profit.service";
+  deleteCreditsProfitPermanent,
+  restoreCreditsProfit,
+} from "@/services/credits-profit.service";
+import type { TPackageTransaction } from "@/services/package-transaction.service";
+import {
+  deletePackageTransactionPermanent,
+  restorePackageTransaction,
+} from "@/services/package-transaction.service";
 import { deleteUserPermanent, restoreUser } from "@/services/user.service";
+import type { TAiModel } from "@/types/ai-model.type";
+import type { TCreditsProfit } from "@/types/credits-profit.type";
 import type { TFeatureEndpoint } from "@/types/feature-endpoint.type";
 import type { TFeature } from "@/types/feature.type";
 import type { TPackage } from "@/types/package.type";
 import type { ErrorResponse } from "@/types/response.type";
-import type { TTokenProfit } from "@/types/token-profit.type";
 import type { TUser } from "@/types/user.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -35,12 +46,23 @@ type DeletedItemType =
   | "feature"
   | "feature-endpoint"
   | "package"
-  | "token-profit"
-  | "user";
+  | "credits-profit"
+  | "user"
+  | "package-transaction"
+  | "ai-model";
+
+type TRecycleBinItem =
+  | TFeature
+  | TFeatureEndpoint
+  | TPackage
+  | TCreditsProfit
+  | TUser
+  | TPackageTransaction
+  | TAiModel;
 
 type RecycleBinTabsSectionProps = {
   type: DeletedItemType;
-  data: (TFeature | TFeatureEndpoint | TPackage | TTokenProfit | TUser)[];
+  data: TRecycleBinItem[];
   meta?: { total?: number; page?: number; limit?: number };
   isLoading: boolean;
   isError: boolean;
@@ -67,10 +89,14 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
           return restoreFeatureEndpoint(id);
         case "package":
           return restorePackage(id);
-        case "token-profit":
-          return restoreTokenProfit(id);
+        case "credits-profit":
+          return restoreCreditsProfit(id);
         case "user":
           return restoreUser(id);
+        case "package-transaction":
+          return restorePackageTransaction(id);
+        case "ai-model":
+          return restoreAiModel(id);
         default:
           throw new Error("Invalid type");
       }
@@ -99,10 +125,14 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
           return deleteFeatureEndpointPermanent(id);
         case "package":
           return deletePackagePermanent(id);
-        case "token-profit":
-          return deleteTokenProfitPermanent(id);
+        case "credits-profit":
+          return deleteCreditsProfitPermanent(id);
         case "user":
           return deleteUserPermanent(id);
+        case "package-transaction":
+          return deletePackageTransactionPermanent(id);
+        case "ai-model":
+          return deleteAiModelPermanent(id);
         default:
           throw new Error("Invalid type");
       }
@@ -227,7 +257,7 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
       ];
     }
 
-    if (type === "token-profit") {
+    if (type === "credits-profit") {
       return [
         ...baseColumns.slice(0, 1),
         {
@@ -261,6 +291,68 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
         {
           name: "Role",
           field: "role",
+          isSortable: true,
+          cell: ({ cell }) => (
+            <span className="capitalize">{cell?.toString() || "N/A"}</span>
+          ),
+        },
+        ...baseColumns.slice(1),
+      ];
+    }
+
+    if (type === "package-transaction") {
+      return [
+        {
+          name: "User/Email",
+          field: "email",
+          isSearchable: true,
+          cell: ({ row }) => (
+            <div className="flex flex-col">
+              <span className="font-medium">{row.email || "N/A"}</span>
+              <span className="text-muted-foreground font-mono text-[10px]">
+                {row.user_wallet}
+              </span>
+            </div>
+          ),
+        },
+        {
+          name: "Package",
+          field: "package",
+          cell: ({ row }) => (
+            <span className="font-bold">
+              {typeof row.package === "object"
+                ? (row.package as any).name
+                : "Package"}
+            </span>
+          ),
+        },
+        {
+          name: "Credits",
+          field: "credits",
+          cell: ({ row }) => (
+            <span className="font-bold text-green-600">+{row.credits}</span>
+          ),
+        },
+        ...baseColumns.slice(1),
+      ];
+    }
+
+    if (type === "ai-model") {
+      return [
+        ...baseColumns.slice(0, 1),
+        {
+          name: "Value",
+          field: "value",
+          isSortable: true,
+          cell: ({ cell }) => (
+            <span className="font-mono text-xs">
+              {cell?.toString() || "N/A"}
+            </span>
+          ),
+        },
+        {
+          name: "Provider",
+          field: "provider",
           isSortable: true,
           cell: ({ cell }) => (
             <span className="capitalize">{cell?.toString() || "N/A"}</span>

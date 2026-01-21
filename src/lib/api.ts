@@ -56,6 +56,7 @@ api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError): Promise<AxiosResponse | never> => {
     if (error.response?.status === 403) {
+      console.warn("403 Forbidden: Logging out...");
       localStorage.removeItem("user");
       window.location.href = "/auth/signin";
       return Promise.reject(error);
@@ -66,12 +67,14 @@ api.interceptors.response.use(
     };
 
     if (originalRequest.url === "/api/auth/refresh-token") {
+      console.warn("Refresh token request failed. Logging out...");
       localStorage.removeItem("user");
       window.location.href = "/auth/signin";
       return Promise.reject(error);
     }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      console.log("401 Unauthorized: Attempting to refresh token...");
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({
@@ -94,6 +97,7 @@ api.interceptors.response.use(
           throw new Error("No new token returned");
         }
 
+        console.log("Token refreshed successfully.");
         localStorage.setItem(
           "user",
           JSON.stringify({ is_authenticated: true, ...data }),
@@ -104,6 +108,7 @@ api.interceptors.response.use(
 
         return api(originalRequest);
       } catch (error: unknown) {
+        console.error("Token refresh failed. Logging out...", error);
         processQueue(error, null);
         localStorage.removeItem("user");
         window.location.href = "/auth/signin";

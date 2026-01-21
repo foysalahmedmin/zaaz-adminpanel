@@ -129,9 +129,12 @@ const PackagesDetailsPage = () => {
                         {currentPackage.description}
                       </p>
                     )}
+                    <p className="text-muted-foreground mt-1 font-mono text-sm font-semibold uppercase">
+                      Value: {currentPackage.value}
+                    </p>
                   </div>
 
-                  <div className="flex gap-3 flex-wrap">
+                  <div className="flex flex-wrap gap-3">
                     {currentPackage.badge && (
                       <span className="bg-primary/10 text-primary rounded-full px-3 py-1 text-sm font-medium">
                         {currentPackage.badge}
@@ -144,7 +147,7 @@ const PackagesDetailsPage = () => {
                     )}
                     <span
                       className={cn(
-                        "rounded-full px-3 py-1 text-sm font-medium capitalize flex items-center gap-2",
+                        "flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium capitalize",
                         currentPackage.is_active
                           ? "bg-green-500/10 text-green-600 dark:text-green-400"
                           : "bg-red-500/10 text-red-600 dark:text-red-400",
@@ -158,8 +161,11 @@ const PackagesDetailsPage = () => {
                       {currentPackage.is_active ? "Active" : "Inactive"}
                     </span>
                     {initialPlan && (
-                      <span className="bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-full px-3 py-1 text-sm font-medium">
-                        Initial Plan: {initialPlan.price.USD > 0 ? `$${initialPlan.price.USD}` : `৳${initialPlan.price.BDT}`}
+                      <span className="rounded-full bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-600 dark:text-blue-400">
+                        Initial Plan:{" "}
+                        {initialPlan.price.USD > 0
+                          ? `$${initialPlan.price.USD}`
+                          : `৳${initialPlan.price.BDT}`}
                       </span>
                     )}
                   </div>
@@ -191,9 +197,19 @@ const PackagesDetailsPage = () => {
                     {currentPackage.name}
                   </div>
                 </div>
+                <div className="bg-muted rounded-lg p-4">
+                  <div className="text-muted-foreground mb-1 text-sm">
+                    Value
+                  </div>
+                  <div className="text-foreground text-sm font-bold uppercase">
+                    {currentPackage.value}
+                  </div>
+                </div>
                 {currentPackage.type && (
                   <div className="bg-muted rounded-lg p-4">
-                    <div className="text-muted-foreground mb-1 text-sm">Type</div>
+                    <div className="text-muted-foreground mb-1 text-sm">
+                      Type
+                    </div>
                     <div className="text-foreground text-sm capitalize">
                       {currentPackage.type}
                     </div>
@@ -210,7 +226,9 @@ const PackagesDetailsPage = () => {
                   </div>
                 )}
                 <div className="bg-muted rounded-lg p-4">
-                  <div className="text-muted-foreground mb-1 text-sm">Status</div>
+                  <div className="text-muted-foreground mb-1 text-sm">
+                    Status
+                  </div>
                   <div className="text-foreground text-sm capitalize">
                     {currentPackage.is_active ? "Active" : "Inactive"}
                   </div>
@@ -254,7 +272,7 @@ const PackagesDetailsPage = () => {
                 <h3 className="text-foreground mb-3 text-lg font-semibold">
                   Key Points
                 </h3>
-                <ul className="list-disc list-inside space-y-2">
+                <ul className="list-inside list-disc space-y-2">
                   {currentPackage.points.map((point: string, index: number) => (
                     <li key={index} className="text-muted-foreground text-sm">
                       {point}
@@ -265,14 +283,14 @@ const PackagesDetailsPage = () => {
             )}
 
             {/* Features Section */}
-            {currentPackage.features &&
-              currentPackage.features.length > 0 && (
-                <div>
-                  <h3 className="text-foreground mb-4 text-lg font-semibold">
-                    Accessible Features
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {currentPackage.features.map((feature: any, index: number) => {
+            {currentPackage.features && currentPackage.features.length > 0 && (
+              <div>
+                <h3 className="text-foreground mb-4 text-lg font-semibold">
+                  Accessible Features
+                </h3>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {currentPackage.features.map(
+                    (feature: any, index: number) => {
                       // Handle both object (populated) and string (ID) cases
                       const featureName =
                         typeof feature === "object" && feature !== null
@@ -306,27 +324,27 @@ const PackagesDetailsPage = () => {
                           )}
                         >
                           <div className="flex items-start gap-3">
-                            <div className="bg-primary/10 text-primary rounded-full p-2 flex-shrink-0">
+                            <div className="bg-primary/10 text-primary flex-shrink-0 rounded-full p-2">
                               <Settings className="h-4 w-4" />
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1">
-                                <p className="font-semibold text-base">
+                            <div className="min-w-0 flex-1">
+                              <div className="mb-1 flex items-center gap-2">
+                                <p className="text-base font-semibold">
                                   {featureName}
                                 </p>
                                 {!isActive && (
-                                  <span className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded-full px-2 py-0.5 text-xs font-medium">
+                                  <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
                                     Inactive
                                   </span>
                                 )}
                               </div>
                               {featureDescription && (
-                                <p className="text-muted-foreground text-sm line-clamp-2">
+                                <p className="text-muted-foreground line-clamp-2 text-sm">
                                   {featureDescription}
                                 </p>
                               )}
                               {featureType && (
-                                <span className="mt-2 inline-block bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 rounded-full px-2 py-0.5 text-xs font-medium capitalize">
+                                <span className="mt-2 inline-block rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-800 capitalize dark:bg-purple-900 dark:text-purple-200">
                                   {featureType}
                                 </span>
                               )}
@@ -334,10 +352,11 @@ const PackagesDetailsPage = () => {
                           </div>
                         </div>
                       );
-                    })}
-                  </div>
+                    },
+                  )}
                 </div>
-              )}
+              </div>
+            )}
 
             {/* Plans Section */}
             {currentPackage.plans && currentPackage.plans.length > 0 && (
@@ -345,7 +364,7 @@ const PackagesDetailsPage = () => {
                 <h3 className="text-foreground mb-4 text-lg font-semibold">
                   Package Plans
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   {currentPackage.plans.map((pp: any, index: number) => {
                     const plan = pp.plan;
                     const planName =
@@ -368,30 +387,30 @@ const PackagesDetailsPage = () => {
                       >
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <p className="font-semibold text-lg">
+                            <div className="mb-2 flex items-center gap-2">
+                              <p className="text-lg font-semibold">
                                 {planName}
                               </p>
                               {pp.is_initial && (
-                                <span className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded-full px-2 py-0.5 text-xs font-medium">
+                                <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                                   Initial
                                 </span>
                               )}
                               {!pp.is_active && (
-                                <span className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded-full px-2 py-0.5 text-xs font-medium">
+                                <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
                                   Inactive
                                 </span>
                               )}
                             </div>
-                            <p className="text-muted-foreground text-sm mb-3">
+                            <p className="text-muted-foreground mb-3 text-sm">
                               Duration: {planDuration} days
                             </p>
                             <div className="space-y-1">
-                              <p className="font-semibold text-lg">
+                              <p className="text-lg font-semibold">
                                 ${pp.price?.USD || 0} / ৳{pp.price?.BDT || 0}
                               </p>
                               <p className="text-muted-foreground text-sm">
-                                {pp.token} tokens
+                                {pp.credits} credits
                               </p>
                             </div>
                           </div>

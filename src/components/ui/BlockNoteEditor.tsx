@@ -1,5 +1,6 @@
 import useIsDark from "@/hooks/ui/useIsDark";
 import { cn } from "@/lib/utils";
+import { uploadFiles } from "@/services/storage.service";
 import { BlockNoteView } from "@blocknote/mantine";
 import { useCreateBlockNote } from "@blocknote/react";
 import React from "react";
@@ -28,6 +29,21 @@ const BlockNoteEditorComponent: React.FC<BlockNoteEditorProps> = ({
         content: "",
       },
     ],
+    uploadFile: async (file: File) => {
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const response = await uploadFiles(formData);
+        
+        if (response.success && response.data && response.data.length > 0) {
+          return response.data[0].url || "";
+        }
+        return "";
+      } catch (error) {
+        console.error("File upload failed:", error);
+        return "";
+      }
+    },
     domAttributes: {
       editor: {
         style: "min-height: 350px; padding-top: 1rem; padding-bottom: 1rem;",

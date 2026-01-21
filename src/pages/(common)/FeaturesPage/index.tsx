@@ -1,4 +1,5 @@
 import FeaturesDataTableSection from "@/components/(common)/features-page/FeaturesDataTableSection";
+import FeaturesFilterSection from "@/components/(common)/features-page/FeaturesFilterSection";
 import FeaturesStatisticsSection from "@/components/(common)/features-page/FeaturesStatisticsSection";
 import FeatureAddModal from "@/components/modals/FeatureAddModal";
 import FeatureEditModal from "@/components/modals/FeatureEditModal";
@@ -65,30 +66,41 @@ const FeaturesPage = () => {
     }
   };
 
-  // State management for search, sort, pagination
+  // State management for search, sort, pagination, and filters
   const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<string>("sequence,created_at");
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
 
+  // Filters state
+  const [gte, setGte] = useState<string>("");
+  const [lte, setLte] = useState<string>("");
+  const [status, setStatus] = useState<string>("");
+
+  const resetFilters = () => {
+    setGte("");
+    setLte("");
+    setStatus("");
+    setSearch("");
+    setPage(1);
+  };
+
   // Build query parameters from state
   const queryParams = useMemo(() => {
-    const params: Record<string, any> = {
+    const params: Record<string, string | number> = {
       page,
       limit,
     };
 
-    if (sort) {
-      params.sort = sort;
-    }
-
-    if (search) {
-      params.search = search;
-    }
+    if (sort) params.sort = sort;
+    if (search) params.search = search;
+    if (gte) params.gte = gte;
+    if (lte) params.lte = lte;
+    if (status) params.is_active = status === "active" ? "true" : "false";
 
     return params;
-  }, [search, sort, page, limit]);
+  }, [search, sort, page, limit, gte, lte, status]);
 
   // Fetch data with query parameters
   const { data, isLoading, isError } = useQuery({
@@ -100,8 +112,6 @@ const FeaturesPage = () => {
   useEffect(() => {
     if (data?.meta?.total !== undefined) {
       setTotal(data.meta.total);
-    } else if (data?.data) {
-      setTotal(data.data.length);
     }
   }, [data]);
 
@@ -116,6 +126,15 @@ const FeaturesPage = () => {
         }
       />
       <FeaturesStatisticsSection data={data?.data || []} meta={data?.meta} />
+      <FeaturesFilterSection
+        gte={gte}
+        setGte={setGte}
+        lte={lte}
+        setLte={setLte}
+        status={status}
+        setStatus={setStatus}
+        onReset={resetFilters}
+      />
       <Card>
         <Card.Content>
           <FeaturesDataTableSection

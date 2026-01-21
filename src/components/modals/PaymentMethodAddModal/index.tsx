@@ -19,6 +19,11 @@ type PaymentMethodAddModalProps = {
   mutationKey?: string[];
 };
 
+// Form type that allows config to be a string (from textarea) or object
+type PaymentMethodFormData = Omit<Partial<TPaymentMethod>, "config"> & {
+  config?: string | Record<string, unknown>;
+};
+
 const PaymentMethodAddModal: React.FC<PaymentMethodAddModalProps> = ({
   isOpen,
   setIsOpen,
@@ -32,16 +37,12 @@ const PaymentMethodAddModal: React.FC<PaymentMethodAddModalProps> = ({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Partial<TPaymentMethod>>({
+  } = useForm<PaymentMethodFormData>({
     defaultValues: {
       name: paymentMethod?.name || "",
       value: paymentMethod?.value || "",
       currency: paymentMethod?.currency || "USD",
       description: paymentMethod?.description || "",
-      secret: paymentMethod?.secret || "",
-      public_key: paymentMethod?.public_key || "",
-      webhook_key: paymentMethod?.webhook_key || "",
-      webhook_url: paymentMethod?.webhook_url || "",
       sequence: paymentMethod?.sequence || 0,
       is_test: paymentMethod?.is_test ?? false,
       is_active: paymentMethod?.is_active ?? true,
@@ -63,11 +64,25 @@ const PaymentMethodAddModal: React.FC<PaymentMethodAddModalProps> = ({
     },
   });
 
-  const onSubmit = (data: Partial<TPaymentMethod>) => {
+  const onSubmit = (data: PaymentMethodFormData) => {
+    // Parse config if it's a string (JSON)
+    let parsedConfig: Record<string, unknown> | undefined = undefined;
+    if (typeof data.config === "string" && data.config.trim()) {
+      try {
+        parsedConfig = JSON.parse(data.config);
+      } catch (error) {
+        toast.error("Invalid JSON in config field");
+        return;
+      }
+    } else if (typeof data.config === "object" && data.config !== null) {
+      parsedConfig = data.config;
+    }
+
     mutation.mutate({
       ...data,
       value: data.value?.toLowerCase(),
       currency: data.currency?.toUpperCase() as "USD" | "BDT",
+      config: parsedConfig,
     });
   };
 
@@ -141,56 +156,6 @@ const PaymentMethodAddModal: React.FC<PaymentMethodAddModalProps> = ({
               </div>
 
               <div>
-                <FormControl.Label>Secret *</FormControl.Label>
-                <FormControl
-                  type="text"
-                  placeholder="Enter secret key"
-                  {...register("secret", {
-                    required: "Secret is required",
-                  })}
-                />
-                {errors.secret && (
-                  <FormControl.Error>{errors.secret.message}</FormControl.Error>
-                )}
-              </div>
-
-              <div>
-                <FormControl.Label>Public Key</FormControl.Label>
-                <FormControl
-                  type="text"
-                  placeholder="Enter public key (optional)"
-                  {...register("public_key")}
-                />
-                {errors.public_key && (
-                  <FormControl.Error>
-                    {errors.public_key.message}
-                  </FormControl.Error>
-                )}
-                <FormControl.Helper>
-                  Publishable key for frontend use (e.g., Stripe publishable
-                  key)
-                </FormControl.Helper>
-              </div>
-
-              <div>
-                <FormControl.Label>Webhook Secret Key</FormControl.Label>
-                <FormControl
-                  type="text"
-                  placeholder="Enter webhook secret key (optional)"
-                  {...register("webhook_key")}
-                />
-                {errors.webhook_key && (
-                  <FormControl.Error>
-                    {errors.webhook_key.message}
-                  </FormControl.Error>
-                )}
-                <FormControl.Helper>
-                  Webhook secret key for signature verification (e.g., Stripe
-                  webhook secret: whsec_...)
-                </FormControl.Helper>
-              </div>
-
-              <div>
                 <FormControl.Label>Description</FormControl.Label>
                 <FormControl
                   as="textarea"
@@ -211,22 +176,22 @@ const PaymentMethodAddModal: React.FC<PaymentMethodAddModalProps> = ({
               </div>
 
               <div>
-                <FormControl.Label>Webhook URL</FormControl.Label>
+                <FormControl.Label>Config (JSON)</FormControl.Label>
                 <FormControl
-                  type="url"
-                  placeholder="https://example.com/webhook"
-                  {...register("webhook_url", {
-                    pattern: {
-                      value: /^https?:\/\/.+/,
-                      message: "Must be a valid URL",
-                    },
-                  })}
+                  as="textarea"
+                  className="h-auto min-h-32 py-2 font-mono text-sm"
+                  placeholder={`{\n  "appKey": "your_app_key",\n  "appSecret": "your_app_secret",\n  "username": "your_username",\n  "password": "your_password"\n}`}
+                  {...register("config")}
                 />
-                {errors.webhook_url && (
+                {errors.config && (
                   <FormControl.Error>
-                    {errors.webhook_url.message}
+                    {(errors.config as any)?.message || "Invalid config format"}
                   </FormControl.Error>
                 )}
+                <FormControl.Helper>
+                  Gateway-specific configuration in JSON format (e.g., bKash
+                  credentials). Leave empty to use environment variables.
+                </FormControl.Helper>
               </div>
 
               <div>

@@ -31,12 +31,11 @@ const FeatureAddModal: React.FC<FeatureAddModalProps> = ({
     register,
     handleSubmit,
     reset,
-    setValue,
     formState: { errors },
   } = useForm<Partial<TFeature>>({
     defaultValues: {
-      value: feature?.value || "",
       name: feature?.name || "",
+      value: feature?.value || "",
       description: feature?.description || "",
       path: feature?.path || "",
       prefix: feature?.prefix || "",
@@ -44,6 +43,10 @@ const FeatureAddModal: React.FC<FeatureAddModalProps> = ({
       sequence: feature?.sequence || 0,
       is_active: feature?.is_active ?? true,
       parent: feature?.parent || null,
+      max_word: {
+        free: feature?.max_word?.free || 0,
+        paid: feature?.max_word?.paid || 0,
+      },
     },
   });
 
@@ -79,33 +82,6 @@ const FeatureAddModal: React.FC<FeatureAddModalProps> = ({
           <form onSubmit={handleSubmit(onSubmit)}>
             <Modal.Body className="grid gap-4">
               <div>
-                <FormControl.Label>Value</FormControl.Label>
-                <FormControl
-                  type="text"
-                  placeholder="feature-value"
-                  {...register("value", {
-                    required: "Value is required",
-                    pattern: {
-                      value: /^[a-z0-9-_]+$/,
-                      message:
-                        "Value must contain only lowercase letters, numbers, hyphens, and underscores",
-                    },
-                  })}
-                  onChange={(e) => {
-                    const lowerValue = e.target.value.toLowerCase().trim();
-                    setValue("value", lowerValue, { shouldValidate: true });
-                  }}
-                />
-                {errors.value && (
-                  <FormControl.Error>{errors.value.message}</FormControl.Error>
-                )}
-                <FormControl.Helper>
-                  Unique identifier for this feature (lowercase, alphanumeric,
-                  hyphens, underscores only)
-                </FormControl.Helper>
-              </div>
-
-              <div>
                 <FormControl.Label>Name</FormControl.Label>
                 <FormControl
                   type="text"
@@ -115,6 +91,38 @@ const FeatureAddModal: React.FC<FeatureAddModalProps> = ({
                 {errors.name && (
                   <FormControl.Error>{errors.name.message}</FormControl.Error>
                 )}
+              </div>
+
+              <div>
+                <FormControl.Label>Value</FormControl.Label>
+                <FormControl
+                  type="text"
+                  placeholder="feature-value"
+                  {...register("value", {
+                    required: "Value is required",
+                    minLength: {
+                      value: 2,
+                      message: "Value must be at least 2 characters",
+                    },
+                    maxLength: {
+                      value: 100,
+                      message: "Value cannot exceed 100 characters",
+                    },
+                    pattern: {
+                      value: /^[a-z0-9-_]+$/,
+                      message:
+                        "Value must contain only lowercase letters, numbers, hyphens, and underscores",
+                    },
+                  })}
+                />
+                {errors.value && (
+                  <FormControl.Error>{errors.value.message}</FormControl.Error>
+                )}
+                <FormControl.Helper>
+                  Unique identifier (lowercase, alphanumeric with
+                  hyphens/underscores). Will be automatically converted to
+                  lowercase.
+                </FormControl.Helper>
               </div>
 
               <div>
@@ -196,6 +204,49 @@ const FeatureAddModal: React.FC<FeatureAddModalProps> = ({
                     Active
                   </span>
                 </label>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <FormControl.Label>Max Word (Free)</FormControl.Label>
+                  <FormControl
+                    type="number"
+                    placeholder="0"
+                    min="0"
+                    {...register("max_word.free", {
+                      valueAsNumber: true,
+                      min: {
+                        value: 0,
+                        message: "Max word must be 0 or greater",
+                      },
+                    })}
+                  />
+                  {errors.max_word?.free && (
+                    <FormControl.Error>
+                      {errors.max_word.free.message}
+                    </FormControl.Error>
+                  )}
+                </div>
+                <div>
+                  <FormControl.Label>Max Word (Paid)</FormControl.Label>
+                  <FormControl
+                    type="number"
+                    placeholder="0"
+                    min="0"
+                    {...register("max_word.paid", {
+                      valueAsNumber: true,
+                      min: {
+                        value: 0,
+                        message: "Max word must be 0 or greater",
+                      },
+                    })}
+                  />
+                  {errors.max_word?.paid && (
+                    <FormControl.Error>
+                      {errors.max_word.paid.message}
+                    </FormControl.Error>
+                  )}
+                </div>
               </div>
             </Modal.Body>
 

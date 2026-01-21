@@ -1,4 +1,5 @@
 import PaymentMethodsDataTableSection from "@/components/(common)/payment-methods-page/PaymentMethodsDataTableSection";
+import PaymentMethodsFilterSection from "@/components/(common)/payment-methods-page/PaymentMethodsFilterSection";
 import PaymentMethodsStatisticsSection from "@/components/(common)/payment-methods-page/PaymentMethodsStatisticsSection";
 import PaymentMethodAddModal from "@/components/modals/PaymentMethodAddModal";
 import PaymentMethodEditModal from "@/components/modals/PaymentMethodEditModal";
@@ -25,6 +26,7 @@ import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Plus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -33,8 +35,25 @@ const PaymentMethodsPage = () => {
   const confirm = useAlert();
   const dispatch = useDispatch();
 
-  const { isAddModalOpen, isEditModalOpen, isViewModalOpen, selectedPaymentMethod } =
-    useSelector((state: RootState) => state.paymentMethodsPage);
+  const {
+    isAddModalOpen,
+    isEditModalOpen,
+    isViewModalOpen,
+    selectedPaymentMethod,
+  } = useSelector((state: RootState) => state.paymentMethodsPage);
+
+  // State management for search, sort, pagination
+  const [search, setSearch] = useState<string>("");
+  const [sort, setSort] = useState<string>("-created_at");
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [total, setTotal] = useState<number>(0);
+
+  // Filter states
+  const [gte, setGte] = useState<string>("");
+  const [lte, setLte] = useState<string>("");
+  const [isActive, setIsActive] = useState<string>("");
+  const [currency, setCurrency] = useState<string>("");
 
   const onOpenAddModal = () => {
     dispatch(openAddModal());
@@ -73,10 +92,44 @@ const PaymentMethodsPage = () => {
     }
   };
 
+  // Build query parameters from state
+  const queryParams = useMemo(() => {
+    const params: Record<string, string | number> = {
+      page,
+      limit,
+    };
+
+    if (sort) params.sort = sort;
+    if (search) params.search = search;
+    if (gte) params.gte = gte;
+    if (lte) params.lte = lte;
+    if (isActive) params.is_active = isActive;
+    if (currency) params.currency = currency;
+
+    return params;
+  }, [search, sort, page, limit, gte, lte, isActive, currency]);
+
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["payment-methods"],
-    queryFn: () => fetchPaymentMethods({ sort: "created_at" }),
+    queryKey: ["payment-methods", queryParams],
+    queryFn: () => fetchPaymentMethods(queryParams),
   });
+
+  // Update total from response
+  useEffect(() => {
+    if (data?.meta?.total !== undefined) {
+      setTotal(data.meta.total);
+    }
+  }, [data]);
+
+  const resetFilters = () => {
+    setGte("");
+    setLte("");
+    setIsActive("");
+    setCurrency("");
+    setSearch("");
+    setSort("-created_at");
+    setPage(1);
+  };
 
   return (
     <main className="space-y-6">
@@ -88,7 +141,24 @@ const PaymentMethodsPage = () => {
           </Button>
         }
       />
-      <PaymentMethodsStatisticsSection data={data?.data || []} />
+
+      <PaymentMethodsStatisticsSection
+        data={data?.data || []}
+        meta={data?.meta}
+      />
+
+      <PaymentMethodsFilterSection
+        gte={gte}
+        setGte={setGte}
+        lte={lte}
+        setLte={setLte}
+        isActive={isActive}
+        setIsActive={setIsActive}
+        currency={currency}
+        setCurrency={setCurrency}
+        onReset={resetFilters}
+      />
+
       <Card>
         <Card.Content>
           <PaymentMethodsDataTableSection
@@ -98,6 +168,17 @@ const PaymentMethodsPage = () => {
             onView={onOpenViewModal}
             onEdit={onOpenEditModal}
             onDelete={onDelete}
+            state={{
+              search,
+              sort,
+              page,
+              limit,
+              total,
+              setSearch,
+              setSort,
+              setPage,
+              setLimit,
+            }}
           />
         </Card.Content>
       </Card>

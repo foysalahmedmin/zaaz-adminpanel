@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import type { TColumn } from "@/components/ui/DataTable";
+import type { TColumn, TState } from "@/components/ui/DataTable";
 import DataTable from "@/components/ui/DataTable";
 import { cn } from "@/lib/utils";
 import type { TPaymentMethod } from "@/types/payment-method.type";
@@ -13,11 +13,12 @@ type PaymentMethodsDataTableSectionProps = {
   onView?: (row: TPaymentMethod) => void;
   onEdit: (row: TPaymentMethod) => void;
   onDelete: (row: TPaymentMethod) => void;
+  state?: TState;
 };
 
 const PaymentMethodsDataTableSection: React.FC<
   PaymentMethodsDataTableSectionProps
-> = ({ data = [], isLoading, isError, onView, onEdit, onDelete }) => {
+> = ({ data = [], isLoading, isError, onView, onEdit, onDelete, state }) => {
   const columns: TColumn<TPaymentMethod>[] = [
     {
       name: "Name",
@@ -142,6 +143,7 @@ const PaymentMethodsDataTableSection: React.FC<
           isSortProcessed: false,
           isPaginationProcessed: false,
         }}
+        state={state}
       />
     </div>
   );

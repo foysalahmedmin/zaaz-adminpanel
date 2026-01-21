@@ -2,12 +2,12 @@ import DashboardChartsSection from "@/components/(common)/dashboard/DashboardCha
 import DashboardStatisticsSection from "@/components/(common)/dashboard/DashboardStatisticsSection";
 import PageHeader from "@/components/sections/PageHeader";
 import {
+  fetchDashboardCreditsFlow,
   fetchDashboardFeatures,
   fetchDashboardPackages,
   fetchDashboardPaymentMethods,
   fetchDashboardRevenue,
   fetchDashboardStatistics,
-  fetchDashboardTokenFlow,
   fetchDashboardTransactions,
   fetchDashboardUserGrowth,
 } from "@/services/dashboard.service";
@@ -42,11 +42,13 @@ const Dashboard = () => {
       queryFn: fetchDashboardPaymentMethods,
     });
 
-  // Fetch token flow data
-  const { data: tokenFlowResponse, isLoading: tokenFlowLoading } = useQuery({
-    queryKey: ["dashboard", "token-flow", period],
-    queryFn: () => fetchDashboardTokenFlow(period),
-  });
+  // Fetch credits flow data
+  const { data: creditsFlowResponse, isLoading: creditsFlowLoading } = useQuery(
+    {
+      queryKey: ["dashboard", "credits-flow", period],
+      queryFn: () => fetchDashboardCreditsFlow(period),
+    },
+  );
 
   // Fetch user growth data
   const { data: userGrowthResponse, isLoading: userGrowthLoading } = useQuery({
@@ -66,14 +68,12 @@ const Dashboard = () => {
     queryFn: fetchDashboardFeatures,
   });
 
-  console.log(featuresResponse);
-
   const isLoading =
     statisticsLoading ||
     revenueLoading ||
     transactionsLoading ||
     paymentMethodsLoading ||
-    tokenFlowLoading ||
+    creditsFlowLoading ||
     userGrowthLoading ||
     packagesLoading ||
     featuresLoading;
@@ -92,7 +92,7 @@ const Dashboard = () => {
             revenueData={revenueResponse?.data}
             transactionStatusData={transactionsResponse?.data}
             paymentMethodData={paymentMethodsResponse?.data}
-            tokenFlowData={tokenFlowResponse?.data}
+            creditsFlowData={creditsFlowResponse?.data}
             userGrowthData={userGrowthResponse?.data}
             packageData={packagesResponse?.data}
             featureData={featuresResponse?.data}

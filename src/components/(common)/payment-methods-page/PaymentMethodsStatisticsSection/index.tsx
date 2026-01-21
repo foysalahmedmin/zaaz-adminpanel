@@ -3,21 +3,35 @@ import {
   type TStatistic,
 } from "@/components/cards/StatisticCard";
 import type { TPaymentMethod } from "@/types/payment-method.type";
+import type { TMeta } from "@/types/response.type";
 import React from "react";
 
 type PaymentMethodsStatisticsSectionProps = {
   data?: TPaymentMethod[];
+  meta?: TMeta;
 };
 
 const PaymentMethodsStatisticsSection: React.FC<
   PaymentMethodsStatisticsSectionProps
-> = ({ data }) => {
-  const total = data?.length || 0;
-  const totalActive = data?.filter((d) => d?.is_active === true).length || 0;
-  const totalInactive = data?.filter((d) => d?.is_active === false).length || 0;
-  const totalTest = data?.filter((d) => d?.is_test === true).length || 0;
-  const totalUSD = data?.filter((d) => d?.currency === "USD").length || 0;
-  const totalBDT = data?.filter((d) => d?.currency === "BDT").length || 0;
+> = ({ data = [], meta }) => {
+  const total = meta?.total || data?.length || 0;
+  const totalActive =
+    meta?.statistics?.active ||
+    data?.filter((d) => d?.is_active === true).length ||
+    0;
+  const totalInactive = meta?.statistics?.inactive || total - totalActive || 0;
+  const totalTest =
+    meta?.statistics?.test ||
+    data?.filter((d) => d?.is_test === true).length ||
+    0;
+  const totalUSD =
+    meta?.statistics?.usd ||
+    data?.filter((d) => d?.currency === "USD").length ||
+    0;
+  const totalBDT =
+    meta?.statistics?.bdt ||
+    data?.filter((d) => d?.currency === "BDT").length ||
+    0;
 
   const statistics: TStatistic[] = [
     {

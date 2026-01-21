@@ -7,7 +7,7 @@ import type {
 
 // GET All Feature Endpoints (Admin)
 export async function fetchFeatureEndpoints(
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
 ): Promise<TFeatureEndpointsResponse> {
   const response = await api.get("/api/feature-endpoints", { params: query });
   return response.data as TFeatureEndpointsResponse;

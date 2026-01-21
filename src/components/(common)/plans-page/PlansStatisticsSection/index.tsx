@@ -1,17 +1,25 @@
 import { Card } from "@/components/ui/Card";
 import type { TPlan } from "@/types/plan.type";
+import type { TMeta } from "@/types/response.type";
 import React from "react";
 
 type PlansStatisticsSectionProps = {
   data: TPlan[];
+  meta?: TMeta;
 };
 
 const PlansStatisticsSection: React.FC<PlansStatisticsSectionProps> = ({
-  data,
+  data = [],
+  meta,
 }) => {
-  const totalPlans = data.length;
-  const activePlans = data.filter((p) => p.is_active).length;
-  const inactivePlans = totalPlans - activePlans;
+  const totalPlans = meta?.total || data.length || 0;
+  const activePlans =
+    meta?.statistics?.active || data.filter((p) => p.is_active).length || 0;
+  const inactivePlans =
+    meta?.statistics?.inactive ||
+    totalPlans -
+      (meta?.statistics?.active || data.filter((p) => p.is_active).length) ||
+    0;
 
   return (
     <div className="grid gap-4 md:grid-cols-3">

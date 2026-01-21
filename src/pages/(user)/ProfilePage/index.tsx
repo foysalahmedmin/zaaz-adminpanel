@@ -1,12 +1,23 @@
+import CreditsTransactionViewModal from "@/components/modals/CreditsTransactionViewModal";
+import PackageTransactionViewModal from "@/components/modals/PackageTransactionViewModal";
 import PaymentTransactionViewModal from "@/components/modals/PaymentTransactionViewModal";
-import TokenTransactionViewModal from "@/components/modals/TokenTransactionViewModal";
 import Loader from "@/components/partials/Loader";
 import PageHeader from "@/components/sections/PageHeader";
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { FormControl } from "@/components/ui/FormControl";
+import { Pagination } from "@/components/ui/Pagination";
 import { Tabs } from "@/components/ui/Tabs";
 import { URLS } from "@/config";
+import {
+  closeViewModal as closeCreditsViewModal,
+  openViewModal as openCreditsViewModal,
+} from "@/redux/slices/credits-transactions-page-slice";
+import {
+  closeViewModal as closePackageViewModal,
+  openViewModal as openPackageViewModal,
+} from "@/redux/slices/package-transactions-page-slice";
 import {
   closeViewModal as closePaymentViewModal,
   openViewModal as openPaymentViewModal,
@@ -19,20 +30,20 @@ import {
   stopEditing,
   toggleShowPassword,
 } from "@/redux/slices/profile-page-slice";
-import {
-  closeViewModal as closeTokenViewModal,
-  openViewModal as openTokenViewModal,
-} from "@/redux/slices/token-transactions-page-slice";
 import type { RootState } from "@/redux/store";
 import { changePassword } from "@/services/auth.service";
+import { fetchSelfCreditsTransactions } from "@/services/credits-transaction.service";
+import {
+  fetchSelfPackageTransactions,
+  TPackageTransaction,
+} from "@/services/package-transaction.service";
 import { fetchSelfPaymentTransactions } from "@/services/payment-transaction.service";
-import { fetchSelfTokenTransactions } from "@/services/token-transaction.service";
 import { fetchSelfWallet } from "@/services/user-wallet.service";
 import { fetchSelf, updateSelf } from "@/services/user.service";
 import type { ChangePasswordPayload } from "@/types/auth.type";
+import type { TCreditsTransaction } from "@/types/credits-transaction.type";
 import type { TPaymentTransaction } from "@/types/payment-transaction.type";
 import type { ErrorResponse } from "@/types/response.type";
-import type { TTokenTransaction } from "@/types/token-transaction.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import {
@@ -48,13 +59,14 @@ import {
   Loader2,
   Lock,
   Mail,
+  Package,
   Save,
   Shield,
   User,
   Wallet,
   X,
 } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -65,6 +77,14 @@ const ProfilePage = () => {
 
   const { isEditing, isChangingPassword, showPassword, previewImage } =
     useSelector((state: RootState) => state.profilePage);
+
+  // Pagination States
+  const [paymentPage, setPaymentPage] = useState(1);
+  const [paymentLimit, setPaymentLimit] = useState(10);
+  const [creditsPage, setCreditsPage] = useState(1);
+  const [creditsLimit, setCreditsLimit] = useState(10);
+  const [packagePage, setPackagePage] = useState(1);
+  const [packageLimit, setPackageLimit] = useState(10);
 
   // Fetch user data (self only)
   const {
@@ -90,30 +110,61 @@ const ProfilePage = () => {
 
   // Fetch payment transactions (self only)
   const { data: paymentTransactionsResponse } = useQuery({
-    queryKey: ["payment-transactions", "self"],
+    queryKey: ["payment-transactions", "self", paymentPage, paymentLimit],
     queryFn: () =>
-      fetchSelfPaymentTransactions({ sort: "-created_at", limit: 10 }),
+      fetchSelfPaymentTransactions({
+        sort: "-created_at",
+        limit: paymentLimit,
+        page: paymentPage,
+      }),
     enabled: !!userId,
   });
 
   const paymentTransactions = paymentTransactionsResponse?.data || [];
+  const paymentMeta = paymentTransactionsResponse?.meta;
 
-  // Fetch token transactions (self only)
-  const { data: tokenTransactionsResponse } = useQuery({
-    queryKey: ["token-transactions", "self"],
+  // Fetch credits transactions (self only)
+  const { data: creditsTransactionsResponse } = useQuery({
+    queryKey: ["credits-transactions", "self", creditsPage, creditsLimit],
     queryFn: () =>
-      fetchSelfTokenTransactions({ sort: "-created_at", limit: 10 }),
+      fetchSelfCreditsTransactions({
+        sort: "-created_at",
+        limit: creditsLimit,
+        page: creditsPage,
+      }),
     enabled: !!userId,
   });
 
-  const tokenTransactions = tokenTransactionsResponse?.data || [];
+  const creditsTransactions = creditsTransactionsResponse?.data || [];
+  const creditsMeta = creditsTransactionsResponse?.meta;
+
+  // Fetch package transactions (self only)
+  const { data: packageTransactionsResponse } = useQuery({
+    queryKey: ["package-transactions", "self", packagePage, packageLimit],
+    queryFn: () =>
+      fetchSelfPackageTransactions({
+        sort: "-created_at",
+        limit: packageLimit,
+        page: packagePage,
+      }),
+    enabled: !!userId,
+  });
+
+  const packageTransactions = packageTransactionsResponse?.data || [];
+  const packageMeta = packageTransactionsResponse?.meta;
 
   const {
     isViewModalOpen: isPaymentViewModalOpen,
     selectedPaymentTransaction,
   } = useSelector((state: RootState) => state.paymentTransactionsPage);
-  const { isViewModalOpen: isTokenViewModalOpen, selectedTokenTransaction } =
-    useSelector((state: RootState) => state.tokenTransactionsPage);
+  const {
+    isViewModalOpen: isCreditsViewModalOpen,
+    selectedCreditsTransaction,
+  } = useSelector((state: RootState) => state.creditsTransactionsPage);
+  const {
+    isViewModalOpen: isPackageViewModalOpen,
+    selectedPackageTransaction,
+  } = useSelector((state: RootState) => state.packageTransactionsPage);
 
   // Profile form
   const {
@@ -532,11 +583,20 @@ const ProfilePage = () => {
                   </Tabs.Trigger>
                   <Tabs.Trigger
                     className="flex items-center gap-2"
-                    value="tokens"
+                    value="credits"
                   >
                     <div className="flex items-center gap-2">
                       <Coins className="h-4 w-4" />
-                      Token Transactions
+                      Credits Transactions
+                    </div>
+                  </Tabs.Trigger>
+                  <Tabs.Trigger
+                    className="flex items-center gap-2"
+                    value="packages"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Package className="h-4 w-4" />
+                      Package Transactions
                     </div>
                   </Tabs.Trigger>
                 </Tabs.List>
@@ -546,10 +606,10 @@ const ProfilePage = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="bg-muted rounded-lg p-4">
                           <div className="text-muted-foreground mb-1 text-sm">
-                            Tokens
+                            Credits
                           </div>
                           <div className="text-foreground text-2xl font-bold">
-                            {wallet?.token || 0}
+                            {wallet?.credits || 0}
                           </div>
                         </div>
                         <div className="bg-muted rounded-lg p-4">
@@ -636,22 +696,32 @@ const ProfilePage = () => {
                         </div>
                       )}
                     </div>
+                    {paymentMeta && (
+                      <Pagination
+                        total={paymentMeta.total || 0}
+                        limit={paymentLimit}
+                        page={paymentPage}
+                        setLimit={setPaymentLimit}
+                        setPage={setPaymentPage}
+                        className="mt-4 border-t pt-4"
+                      />
+                    )}
                   </Tabs.Item>
-                  <Tabs.Item value="tokens">
+                  <Tabs.Item value="credits">
                     <div className="mt-4 space-y-4">
-                      {tokenTransactions.length === 0 ? (
+                      {creditsTransactions.length === 0 ? (
                         <div className="text-muted-foreground py-8 text-center">
-                          No token transactions found
+                          No credits transactions found
                         </div>
                       ) : (
                         <div className="space-y-2">
-                          {tokenTransactions.map(
-                            (transaction: TTokenTransaction) => (
+                          {creditsTransactions.map(
+                            (transaction: TCreditsTransaction) => (
                               <div
                                 key={transaction._id}
                                 className="border-border hover:bg-muted flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors"
                                 onClick={() =>
-                                  dispatch(openTokenViewModal(transaction))
+                                  dispatch(openCreditsViewModal(transaction))
                                 }
                               >
                                 <div>
@@ -665,7 +735,7 @@ const ProfilePage = () => {
                                     {transaction.type === "increase"
                                       ? "+"
                                       : "-"}
-                                    {transaction.token} tokens
+                                    {transaction.credits} credits
                                   </p>
                                   {transaction.increase_source && (
                                     <p className="text-muted-foreground text-sm capitalize">
@@ -686,6 +756,83 @@ const ProfilePage = () => {
                         </div>
                       )}
                     </div>
+                    {creditsMeta && (
+                      <Pagination
+                        total={creditsMeta.total || 0}
+                        limit={creditsLimit}
+                        page={creditsPage}
+                        setLimit={setCreditsLimit}
+                        setPage={setCreditsPage}
+                        className="mt-4 border-t pt-4"
+                      />
+                    )}
+                  </Tabs.Item>
+                  <Tabs.Item value="packages">
+                    <div className="mt-4 space-y-4">
+                      {packageTransactions.length === 0 ? (
+                        <div className="text-muted-foreground py-8 text-center">
+                          No package transactions found
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          {packageTransactions.map(
+                            (transaction: TPackageTransaction) => (
+                              <div
+                                key={transaction._id}
+                                className="border-border hover:bg-muted flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors"
+                                onClick={() =>
+                                  dispatch(openPackageViewModal(transaction))
+                                }
+                              >
+                                <div>
+                                  <div className="flex items-center gap-2 font-semibold">
+                                    <span className="text-primary font-bold">
+                                      {typeof transaction.package === "object"
+                                        ? (transaction.package as any).name
+                                        : "Package"}
+                                    </span>
+                                    <span className="text-muted-foreground text-xs">
+                                      (
+                                      {typeof transaction.plan === "object"
+                                        ? (transaction.plan as any).name
+                                        : "Plan"}
+                                      )
+                                    </span>
+                                  </div>
+                                  <p className="text-sm font-bold text-green-600">
+                                    +{transaction.credits} credits
+                                  </p>
+                                </div>
+                                <div className="text-right">
+                                  <Badge
+                                    className={`text-[10px] font-semibold capitalize ${transaction.increase_source === "payment" ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"}`}
+                                  >
+                                    {transaction.increase_source}
+                                  </Badge>
+                                  {transaction.created_at && (
+                                    <p className="text-muted-foreground mt-1 text-xs">
+                                      {new Date(
+                                        transaction.created_at,
+                                      ).toLocaleDateString()}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {packageMeta && (
+                      <Pagination
+                        total={packageMeta.total || 0}
+                        limit={packageLimit}
+                        page={packagePage}
+                        setLimit={setPackageLimit}
+                        setPage={setPackagePage}
+                        className="mt-4 border-t pt-4"
+                      />
+                    )}
                   </Tabs.Item>
                 </Tabs.Content>
               </Tabs>
@@ -898,16 +1045,29 @@ const ProfilePage = () => {
             )
           }
         />
-        <TokenTransactionViewModal
-          default={selectedTokenTransaction || ({} as TTokenTransaction)}
-          isOpen={isTokenViewModalOpen}
+        <CreditsTransactionViewModal
+          default={selectedCreditsTransaction || ({} as TCreditsTransaction)}
+          isOpen={isCreditsViewModalOpen}
           setIsOpen={(value: boolean) =>
             dispatch(
               value
-                ? openTokenViewModal(
-                    selectedTokenTransaction || ({} as TTokenTransaction),
+                ? openCreditsViewModal(
+                    selectedCreditsTransaction || ({} as TCreditsTransaction),
                   )
-                : closeTokenViewModal(),
+                : closeCreditsViewModal(),
+            )
+          }
+        />
+        <PackageTransactionViewModal
+          default={selectedPackageTransaction || ({} as TPackageTransaction)}
+          isOpen={isPackageViewModalOpen}
+          setIsOpen={(value: boolean) =>
+            dispatch(
+              value
+                ? openPackageViewModal(
+                    selectedPackageTransaction || ({} as TPackageTransaction),
+                  )
+                : closePackageViewModal(),
             )
           }
         />

@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/Button";
 import { FormControl } from "@/components/ui/FormControl";
 import { Modal } from "@/components/ui/Modal";
+import { updatePackagePlan } from "@/services/package-plan.service";
 import { fetchPackages } from "@/services/package.service";
 import { fetchPlans } from "@/services/plan.service";
-import { updatePackagePlan } from "@/services/package-plan.service";
 import type { TPackagePlan } from "@/types/package-plan.type";
 import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -57,7 +57,7 @@ const PackagePlanEditModal: React.FC<PackagePlanEditModalProps> = ({
           ? packagePlan?.plan?._id || ""
           : ""),
       price: packagePlan?.price || { USD: 0, BDT: 0 },
-      token: packagePlan?.token || 0,
+      credits: packagePlan?.credits || 0,
       is_initial: packagePlan?.is_initial || false,
       is_active: packagePlan?.is_active ?? true,
     },
@@ -78,7 +78,7 @@ const PackagePlanEditModal: React.FC<PackagePlanEditModalProps> = ({
             ? (packagePlan.plan as any)?._id || ""
             : "",
       price: packagePlan?.price || { USD: 0, BDT: 0 },
-      token: packagePlan?.token || 0,
+      credits: packagePlan?.credits || 0,
       is_initial: packagePlan?.is_initial || false,
       is_active: packagePlan?.is_active ?? true,
     });
@@ -92,9 +92,7 @@ const PackagePlanEditModal: React.FC<PackagePlanEditModalProps> = ({
       return updatePackagePlan(packagePlan._id, data);
     },
     onSuccess: (data) => {
-      toast.success(
-        data?.message || "Package Plan updated successfully!",
-      );
+      toast.success(data?.message || "Package Plan updated successfully!");
       queryClient.invalidateQueries({ queryKey: key || [] });
       queryClient.invalidateQueries({ queryKey: ["packages"] });
       setIsOpen(false);
@@ -131,12 +129,11 @@ const PackagePlanEditModal: React.FC<PackagePlanEditModalProps> = ({
 
     if (data.package !== currentPackage) updatedFields.package = data.package;
     if (data.plan !== currentPlan) updatedFields.plan = data.plan;
-    if (
-      JSON.stringify(data.price) !== JSON.stringify(packagePlan.price)
-    ) {
+    if (JSON.stringify(data.price) !== JSON.stringify(packagePlan.price)) {
       updatedFields.price = data.price;
     }
-    if (data.token !== packagePlan.token) updatedFields.token = data.token;
+    if (data.credits !== packagePlan.credits)
+      updatedFields.credits = data.credits;
     if (data.is_initial !== packagePlan.is_initial)
       updatedFields.is_initial = data.is_initial;
     if (data.is_active !== packagePlan.is_active)
@@ -247,22 +244,24 @@ const PackagePlanEditModal: React.FC<PackagePlanEditModalProps> = ({
               </div>
 
               <div>
-                <FormControl.Label>Token *</FormControl.Label>
+                <FormControl.Label>Credits *</FormControl.Label>
                 <FormControl
                   type="number"
                   placeholder="0"
                   min="0"
-                  {...register("token", {
-                    required: "Token is required",
+                  {...register("credits", {
+                    required: "Credits is required",
                     valueAsNumber: true,
                     min: {
                       value: 0,
-                      message: "Token must be 0 or greater",
+                      message: "Credits must be 0 or greater",
                     },
                   })}
                 />
-                {errors.token && (
-                  <FormControl.Error>{errors.token.message}</FormControl.Error>
+                {errors.credits && (
+                  <FormControl.Error>
+                    {errors.credits.message}
+                  </FormControl.Error>
                 )}
               </div>
 
@@ -313,4 +312,3 @@ const PackagePlanEditModal: React.FC<PackagePlanEditModalProps> = ({
 };
 
 export default PackagePlanEditModal;
-

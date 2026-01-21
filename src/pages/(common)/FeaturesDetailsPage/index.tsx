@@ -6,8 +6,8 @@ import Loader from "@/components/partials/Loader";
 import PageHeader from "@/components/sections/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { cn } from "@/lib/utils";
 import useAlert from "@/hooks/ui/useAlert";
+import { cn } from "@/lib/utils";
 import {
   closeAddModal,
   closeEditModal,
@@ -20,8 +20,8 @@ import {
   fetchFeatureEndpoints,
 } from "@/services/feature-endpoint.service";
 import { fetchFeature as fetchFeatureById } from "@/services/feature.service";
-import type { TFeature } from "@/types/feature.type";
 import type { TFeatureEndpoint } from "@/types/feature-endpoint.type";
+import type { TFeature } from "@/types/feature.type";
 import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -52,11 +52,9 @@ const FeaturesDetailsPage = () => {
 
   const feature = (location.state as { feature?: TFeature })?.feature;
 
-  const {
-    isAddModalOpen,
-    isEditModalOpen,
-    selectedFeature,
-  } = useSelector((state: RootState) => state.featuresPage);
+  const { isAddModalOpen, isEditModalOpen, selectedFeature } = useSelector(
+    (state: RootState) => state.featuresPage,
+  );
 
   const onOpenAddModal = () => {
     dispatch(openAddModal());
@@ -189,15 +187,15 @@ const FeaturesDetailsPage = () => {
                     )}
                   </div>
 
-                  <div className="flex gap-3 flex-wrap">
+                  <div className="flex flex-wrap gap-3">
                     {currentFeature.type && (
-                      <span className="bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-full px-3 py-1 text-sm font-medium capitalize">
+                      <span className="rounded-full bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-600 capitalize dark:text-blue-400">
                         {currentFeature.type}
                       </span>
                     )}
                     <span
                       className={cn(
-                        "rounded-full px-3 py-1 text-sm font-medium capitalize flex items-center gap-2",
+                        "flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium capitalize",
                         currentFeature.is_active
                           ? "bg-green-500/10 text-green-600 dark:text-green-400"
                           : "bg-red-500/10 text-red-600 dark:text-red-400",
@@ -211,8 +209,9 @@ const FeaturesDetailsPage = () => {
                       {currentFeature.is_active ? "Active" : "Inactive"}
                     </span>
                     {endpointsCount > 0 && (
-                      <span className="bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full px-3 py-1 text-sm font-medium">
-                        {endpointsCount} Endpoint{endpointsCount !== 1 ? "s" : ""}
+                      <span className="rounded-full bg-purple-500/10 px-3 py-1 text-sm font-medium text-purple-600 dark:text-purple-400">
+                        {endpointsCount} Endpoint
+                        {endpointsCount !== 1 ? "s" : ""}
                       </span>
                     )}
                   </div>
@@ -246,7 +245,9 @@ const FeaturesDetailsPage = () => {
                 </div>
                 {currentFeature.type && (
                   <div className="bg-muted rounded-lg p-4">
-                    <div className="text-muted-foreground mb-1 text-sm">Type</div>
+                    <div className="text-muted-foreground mb-1 text-sm">
+                      Type
+                    </div>
                     <div className="text-foreground text-sm capitalize">
                       {currentFeature.type}
                     </div>
@@ -254,7 +255,9 @@ const FeaturesDetailsPage = () => {
                 )}
                 {currentFeature.path && (
                   <div className="bg-muted rounded-lg p-4">
-                    <div className="text-muted-foreground mb-1 text-sm">Path</div>
+                    <div className="text-muted-foreground mb-1 text-sm">
+                      Path
+                    </div>
                     <div className="text-foreground font-mono text-sm">
                       {currentFeature.path}
                     </div>
@@ -281,9 +284,27 @@ const FeaturesDetailsPage = () => {
                   </div>
                 )}
                 <div className="bg-muted rounded-lg p-4">
-                  <div className="text-muted-foreground mb-1 text-sm">Status</div>
+                  <div className="text-muted-foreground mb-1 text-sm">
+                    Status
+                  </div>
                   <div className="text-foreground text-sm capitalize">
                     {currentFeature.is_active ? "Active" : "Inactive"}
+                  </div>
+                </div>
+                <div className="bg-muted border-primary/20 rounded-lg border p-4">
+                  <div className="text-primary mb-1 text-sm font-semibold">
+                    Max Word (Free)
+                  </div>
+                  <div className="text-foreground text-xl font-bold">
+                    {currentFeature.max_word?.free?.toLocaleString() || "0"}
+                  </div>
+                </div>
+                <div className="bg-muted border-primary/20 rounded-lg border p-4">
+                  <div className="text-primary mb-1 text-sm font-semibold">
+                    Max Word (Paid)
+                  </div>
+                  <div className="text-foreground text-xl font-bold">
+                    {currentFeature.max_word?.paid?.toLocaleString() || "0"}
                   </div>
                 </div>
                 {endpointsCount > 0 && (

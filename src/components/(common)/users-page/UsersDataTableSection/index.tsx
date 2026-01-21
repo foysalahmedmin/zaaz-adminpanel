@@ -7,7 +7,7 @@ import useUser from "@/hooks/states/useUser";
 import { cn } from "@/lib/utils";
 import type { TBreadcrumbs } from "@/types/route-menu.type";
 import type { TUser } from "@/types/user.type";
-import { BadgeIcon, Edit, Eye, Trash } from "lucide-react";
+import { BadgeIcon, Eye, Trash } from "lucide-react";
 import React from "react";
 import { Link } from "react-router";
 
@@ -19,6 +19,7 @@ type UsersDataTableSectionProps = {
   onEdit: (row: TUser) => void;
   onDelete: (row: TUser) => void;
   state?: TState;
+  basePath?: string;
 };
 
 const UsersDataTableSection: React.FC<UsersDataTableSectionProps> = ({
@@ -26,9 +27,9 @@ const UsersDataTableSection: React.FC<UsersDataTableSectionProps> = ({
   breadcrumbs,
   isLoading,
   isError,
-  onEdit,
   onDelete,
   state,
+  basePath = "/users",
 }) => {
   const { user } = useUser();
   const { info } = user || {};
@@ -42,16 +43,21 @@ const UsersDataTableSection: React.FC<UsersDataTableSectionProps> = ({
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <div className="aspect-square h-16 flex-shrink-0 overflow-hidden rounded-full">
-            {row.image && (
+            {row.image ? (
               <img
                 className="size-full object-cover"
                 src={URLS.user + "/" + row.image}
-                alt=""
+                alt={row.name}
               />
+            ) : (
+              <div className="bg-primary/10 text-primary flex h-full w-full items-center justify-center text-xl font-bold">
+                {row.name?.charAt(0)?.toUpperCase()}
+              </div>
             )}
           </div>
           <div className="flex-1 space-y-1">
             <h3 className="text-base font-bold">{row.name}</h3>
+            <p className="text-muted-foreground text-xs">{row.email}</p>
             <div className="flex items-center">
               <Badge className="bg-muted text-foreground flex w-fit items-center gap-2 px-2 py-1 text-xs">
                 <BadgeIcon className="size-4" />
@@ -88,6 +94,21 @@ const UsersDataTableSection: React.FC<UsersDataTableSectionProps> = ({
       ),
     },
     {
+      name: "Verified",
+      field: "is_verified",
+      isSortable: true,
+      cell: ({ cell }) => (
+        <span
+          className={cn(
+            "rounded-full px-2 py-1 text-xs font-medium capitalize",
+            cell ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800",
+          )}
+        >
+          {cell ? "Verified" : "Unverified"}
+        </span>
+      ),
+    },
+    {
       style: { width: "150px", textAlign: "center" },
       name: "Actions",
       field: "_id",
@@ -101,12 +122,12 @@ const UsersDataTableSection: React.FC<UsersDataTableSectionProps> = ({
             shape={"icon"}
           >
             <Link
-              to={`/users/${row._id}`}
+              to={`${basePath}/${row._id}`}
               state={{
                 category: row,
                 breadcrumbs: [
                   ...(breadcrumbs || []),
-                  { name: row.name, path: `/users/${row._id}` },
+                  { name: row.name, path: `${basePath}/${row._id}` },
                 ],
               }}
             >
@@ -118,14 +139,14 @@ const UsersDataTableSection: React.FC<UsersDataTableSectionProps> = ({
               row?.role !== "super-admin" &&
               row?.role !== "admin")) && (
             <>
-              <Button
+              {/* <Button
                 onClick={() => onEdit(row)}
                 size={"sm"}
                 variant="outline"
                 shape={"icon"}
               >
                 <Edit className="size-4" />
-              </Button>
+              </Button> */}
               <Button
                 onClick={() => onDelete(row)}
                 className="[--accent:red]"

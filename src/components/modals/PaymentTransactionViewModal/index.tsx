@@ -24,7 +24,7 @@ const PaymentTransactionViewModal: React.FC<
       setCopied(true);
       toast.success("ID copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
+    } catch {
       toast.error("Failed to copy ID");
     }
   };
@@ -47,132 +47,263 @@ const PaymentTransactionViewModal: React.FC<
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <Modal.Backdrop>
-        <Modal.Content className="max-w-2xl">
+        <Modal.Content className="max-w-3xl">
           <Modal.Header>
-            <Modal.Title>Payment Transaction Details</Modal.Title>
+            <Modal.Title>Payment Transaction Full Details</Modal.Title>
             <Modal.Close />
           </Modal.Header>
 
-          <Modal.Body className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+          <Modal.Body className="max-h-[70vh] space-y-6 overflow-y-auto pr-2">
+            {/* Status & ID Summary */}
+            <div className="bg-muted/30 grid grid-cols-2 gap-4 rounded-lg p-4">
               <div>
-                <span className="text-muted-foreground text-sm">Transaction ID</span>
-                <p className="font-mono text-sm font-semibold">
-                  {transaction.gateway_transaction_id}
+                <span className="text-muted-foreground text-xs tracking-wider uppercase">
+                  Transaction ID
+                </span>
+                <p className="font-mono text-sm font-bold">
+                  {transaction.gateway_transaction_id || "NOT-SET-YET"}
                 </p>
               </div>
               <div>
-                <span className="text-muted-foreground text-sm">Status</span>
-                <p>
-                  <span
-                    className={`rounded-full px-2 py-1 text-xs font-medium capitalize ${getStatusColor(
-                      transaction.status,
-                    )}`}
-                  >
-                    {transaction.status}
-                  </span>
-                </p>
+                <span className="text-muted-foreground block text-xs tracking-wider uppercase">
+                  System Status
+                </span>
+                <span
+                  className={`mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-bold uppercase ${getStatusColor(
+                    transaction.status,
+                  )}`}
+                >
+                  {transaction.status}
+                </span>
               </div>
-              <div>
-                <span className="text-muted-foreground text-sm">Amount</span>
-                <p className="font-semibold">
-                  {transaction.currency === "USD" ? "$" : "৳"}
-                  {transaction.amount} {transaction.currency}
-                </p>
-              </div>
-              {transaction.gateway_fee && (
-                <div>
-                  <span className="text-muted-foreground text-sm">Gateway Fee</span>
-                  <p className="font-semibold">
-                    {transaction.currency === "USD" ? "$" : "৳"}
-                    {transaction.gateway_fee}
-                  </p>
-                </div>
-              )}
-              {transaction.gateway_session_id && (
-                <div className="col-span-2">
-                  <span className="text-muted-foreground text-sm">Session ID</span>
-                  <p className="font-mono text-sm">
-                    {transaction.gateway_session_id}
-                  </p>
-                </div>
-              )}
-              {transaction.gateway_status && (
-                <div>
-                  <span className="text-muted-foreground text-sm">Gateway Status</span>
-                  <p className="text-sm">{transaction.gateway_status}</p>
-                </div>
-              )}
-              {transaction.customer_email && (
-                <div>
-                  <span className="text-muted-foreground text-sm">Customer Email</span>
-                  <p className="text-sm">{transaction.customer_email}</p>
-                </div>
-              )}
-              {transaction.customer_name && (
-                <div>
-                  <span className="text-muted-foreground text-sm">Customer Name</span>
-                  <p className="text-sm">{transaction.customer_name}</p>
-                </div>
-              )}
-              {transaction.paid_at && (
-                <div>
-                  <span className="text-muted-foreground text-sm">Paid At</span>
-                  <p className="text-sm">
-                    {new Date(transaction.paid_at).toLocaleString()}
-                  </p>
-                </div>
-              )}
-              {transaction.failed_at && (
-                <div>
-                  <span className="text-muted-foreground text-sm">Failed At</span>
-                  <p className="text-sm">
-                    {new Date(transaction.failed_at).toLocaleString()}
-                  </p>
-                </div>
-              )}
-              {transaction.refunded_at && (
-                <div>
-                  <span className="text-muted-foreground text-sm">Refunded At</span>
-                  <p className="text-sm">
-                    {new Date(transaction.refunded_at).toLocaleString()}
-                  </p>
-                </div>
-              )}
-              {transaction.failure_reason && (
-                <div className="col-span-2">
-                  <span className="text-muted-foreground text-sm">Failure Reason</span>
-                  <p className="text-sm text-red-600">
-                    {transaction.failure_reason}
-                  </p>
-                </div>
-              )}
-              {transaction.refund_id && (
-                <div>
-                  <span className="text-muted-foreground text-sm">Refund ID</span>
-                  <p className="font-mono text-sm">{transaction.refund_id}</p>
-                </div>
-              )}
-              {transaction.created_at && (
-                <div>
-                  <span className="text-muted-foreground text-sm">Created At</span>
-                  <p className="text-sm">
-                    {new Date(transaction.created_at).toLocaleString()}
-                  </p>
-                </div>
-              )}
             </div>
+
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {/* Financial Information */}
+              <div className="space-y-4">
+                <h4 className="border-primary/20 text-primary border-b pb-1 text-sm font-bold tracking-widest uppercase">
+                  Financial Info
+                </h4>
+                <div className="grid grid-cols-2 gap-y-3">
+                  <div className="col-span-1">
+                    <span className="text-muted-foreground text-xs">
+                      Amount
+                    </span>
+                    <p className="text-lg font-bold">
+                      {transaction.currency === "USD" ? "$" : "৳"}
+                      {transaction.amount} {transaction.currency}
+                    </p>
+                  </div>
+                  <div className="col-span-1">
+                    <span className="text-muted-foreground text-xs">
+                      Gateway Fee
+                    </span>
+                    <p className="font-semibold text-red-500">
+                      {transaction.gateway_fee ? (
+                        <>
+                          {transaction.currency === "USD" ? "$" : "৳"}
+                          {transaction.gateway_fee}
+                        </>
+                      ) : (
+                        "0.00"
+                      )}
+                    </p>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-muted-foreground text-xs">
+                      Payment Method
+                    </span>
+                    <p className="font-medium">
+                      {typeof transaction.payment_method === "object"
+                        ? transaction.payment_method.name
+                        : transaction.payment_method || "N/A"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Package & Plan Information */}
+              <div className="space-y-4">
+                <h4 className="border-primary/20 text-primary border-b pb-1 text-sm font-bold tracking-widest uppercase">
+                  Product Details
+                </h4>
+                <div className="grid grid-cols-2 gap-x-2 gap-y-3">
+                  <div className="col-span-1">
+                    <span className="text-muted-foreground text-xs">
+                      Package
+                    </span>
+                    <p className="font-semibold">
+                      {typeof transaction.package === "object"
+                        ? transaction.package.name
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div className="col-span-1">
+                    <span className="text-muted-foreground text-xs">Plan</span>
+                    <p className="font-semibold">
+                      {typeof transaction.plan === "object"
+                        ? transaction.plan.name
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-muted-foreground text-xs">
+                      Included Credits
+                    </span>
+                    <p className="font-bold text-green-600">
+                      {typeof transaction.price === "object"
+                        ? `${transaction.price.credits} credits`
+                        : "N/A"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Customer Information */}
+              <div className="space-y-4">
+                <h4 className="border-primary/20 text-primary border-b pb-1 text-sm font-bold tracking-widest uppercase">
+                  Customer Info
+                </h4>
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-muted-foreground text-xs">
+                      Customer Name
+                    </span>
+                    <p className="font-medium">
+                      {transaction.customer_name || "Guest User"}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground text-xs">
+                      Wallet Email
+                    </span>
+                    <p className="font-semibold text-blue-600 underline">
+                      {transaction.email || "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground text-xs">
+                      Gateway Billing Email
+                    </span>
+                    <p className="text-sm">
+                      {transaction.customer_email || "N/A"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Timeline Info */}
+              <div className="space-y-4">
+                <h4 className="border-primary/20 text-primary border-b pb-1 text-sm font-bold tracking-widest uppercase">
+                  Time Log
+                </h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Initiated:</span>
+                    <span className="font-medium">
+                      {transaction.created_at
+                        ? new Date(transaction.created_at).toLocaleString()
+                        : "N/A"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Completed:</span>
+                    <span className="font-bold text-green-600">
+                      {transaction.paid_at
+                        ? new Date(transaction.paid_at).toLocaleString()
+                        : "PENDING"}
+                    </span>
+                  </div>
+                  {transaction.failed_at && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-xs font-bold text-red-500 uppercase">
+                        Failed:
+                      </span>
+                      <span className="font-bold text-red-500">
+                        {new Date(transaction.failed_at).toLocaleString()}
+                      </span>
+                    </div>
+                  )}
+                  {transaction.refunded_at && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-xs font-bold text-blue-500 uppercase">
+                        Refunded:
+                      </span>
+                      <span className="font-bold text-blue-500">
+                        {new Date(transaction.refunded_at).toLocaleString()}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Gateway Metadata */}
+            <div className="space-y-4">
+              <h4 className="border-primary/20 text-primary border-b pb-1 text-sm font-bold tracking-widest uppercase">
+                Gateway Metadata
+              </h4>
+              <div className="bg-muted/20 grid grid-cols-1 gap-4 rounded-lg p-3 md:grid-cols-2">
+                <div>
+                  <span className="text-muted-foreground text-xs">
+                    Gateway Status
+                  </span>
+                  <p className="font-mono text-sm">
+                    {transaction.gateway_status || "N/A"}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground text-xs">
+                    Session ID
+                  </span>
+                  <p className="font-mono text-xs break-all">
+                    {transaction.gateway_session_id || "N/A"}
+                  </p>
+                </div>
+                {transaction.refund_id && (
+                  <div className="col-span-2">
+                    <span className="text-muted-foreground text-xs">
+                      Refund Tracker ID
+                    </span>
+                    <p className="font-mono text-sm">{transaction.refund_id}</p>
+                  </div>
+                )}
+                {transaction.failure_reason && (
+                  <div className="col-span-2 border-t border-red-200 pt-2">
+                    <span className="text-xs font-bold text-red-500 uppercase">
+                      Error Log
+                    </span>
+                    <p className="text-sm text-red-600">
+                      {transaction.failure_reason}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Development / Tech Info */}
+            <details className="group mt-4">
+              <summary className="text-muted-foreground hover:text-primary cursor-pointer text-xs font-bold tracking-widest uppercase transition-colors">
+                Technical Data (JSON)
+              </summary>
+              <div className="bg-muted mt-2 rounded p-3">
+                <pre className="max-h-40 overflow-y-auto font-mono text-[10px]">
+                  {JSON.stringify(transaction.gateway_response, null, 2) ||
+                    "No metadata recorded."}
+                </pre>
+              </div>
+            </details>
 
             {/* Document ID Section at Bottom */}
             {transaction._id && (
-              <div className="mt-6 border-t pt-4">
+              <div className="border-border/50 border-t pt-4">
                 <div className="flex items-center justify-between gap-4">
                   <div className="min-w-0 flex-1">
-                    <span className="text-muted-foreground mb-1 block text-sm">
-                      Document ID
+                    <span className="text-muted-foreground mb-1 block text-xs font-bold uppercase">
+                      System Database ID
                     </span>
                     <div className="flex items-center gap-2">
-                      <p className="bg-muted/50 flex-1 rounded px-2 py-1.5 font-mono text-xs break-all">
+                      <p className="bg-muted/50 flex-1 rounded px-2 py-1.5 font-mono text-[10px] break-all">
                         {transaction._id}
                       </p>
                       <Button
@@ -200,9 +331,9 @@ const PaymentTransactionViewModal: React.FC<
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md border px-4 py-2 text-sm font-medium transition-colors"
+              className="border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md border px-6 py-2 text-sm font-bold transition-all active:scale-95"
             >
-              Close
+              Close Details
             </button>
           </Modal.Footer>
         </Modal.Content>
@@ -212,4 +343,3 @@ const PaymentTransactionViewModal: React.FC<
 };
 
 export default PaymentTransactionViewModal;
-

@@ -2,20 +2,20 @@
 
 import { Card } from "@/components/ui/Card";
 import type {
+  TDashboardCreditsFlow,
   TDashboardFeaturePerformance,
   TDashboardPackagePerformance,
   TDashboardPaymentMethod,
   TDashboardRevenueData,
-  TDashboardTokenFlow,
   TDashboardTransactionStatus,
   TDashboardUserGrowth,
 } from "@/types/dashboard.type";
 import React from "react";
+import CreditsFlowChart from "../charts/CreditsFlowChart";
 import FeaturePerformanceChart from "../charts/FeaturePerformanceChart";
 import PackagePerformanceChart from "../charts/PackagePerformanceChart";
 import PaymentMethodChart from "../charts/PaymentMethodChart";
 import RevenueChart from "../charts/RevenueChart";
-import TokenFlowChart from "../charts/TokenFlowChart";
 import TransactionStatusChart from "../charts/TransactionStatusChart";
 import UserGrowthChart from "../charts/UserGrowthChart";
 
@@ -23,7 +23,7 @@ type DashboardChartsSectionProps = {
   revenueData?: TDashboardRevenueData;
   transactionStatusData?: TDashboardTransactionStatus;
   paymentMethodData?: TDashboardPaymentMethod;
-  tokenFlowData?: TDashboardTokenFlow;
+  creditsFlowData?: TDashboardCreditsFlow;
   userGrowthData?: TDashboardUserGrowth;
   packageData?: TDashboardPackagePerformance;
   featureData?: TDashboardFeaturePerformance;
@@ -33,7 +33,7 @@ const DashboardChartsSection: React.FC<DashboardChartsSectionProps> = ({
   revenueData,
   transactionStatusData,
   paymentMethodData,
-  tokenFlowData,
+  creditsFlowData,
   userGrowthData,
   packageData,
   featureData,
@@ -66,7 +66,7 @@ const DashboardChartsSection: React.FC<DashboardChartsSectionProps> = ({
       <Card>
         <Card.Header>
           <Card.Title>Feature Performance</Card.Title>
-          <p>Top features by usage count (based on token transactions)</p>
+          <p>Top features by usage count (based on credits transactions)</p>
         </Card.Header>
         <Card.Content>
           <FeaturePerformanceChart data={featureData} />
@@ -95,14 +95,14 @@ const DashboardChartsSection: React.FC<DashboardChartsSectionProps> = ({
         </Card.Content>
       </Card>
 
-      {/* Token Flow Chart */}
+      {/* Credits Flow Chart */}
       <Card>
         <Card.Header>
-          <Card.Title>Token Flow</Card.Title>
-          <p>Daily token increases vs decreases</p>
+          <Card.Title>Credits Flow</Card.Title>
+          <p>Daily credits increases vs decreases</p>
         </Card.Header>
         <Card.Content>
-          <TokenFlowChart data={tokenFlowData} />
+          <CreditsFlowChart data={creditsFlowData} />
         </Card.Content>
       </Card>
 

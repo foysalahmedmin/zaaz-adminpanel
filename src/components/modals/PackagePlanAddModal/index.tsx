@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/Button";
 import { FormControl } from "@/components/ui/FormControl";
 import { Modal } from "@/components/ui/Modal";
+import { createPackagePlan } from "@/services/package-plan.service";
 import { fetchPackages } from "@/services/package.service";
 import { fetchPlans } from "@/services/plan.service";
-import { createPackagePlan } from "@/services/package-plan.service";
 import type { TPackagePlan } from "@/types/package-plan.type";
 import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -59,7 +59,7 @@ const PackagePlanAddModal: React.FC<PackagePlanAddModalProps> = ({
             ? (packagePlan.plan as any)?._id || ""
             : "",
       price: packagePlan?.price || { USD: 0, BDT: 0 },
-      token: packagePlan?.token || 0,
+      credits: packagePlan?.credits || 0,
       is_initial: packagePlan?.is_initial || false,
       is_active: packagePlan?.is_active ?? true,
     },
@@ -68,9 +68,7 @@ const PackagePlanAddModal: React.FC<PackagePlanAddModalProps> = ({
   const mutation = useMutation({
     mutationFn: (data: Partial<TPackagePlan>) => createPackagePlan(data),
     onSuccess: (data) => {
-      toast.success(
-        data?.message || "Package Plan created successfully!",
-      );
+      toast.success(data?.message || "Package Plan created successfully!");
       queryClient.invalidateQueries({ queryKey: key || [] });
       queryClient.invalidateQueries({ queryKey: ["packages"] });
       reset();
@@ -96,7 +94,7 @@ const PackagePlanAddModal: React.FC<PackagePlanAddModalProps> = ({
       package: typeof data.package === "string" ? data.package : data.package,
       plan: typeof data.plan === "string" ? data.plan : data.plan,
       price: data.price,
-      token: data.token,
+      credits: data.credits,
       is_initial: data.is_initial,
       is_active: data.is_active,
     });
@@ -199,22 +197,24 @@ const PackagePlanAddModal: React.FC<PackagePlanAddModalProps> = ({
               </div>
 
               <div>
-                <FormControl.Label>Token *</FormControl.Label>
+                <FormControl.Label>Credits *</FormControl.Label>
                 <FormControl
                   type="number"
                   placeholder="0"
                   min="0"
-                  {...register("token", {
-                    required: "Token is required",
+                  {...register("credits", {
+                    required: "Credits is required",
                     valueAsNumber: true,
                     min: {
                       value: 0,
-                      message: "Token must be 0 or greater",
+                      message: "Credits must be 0 or greater",
                     },
                   })}
                 />
-                {errors.token && (
-                  <FormControl.Error>{errors.token.message}</FormControl.Error>
+                {errors.credits && (
+                  <FormControl.Error>
+                    {errors.credits.message}
+                  </FormControl.Error>
                 )}
               </div>
 
@@ -265,4 +265,3 @@ const PackagePlanAddModal: React.FC<PackagePlanAddModalProps> = ({
 };
 
 export default PackagePlanAddModal;
-

@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/Button";
 import { FormControl } from "@/components/ui/FormControl";
 import useUser from "@/hooks/states/useUser";
-import { signUp } from "@/services/auth.service";
+import { googleSignIn, signUp } from "@/services/auth.service";
 import type { SignUpPayload } from "@/types/auth.type";
+import { GoogleLogin } from "@react-oauth/google";
 import { Eye, EyeOff, Plus, User } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -57,7 +58,7 @@ const SignupForm: React.FC = () => {
         navigate("/");
       }
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Signup failed");
+      toast.error((error as any)?.response?.data?.message || "Signup failed");
     }
   };
 
@@ -201,6 +202,48 @@ const SignupForm: React.FC = () => {
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? "Creating account..." : "Sign Up"}
           </Button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card text-muted-foreground px-2">
+                Or continue with
+              </span>
+            </div>
+          </div>
+
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                if (credentialResponse.credential) {
+                  try {
+                    const response = await googleSignIn({
+                      id_token: credentialResponse.credential,
+                    });
+                    if (response?.data?.token && response?.data?.info) {
+                      setUser({ ...response.data, is_authenticated: true });
+                      toast.success("Login successful with Google!");
+                      navigate("/");
+                    }
+                  } catch (error: any) {
+                    toast.error(
+                      (error as any)?.response?.data?.message ||
+                        "Google login failed",
+                    );
+                  }
+                }
+              }}
+              onError={() => {
+                toast.error("Google login failed");
+              }}
+              useOneTap
+              theme="outline"
+              shape="rectangular"
+              width="320px"
+            />
+          </div>
 
           {/* Signin link */}
           <div className="text-center text-sm">

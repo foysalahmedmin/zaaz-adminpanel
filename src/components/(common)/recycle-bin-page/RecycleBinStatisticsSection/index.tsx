@@ -9,7 +9,7 @@ type RecycleBinStatisticsSectionProps = {
     features: number;
     featureEndpoints: number;
     packages: number;
-    tokenProfits: number;
+    creditsProfits: number;
     users: number;
   };
   total: number;
@@ -59,4 +59,3 @@ const RecycleBinStatisticsSection: React.FC<
 };
 
 export default RecycleBinStatisticsSection;
-

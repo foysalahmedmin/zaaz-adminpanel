@@ -26,7 +26,7 @@ type PackagePlanFormData = {
   plan: string;
   priceUSD: number;
   priceBDT: number;
-  token: number;
+  credits: number;
   is_initial: boolean;
   is_active: boolean;
 };
@@ -153,10 +153,11 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
     formState: { errors },
   } = useForm<TPackageFormInput>({
     defaultValues: {
+      value: pkg?.value || "",
       name: pkg?.name || "",
       description: pkg?.description || "",
       content: pkg?.content || "",
-      type: pkg?.type || "token",
+      type: pkg?.type || "credits",
       badge: pkg?.badge || "",
       points: pkg?.points || [],
       features: normalizeFeatures(pkg?.features),
@@ -165,7 +166,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
           plan: pp.plan?._id || pp.plan || "",
           priceUSD: pp.price?.USD || 0,
           priceBDT: pp.price?.BDT || 0,
-          token: pp.token || 0,
+          credits: pp.credits || 0,
           is_initial: pp.is_initial || false,
           is_active: pp.is_active !== undefined ? pp.is_active : true,
         })) || [],
@@ -176,10 +177,11 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
 
   React.useEffect(() => {
     reset({
+      value: pkg?.value || "",
       name: pkg?.name || "",
       description: pkg?.description || "",
       content: pkg?.content || "",
-      type: pkg?.type || "token",
+      type: pkg?.type || "credits",
       badge: pkg?.badge || "",
       points: pkg?.points || [],
       features: normalizeFeatures(pkg?.features),
@@ -188,7 +190,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
           plan: pp.plan?._id || pp.plan || "",
           priceUSD: pp.price?.USD || 0,
           priceBDT: pp.price?.BDT || 0,
-          token: pp.token || 0,
+          credits: pp.credits || 0,
           is_initial: pp.is_initial || false,
           is_active: pp.is_active !== undefined ? pp.is_active : true,
         })) || [],
@@ -212,13 +214,14 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
             USD: pp.priceUSD,
             BDT: pp.priceBDT,
           },
-          token: pp.token,
+          credits: pp.credits,
           is_initial: pp.is_initial,
           is_active: pp.is_active,
         })),
       };
 
       // Add other fields if they changed
+      if (data.value !== undefined) payload.value = data.value;
       if (data.name !== undefined) payload.name = data.name;
       if (data.description !== undefined)
         payload.description = data.description;
@@ -263,6 +266,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
 
     const updatedFields: Partial<TPackageFormInput> = {};
 
+    if (data.value !== pkg.value) updatedFields.value = data.value;
     if (data.name !== pkg.name) updatedFields.name = data.name;
     if (data.description !== pkg.description)
       updatedFields.description = data.description;
@@ -280,7 +284,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
       pkg.plans?.map((p) => ({
         plan: p.plan?._id || p.plan,
         price: p.price,
-        token: p.token,
+        credits: p.credits,
         is_initial: p.is_initial,
         is_active: p.is_active,
       })) || [],
@@ -289,7 +293,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
       data.packagePlans.map((p) => ({
         plan: p.plan,
         price: { USD: p.priceUSD, BDT: p.priceBDT },
-        token: p.token,
+        credits: p.credits,
         is_initial: p.is_initial,
         is_active: p.is_active,
       })),
@@ -344,7 +348,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
             plan: planId,
             priceUSD: 0,
             priceBDT: 0,
-            token: 0,
+            credits: 0,
             is_initial: current.length === 0, // First plan is initial
             is_active: true,
           },
@@ -389,6 +393,28 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
               </div>
 
               <div>
+                <FormControl.Label>Value</FormControl.Label>
+                <FormControl
+                  type="text"
+                  placeholder="e.g., free, basic, premium"
+                  {...register("value", {
+                    required: "Value is required",
+                    pattern: {
+                      value: /^[a-z0-9_-]+$/,
+                      message:
+                        "Value must be lowercases and can only contain letters, numbers, hyphens, and underscores",
+                    },
+                  })}
+                />
+                {errors.value && (
+                  <FormControl.Error>{errors.value.message}</FormControl.Error>
+                )}
+                <FormControl.Helper>
+                  Unique identifier for the package (lowercase)
+                </FormControl.Helper>
+              </div>
+
+              <div>
                 <FormControl.Label>Description (Optional)</FormControl.Label>
                 <FormControl
                   as="textarea"
@@ -415,11 +441,11 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
               <div>
                 <FormControl.Label>Type</FormControl.Label>
                 <FormControl as="select" {...register("type")}>
-                  <option value="token">Token</option>
+                  <option value="credits">Credits</option>
                   <option value="subscription">Subscription</option>
                 </FormControl>
                 <FormControl.Helper>
-                  Select package type (default: token)
+                  Select package type (default: Credits)
                 </FormControl.Helper>
               </div>
 
@@ -482,7 +508,8 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
                   Plans (Required - At least one)
                 </FormControl.Label>
                 <FormControl.Helper>
-                  Select plans and configure their prices, tokens, and settings.
+                  Select plans and configure their prices, credits, and
+                  settings.
                 </FormControl.Helper>
                 <div className="border-input bg-card max-h-68 space-y-3 overflow-y-auto rounded-md border p-3">
                   {plansData?.data?.map((plan) => {
@@ -564,19 +591,19 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
                             </div>
 
                             <div>
-                              <FormControl.Label>Token *</FormControl.Label>
+                              <FormControl.Label>Credits *</FormControl.Label>
                               <FormControl
                                 type="number"
                                 placeholder="0"
                                 min="0"
-                                value={planData.token}
+                                value={planData.credits}
                                 onChange={(e) => {
                                   const updated = [...packagePlans];
                                   const index = updated.findIndex(
                                     (pp) => pp.plan === plan._id,
                                   );
                                   if (index >= 0) {
-                                    updated[index].token =
+                                    updated[index].credits =
                                       parseInt(e.target.value) || 0;
                                     setValue("packagePlans", updated);
                                   }

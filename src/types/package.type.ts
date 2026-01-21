@@ -16,17 +16,18 @@ export type TPackagePlanItem = {
   };
   price: TPackagePrice;
   previous_price?: TPackagePrice;
-  token: number;
+  credits: number;
   is_initial: boolean;
   is_active: boolean;
 };
 
 export type TPackage = {
   _id: string;
+  value: string;
   name: string;
   description?: string;
   content?: string;
-  type?: "token" | "subscription";
+  type?: "credits" | "subscription";
   badge?: string;
   points?: string[];
   features: string[];

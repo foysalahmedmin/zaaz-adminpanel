@@ -1,7 +1,7 @@
-import type { Response } from "./response.type";
-import type { TPackagePrice } from "./package.type";
 import type { TFeature } from "./feature.type";
+import type { TPackagePrice } from "./package.type";
 import type { TPlan } from "./plan.type";
+import type { Response } from "./response.type";
 
 // Embedded feature data structure for history
 export type TFeatureHistory = TFeature;
@@ -15,7 +15,7 @@ export type TPackagePlanHistory = {
   plan: TPlanHistory;
   price: TPackagePrice;
   previous_price?: TPackagePrice;
-  token: number;
+  credits: number;
   is_initial: boolean;
   is_active: boolean;
   created_at?: string;
@@ -25,10 +25,11 @@ export type TPackagePlanHistory = {
 export type TPackageHistory = {
   _id: string;
   package: string;
+  value: string;
   name: string;
   description?: string;
   content?: string;
-  type?: "token" | "subscription";
+  type?: "credits" | "subscription";
   badge?: string;
   points?: string[];
   features: TFeatureHistory[]; // Embedded feature objects
@@ -42,4 +43,3 @@ export type TPackageHistory = {
 
 export type TPackageHistoryResponse = Response<TPackageHistory>;
 export type TPackageHistoriesResponse = Response<TPackageHistory[]>;
-

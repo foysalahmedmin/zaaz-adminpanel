@@ -1,56 +1,55 @@
 import UserWalletsDataTableSection from "@/components/(common)/user-wallets-page/UserWalletsDataTableSection";
+import UserWalletsFilterSection from "@/components/(common)/user-wallets-page/UserWalletsFilterSection";
 import UserWalletsStatisticsSection from "@/components/(common)/user-wallets-page/UserWalletsStatisticsSection";
-import UserWalletViewModal from "@/components/modals/UserWalletViewModal";
 import PageHeader from "@/components/sections/PageHeader";
 import { Card } from "@/components/ui/Card";
 import useMenu from "@/hooks/states/useMenu";
-import {
-  closeViewModal,
-  openViewModal,
-} from "@/redux/slices/user-wallets-page-slice";
-import type { RootState } from "@/redux/store";
+import { fetchPackages } from "@/services/package.service";
 import { fetchUserWallets } from "@/services/user-wallet.service";
-import type { TUserWallet } from "@/types/user-wallet.type";
 import { useQuery } from "@tanstack/react-query";
-import { useDispatch, useSelector } from "react-redux";
-import { useState, useMemo, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const UserWalletsPage = () => {
   const { activeBreadcrumbs } = useMenu();
-  const dispatch = useDispatch();
 
-  const { isViewModalOpen, selectedUserWallet } = useSelector(
-    (state: RootState) => state.userWalletsPage,
-  );
-
-  const onOpenViewModal = (wallet: TUserWallet) => {
-    dispatch(openViewModal(wallet));
-  };
-
-  // State management for search, sort, pagination
+  // State management for search, sort, pagination, and filters
   const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<string>("-created_at");
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
 
+  // Filters state
+  const [gte, setGte] = useState<string>("");
+  const [lte, setLte] = useState<string>("");
+  const [status, setStatus] = useState<string>("");
+  const [packageId, setPackageId] = useState<string>("");
+
+  const resetFilters = () => {
+    setGte("");
+    setLte("");
+    setStatus("");
+    setPackageId("");
+    setSearch("");
+    setPage(1);
+  };
+
   // Build query parameters from state
   const queryParams = useMemo(() => {
-    const params: Record<string, any> = {
+    const params: Record<string, string | number> = {
       page,
       limit,
     };
 
-    if (sort) {
-      params.sort = sort;
-    }
-
-    if (search) {
-      params.search = search;
-    }
+    if (sort) params.sort = sort;
+    if (search) params.search = search;
+    if (gte) params.gte = gte;
+    if (lte) params.lte = lte;
+    if (status) params.status = status;
+    if (packageId) params.package = packageId;
 
     return params;
-  }, [search, sort, page, limit]);
+  }, [search, sort, page, limit, gte, lte, status, packageId]);
 
   // Fetch data with query parameters
   const { data, isLoading, isError } = useQuery({
@@ -58,21 +57,34 @@ const UserWalletsPage = () => {
     queryFn: () => fetchUserWallets(queryParams),
   });
 
+  // Fetch packages for filter
+  const { data: packagesData } = useQuery({
+    queryKey: ["packages"],
+    queryFn: () => fetchPackages({ limit: 100 }),
+  });
+
   // Update total from response
   useEffect(() => {
     if (data?.meta?.total !== undefined) {
       setTotal(data.meta.total);
-    } else if (data?.data) {
-      setTotal(data.data.length);
     }
   }, [data]);
 
   return (
     <main className="space-y-6">
       <PageHeader name="User Wallets" />
-      <UserWalletsStatisticsSection
-        data={data?.data || []}
-        meta={data?.meta}
+      <UserWalletsStatisticsSection data={data?.data || []} meta={data?.meta} />
+      <UserWalletsFilterSection
+        gte={gte}
+        setGte={setGte}
+        lte={lte}
+        setLte={setLte}
+        status={status}
+        setStatus={setStatus}
+        packageId={packageId}
+        setPackageId={setPackageId}
+        packagesData={packagesData}
+        onReset={resetFilters}
       />
       <Card>
         <Card.Content>
@@ -81,7 +93,6 @@ const UserWalletsPage = () => {
             breadcrumbs={activeBreadcrumbs || []}
             isLoading={isLoading}
             isError={isError}
-            onView={onOpenViewModal}
             state={{
               search,
               sort,
@@ -96,20 +107,8 @@ const UserWalletsPage = () => {
           />
         </Card.Content>
       </Card>
-      <UserWalletViewModal
-        default={selectedUserWallet || ({} as TUserWallet)}
-        isOpen={isViewModalOpen}
-        setIsOpen={(value: boolean) =>
-          dispatch(
-            value
-              ? openViewModal(selectedUserWallet || ({} as TUserWallet))
-              : closeViewModal(),
-          )
-        }
-      />
     </main>
   );
 };
 
 export default UserWalletsPage;
-

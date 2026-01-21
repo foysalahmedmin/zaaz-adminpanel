@@ -1,7 +1,14 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
-type DeletedItemType = "feature" | "feature-endpoint" | "package" | "token-profit" | "user";
+export type DeletedItemType =
+  | "feature"
+  | "feature-endpoint"
+  | "package"
+  | "credits-profit"
+  | "user"
+  | "package-transaction"
+  | "ai-model";
 
 interface RecycleBinPageState {
   activeTab: DeletedItemType;
@@ -9,6 +16,8 @@ interface RecycleBinPageState {
   limit: number;
   search: string;
   sort: string;
+  gte: string;
+  lte: string;
 }
 
 const initialState: RecycleBinPageState = {
@@ -17,6 +26,8 @@ const initialState: RecycleBinPageState = {
   limit: 10,
   search: "",
   sort: "-created_at",
+  gte: "",
+  lte: "",
 };
 
 export const recycleBinPageSlice = createSlice({
@@ -39,6 +50,12 @@ export const recycleBinPageSlice = createSlice({
     setSort: (state, action: PayloadAction<string>) => {
       state.sort = action.payload;
     },
+    setGte: (state, action: PayloadAction<string>) => {
+      state.gte = action.payload;
+    },
+    setLte: (state, action: PayloadAction<string>) => {
+      state.lte = action.payload;
+    },
     resetRecycleBinPageState: () => initialState,
   },
 });
@@ -49,8 +66,9 @@ export const {
   setLimit,
   setSearch,
   setSort,
+  setGte,
+  setLte,
   resetRecycleBinPageState,
 } = recycleBinPageSlice.actions;
 
 export default recycleBinPageSlice.reducer;
-

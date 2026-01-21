@@ -22,15 +22,47 @@ export type TPaymentTransactionStatusResponse = {
 export type TPaymentTransaction = {
   _id: string;
   user: string;
-  user_wallet: string;
+  email?: string;
+  user_wallet:
+    | string
+    | {
+        _id: string;
+        credits: number;
+      };
   status: TPaymentTransactionStatus;
-  payment_method: string;
+  payment_method:
+    | string
+    | {
+        _id: string;
+        name: string;
+        currency: string;
+      };
   gateway_transaction_id: string;
   gateway_session_id?: string;
   gateway_status?: string;
-  package: string;
-  plan: string;
-  price: string; // PackagePlan document _id
+  package:
+    | string
+    | {
+        _id: string;
+        name: string;
+      };
+  plan:
+    | string
+    | {
+        _id: string;
+        name: string;
+        duration?: number;
+      };
+  price:
+    | string
+    | {
+        _id: string;
+        price: {
+          USD: number;
+          BDT: number;
+        };
+        credits: number;
+      }; // PackagePlan document _id
   amount: number;
   currency: TCurrency;
   gateway_fee?: number;

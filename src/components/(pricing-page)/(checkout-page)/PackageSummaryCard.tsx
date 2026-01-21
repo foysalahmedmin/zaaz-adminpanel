@@ -1,11 +1,7 @@
 import { Card } from "@/components/ui/Card";
 import type { TPackage } from "@/types/package.type";
 import React from "react";
-import {
-  getPlanDuration,
-  getPlanId,
-  getPlanName,
-} from "../utils/plan.utils";
+import { getPlanDuration, getPlanId, getPlanName } from "../utils/plan.utils";
 import { getPriceDisplay } from "../utils/price.utils";
 
 type PackageSummaryCardProps = {
@@ -82,13 +78,13 @@ export const PackageSummaryCard: React.FC<PackageSummaryCardProps> = ({
                                 {planName} ({planDuration} days)
                               </span>
                               {pp.is_initial && (
-                                <span className="bg-blue-100 text-blue-800 rounded-full px-2 py-0.5 text-xs font-medium">
+                                <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
                                   Initial
                                 </span>
                               )}
                             </div>
                             <div className="text-muted-foreground text-sm">
-                              {pp.token} tokens
+                              {pp.credits} credits
                             </div>
                           </div>
                           <div className="mt-1 text-sm font-medium">
@@ -127,8 +123,8 @@ export const PackageSummaryCard: React.FC<PackageSummaryCardProps> = ({
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Tokens:</span>
-                <span className="font-semibold">{selectedPlan.token}</span>
+                <span className="text-muted-foreground">Credits:</span>
+                <span className="font-semibold">{selectedPlan.credits}</span>
               </div>
               {getPlanDuration(selectedPlan.plan) > 0 && (
                 <div className="flex justify-between">
@@ -170,4 +166,3 @@ export const PackageSummaryCard: React.FC<PackageSummaryCardProps> = ({
     </Card>
   );
 };
-

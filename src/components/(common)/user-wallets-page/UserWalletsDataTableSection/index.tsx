@@ -13,20 +13,12 @@ type UserWalletsDataTableSectionProps = {
   breadcrumbs: TBreadcrumbs[];
   isLoading: boolean;
   isError: boolean;
-  onView: (row: TUserWallet) => void;
   state?: TState;
 };
 
 const UserWalletsDataTableSection: React.FC<
   UserWalletsDataTableSectionProps
-> = ({
-  data = [],
-  breadcrumbs,
-  isLoading,
-  isError,
-  onView,
-  state,
-}) => {
+> = ({ data = [], breadcrumbs, isLoading, isError, state }) => {
   const columns: TColumn<TUserWallet>[] = [
     {
       name: "User",
@@ -34,16 +26,19 @@ const UserWalletsDataTableSection: React.FC<
       isSortable: true,
       cell: ({ row }) => (
         <div className="space-y-1">
-          <p className="font-semibold">
-            {typeof row.user === "object" && row.user
-              ? (row.user as any).name || (row.user as any).email
-              : row.user}
+          <p className="bg-muted inline-block rounded-md px-2 py-0.5 font-mono text-xs font-medium">
+            {row.user}
           </p>
-          {typeof row.user === "object" && row.user && (
-            <p className="text-muted-foreground text-xs">
-              {(row.user as any).email}
-            </p>
-          )}
+        </div>
+      ),
+    },
+    {
+      name: "Email/User",
+      field: "email",
+      isSearchable: true,
+      cell: ({ row }) => (
+        <div className="space-y-1">
+          <p className="font-semibold">{row.email || "N/A"}</p>
         </div>
       ),
     },
@@ -53,19 +48,36 @@ const UserWalletsDataTableSection: React.FC<
       cell: ({ row }) => (
         <div className="space-y-1">
           <p className="font-semibold">
-            {typeof row.package === "object" && row.package
-              ? (row.package as any).name
-              : row.package}
+            {row.package && typeof row.package === "object"
+              ? row.package.name
+              : row.package || "No Package"}
           </p>
         </div>
       ),
     },
     {
-      name: "Tokens",
-      field: "token",
+      name: "Credits",
+      field: "credits",
       isSortable: true,
       cell: ({ cell }) => (
         <span className="font-semibold">{cell?.toString() || "0"}</span>
+      ),
+    },
+    {
+      name: "Type",
+      field: "type",
+      isSortable: true,
+      cell: ({ cell }) => (
+        <span
+          className={cn(
+            "rounded-full px-2 py-1 text-xs font-medium",
+            cell === "paid"
+              ? "bg-purple-100 text-purple-800"
+              : "bg-gray-100 text-gray-800",
+          )}
+        >
+          {cell?.toString().toUpperCase() || "FREE"}
+        </span>
       ),
     },
     {
@@ -108,21 +120,15 @@ const UserWalletsDataTableSection: React.FC<
                 wallet: row,
                 breadcrumbs: [
                   ...(breadcrumbs || []),
-                  { name: `Wallet ${row._id}`, path: `/user-wallets/${row._id}` },
+                  {
+                    name: `Wallet ${row._id}`,
+                    path: `/user-wallets/${row._id}`,
+                  },
                 ],
               }}
             >
               <Eye className="size-4" />
             </Link>
-          </Button>
-          <Button
-            onClick={() => onView(row)}
-            className="[--accent:green]"
-            size={"sm"}
-            variant="outline"
-            shape={"icon"}
-          >
-            <Eye className="size-4" />
           </Button>
         </div>
       ),
@@ -146,4 +152,3 @@ const UserWalletsDataTableSection: React.FC<
 };
 
 export default UserWalletsDataTableSection;
-

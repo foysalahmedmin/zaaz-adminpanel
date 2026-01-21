@@ -1,15 +1,17 @@
+export type TMeta = {
+  total?: number;
+  page?: number;
+  limit?: number;
+  statistics?: Record<string, number>;
+  [key: string]: unknown;
+};
+
 export type Response<T = unknown> = {
   success?: boolean;
   message?: string;
   status?: number;
   data?: T;
-  meta?: {
-    total?: number;
-    page?: number;
-    limit?: number;
-    statistics?: Record<string, number>;
-    [key: string]: unknown;
-  };
+  meta?: TMeta;
 };
 
 export type ErrorSource = {

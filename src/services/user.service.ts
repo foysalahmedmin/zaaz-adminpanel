@@ -9,7 +9,7 @@ export async function fetchSelf(): Promise<TUserResponse> {
 
 // GET All ["admin", "author"] (Admin)
 export async function fetchWritersUsers(
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
 ): Promise<TUsersResponse> {
   const response = await api.get("/api/users/writers", { params: query });
   return response.data as TUsersResponse;
@@ -17,7 +17,7 @@ export async function fetchWritersUsers(
 
 // GET All Users (Admin)
 export async function fetchUsers(
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
 ): Promise<TUsersResponse> {
   const response = await api.get("/api/users", { params: query });
   return response.data as TUsersResponse;

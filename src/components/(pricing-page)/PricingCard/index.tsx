@@ -4,10 +4,7 @@ import type { TPackage } from "@/types/package.type";
 import { Check, ShoppingCart } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import {
-  getPlanId,
-  getPlanName,
-} from "../utils/plan.utils";
+import { getPlanId, getPlanName } from "../utils/plan.utils";
 
 type PricingCardProps = {
   package: TPackage;
@@ -80,7 +77,7 @@ const getInitialPlanId = (plans: TPackage["plans"] = []): string | null => {
 type PricingHeaderProps = {
   price: { USD: number; BDT: number };
   previousPrice?: { USD: number; BDT: number };
-  tokenAmount?: number;
+  credits?: number;
   planName: string;
   packageName: string;
   badge?: string;
@@ -90,7 +87,7 @@ type PricingHeaderProps = {
 const PricingHeader: React.FC<PricingHeaderProps> = ({
   price,
   previousPrice,
-  tokenAmount,
+  credits,
   planName,
   packageName,
   badge,
@@ -130,9 +127,9 @@ const PricingHeader: React.FC<PricingHeaderProps> = ({
             </div>
           </div>
         </div>
-        {/* Token Badge */}
-        {tokenAmount && (
-          <div className="inline-flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1.5 rounded-full">
+        {/* Credits Badge */}
+        {credits && (
+          <div className="bg-primary/10 text-primary inline-flex items-center gap-1.5 rounded-full px-3 py-1.5">
             <svg
               className="size-4"
               fill="none"
@@ -147,7 +144,7 @@ const PricingHeader: React.FC<PricingHeaderProps> = ({
               />
             </svg>
             <span className="text-sm font-semibold">
-              {tokenAmount.toLocaleString()} Tokens
+              {credits.toLocaleString()} Credits
             </span>
           </div>
         )}
@@ -351,7 +348,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
   const planName = getPlanName(plan);
   const price = displayPlan?.price;
   const previousPrice = displayPlan?.previous_price;
-  const tokenAmount = displayPlan?.token || 0;
+  const credits = displayPlan?.credits || 0;
 
   if (!price) {
     return <EmptyState name={pkg?.name || ""} badge={pkg?.badge} />;
@@ -364,7 +361,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
         <PricingHeader
           price={price}
           previousPrice={previousPrice}
-          tokenAmount={tokenAmount}
+          credits={credits}
           planName={planName}
           packageName={pkg?.name || ""}
           badge={pkg?.badge}
@@ -393,4 +390,3 @@ export const PricingCard: React.FC<PricingCardProps> = ({
     </Card>
   );
 };
-

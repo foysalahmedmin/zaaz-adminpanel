@@ -26,7 +26,7 @@ const PackageHistoryViewModal: React.FC<PackageHistoryViewModalProps> = ({
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <Modal.Backdrop>
-        <Modal.Content className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <Modal.Content className="max-h-[90vh] max-w-4xl overflow-y-auto">
           <Modal.Header>
             <Modal.Title>Package History</Modal.Title>
             <Modal.Close />
@@ -76,7 +76,7 @@ const PackageHistoryViewModal: React.FC<PackageHistoryViewModalProps> = ({
                     {history.points && history.points.length > 0 && (
                       <div className="mb-4">
                         <h5 className="mb-2 font-medium">Key Points:</h5>
-                        <ul className="list-disc list-inside space-y-1">
+                        <ul className="list-inside list-disc space-y-1">
                           {history.points.map((point, index) => (
                             <li
                               key={index}
@@ -97,9 +97,11 @@ const PackageHistoryViewModal: React.FC<PackageHistoryViewModalProps> = ({
                           {history.features.map((feature) => (
                             <div
                               key={feature._id}
-                              className="text-muted-foreground rounded bg-muted/50 px-2 py-1 text-sm"
+                              className="text-muted-foreground bg-muted/50 rounded px-2 py-1 text-sm"
                             >
-                              <span className="font-medium">{feature.name}</span>
+                              <span className="font-medium">
+                                {feature.name}
+                              </span>
                               {feature.description && (
                                 <span className="ml-2">
                                   - {feature.description}
@@ -149,8 +151,8 @@ const PackageHistoryViewModal: React.FC<PackageHistoryViewModalProps> = ({
                                   {pp.plan.duration} days
                                 </div>
                                 <div>
-                                  <span className="font-medium">Tokens:</span>{" "}
-                                  {pp.token}
+                                  <span className="font-medium">Credits:</span>{" "}
+                                  {pp.credits}
                                 </div>
                                 <div>
                                   <span className="font-medium">
@@ -215,4 +217,3 @@ const PackageHistoryViewModal: React.FC<PackageHistoryViewModalProps> = ({
 };
 
 export default PackageHistoryViewModal;
-

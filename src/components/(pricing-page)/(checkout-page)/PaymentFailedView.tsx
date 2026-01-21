@@ -34,7 +34,9 @@ export const PaymentFailedView: React.FC<PaymentFailedViewProps> = ({
             <div className="space-y-1">
               <h4 className="font-semibold">{pkg.name}</h4>
               {pkg.description && (
-                <p className="text-muted-foreground text-sm">{pkg.description}</p>
+                <p className="text-muted-foreground text-sm">
+                  {pkg.description}
+                </p>
               )}
             </div>
             {pkg.plans && pkg.plans.length > 0 && (
@@ -56,8 +58,8 @@ export const PaymentFailedView: React.FC<PaymentFailedViewProps> = ({
                   .filter((pp) => pp.is_initial)
                   .map((pp) => (
                     <div key={pp._id} className="flex justify-between">
-                      <span className="text-muted-foreground">Tokens:</span>
-                      <span className="font-semibold">{pp.token}</span>
+                      <span className="text-muted-foreground">Credits:</span>
+                      <span className="font-semibold">{pp.credits}</span>
                     </div>
                   ))}
               </div>
@@ -93,5 +95,3 @@ export const PaymentFailedView: React.FC<PaymentFailedViewProps> = ({
     </div>
   );
 };
-
-

@@ -1,4 +1,5 @@
 import PackagesDataTableSection from "@/components/(common)/packages-page/PackagesDataTableSection";
+import PackagesFilterSection from "@/components/(common)/packages-page/PackagesFilterSection";
 import PackagesStatisticsSection from "@/components/(common)/packages-page/PackagesStatisticsSection";
 import PackageAddModal from "@/components/modals/PackageAddModal";
 import PackageEditModal from "@/components/modals/PackageEditModal";
@@ -24,9 +25,9 @@ import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Plus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { useState, useMemo, useEffect } from "react";
 
 const PackagesPage = () => {
   const { activeBreadcrumbs } = useMenu();
@@ -90,30 +91,41 @@ const PackagesPage = () => {
     }
   };
 
-  // State management for search, sort, pagination
+  // State management for search, sort, pagination, and filters
   const [search, setSearch] = useState<string>("");
-  const [sort, setSort] = useState<string>("created_at");
+  const [sort, setSort] = useState<string>("-created_at");
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
 
+  // Filters state
+  const [gte, setGte] = useState<string>("");
+  const [lte, setLte] = useState<string>("");
+  const [status, setStatus] = useState<string>("");
+
+  const resetFilters = () => {
+    setGte("");
+    setLte("");
+    setStatus("");
+    setSearch("");
+    setPage(1);
+  };
+
   // Build query parameters from state
   const queryParams = useMemo(() => {
-    const params: Record<string, any> = {
+    const params: Record<string, string | number> = {
       page,
       limit,
     };
 
-    if (sort) {
-      params.sort = sort;
-    }
-
-    if (search) {
-      params.search = search;
-    }
+    if (sort) params.sort = sort;
+    if (search) params.search = search;
+    if (gte) params.gte = gte;
+    if (lte) params.lte = lte;
+    if (status) params.is_active = status === "active" ? "true" : "false";
 
     return params;
-  }, [search, sort, page, limit]);
+  }, [search, sort, page, limit, gte, lte, status]);
 
   // Fetch data with query parameters
   const { data, isLoading, isError } = useQuery({
@@ -125,8 +137,6 @@ const PackagesPage = () => {
   useEffect(() => {
     if (data?.meta?.total !== undefined) {
       setTotal(data.meta.total);
-    } else if (data?.data) {
-      setTotal(data.data.length);
     }
   }, [data]);
 
@@ -141,6 +151,15 @@ const PackagesPage = () => {
         }
       />
       <PackagesStatisticsSection data={data?.data || []} meta={data?.meta} />
+      <PackagesFilterSection
+        gte={gte}
+        setGte={setGte}
+        lte={lte}
+        setLte={setLte}
+        status={status}
+        setStatus={setStatus}
+        onReset={resetFilters}
+      />
       <Card>
         <Card.Content>
           <PackagesDataTableSection
@@ -187,4 +206,3 @@ const PackagesPage = () => {
 };
 
 export default PackagesPage;
-

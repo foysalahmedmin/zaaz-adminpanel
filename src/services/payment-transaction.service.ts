@@ -9,7 +9,7 @@ import type {
 
 // GET All Payment Transactions (Admin)
 export async function fetchPaymentTransactions(
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
 ): Promise<TPaymentTransactionsResponse> {
   const response = await api.get("/api/payment-transactions", {
     params: query,
@@ -19,7 +19,7 @@ export async function fetchPaymentTransactions(
 
 // GET Self Payment Transactions (User/Admin)
 export async function fetchSelfPaymentTransactions(
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
 ): Promise<TPaymentTransactionsResponse> {
   const response = await api.get("/api/payment-transactions/self", {
     params: query,

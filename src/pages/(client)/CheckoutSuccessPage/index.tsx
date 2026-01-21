@@ -76,7 +76,8 @@ const CheckoutSuccessPage = () => {
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       try {
-        const statusResponse = await fetchPaymentTransactionStatus(transactionId);
+        const statusResponse =
+          await fetchPaymentTransactionStatus(transactionId);
 
         if (statusResponse.data?.status === "success") {
           // Webhook processed successfully
@@ -346,8 +347,8 @@ const CheckoutSuccessPage = () => {
                   .filter((pp) => pp.is_initial)
                   .map((pp) => (
                     <div key={pp._id} className="flex justify-between">
-                      <span className="text-muted-foreground">Tokens:</span>
-                      <span className="font-semibold">{pp.token}</span>
+                      <span className="text-muted-foreground">Credits:</span>
+                      <span className="font-semibold">{pp.credits}</span>
                     </div>
                   ))}
               </div>

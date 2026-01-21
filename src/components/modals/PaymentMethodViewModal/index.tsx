@@ -103,43 +103,24 @@ const PaymentMethodViewModal: React.FC<PaymentMethodViewModalProps> = ({
                   <p className="text-sm">{paymentMethod.description}</p>
                 </div>
               )}
-              {paymentMethod.public_key && (
-                <div className="col-span-2">
-                  <span className="text-muted-foreground text-sm">
-                    Public Key
-                  </span>
-                  <p className="font-mono break-all text-xs">
-                    {paymentMethod.public_key}
-                  </p>
-                </div>
-              )}
-              {paymentMethod.webhook_url && (
-                <div className="col-span-2">
-                  <span className="text-muted-foreground text-sm">
-                    Webhook URL
-                  </span>
-                  <p className="font-mono break-all text-xs">
-                    {paymentMethod.webhook_url}
-                  </p>
-                </div>
-              )}
-              {paymentMethod.currencies && paymentMethod.currencies.length > 0 && (
-                <div className="col-span-2">
-                  <span className="text-muted-foreground text-sm">
-                    Supported Currencies
-                  </span>
-                  <div className="mt-1 flex flex-wrap gap-2">
-                    {paymentMethod.currencies.map((currency, index) => (
-                      <span
-                        key={index}
-                        className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium uppercase"
-                      >
-                        {currency}
-                      </span>
-                    ))}
+              {paymentMethod.currencies &&
+                paymentMethod.currencies.length > 0 && (
+                  <div className="col-span-2">
+                    <span className="text-muted-foreground text-sm">
+                      Supported Currencies
+                    </span>
+                    <div className="mt-1 flex flex-wrap gap-2">
+                      {paymentMethod.currencies.map((currency, index) => (
+                        <span
+                          key={index}
+                          className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium uppercase"
+                        >
+                          {currency}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
               {paymentMethod.created_at && (
                 <div>
                   <span className="text-muted-foreground text-sm">
@@ -211,4 +192,3 @@ const PaymentMethodViewModal: React.FC<PaymentMethodViewModalProps> = ({
 };
 
 export default PaymentMethodViewModal;
-

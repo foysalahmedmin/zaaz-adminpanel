@@ -187,5 +187,3 @@ export const useUserLocation = (): UserLocationResult => {
     isBangladesh,
   };
 };
-
-

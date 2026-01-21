@@ -6,7 +6,7 @@ import type {
 } from "@/types/package-plan.type";
 
 export const fetchPackagePlans = async (
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
 ): Promise<TPackagePlansResponse> => {
   const response = await api.get("/api/package-plans", { params: query });
   return response.data as TPackagePlansResponse;
@@ -40,4 +40,3 @@ export const deletePackagePlan = async (
   const response = await api.delete(`/api/package-plans/${id}`);
   return response.data as TPackagePlanResponse;
 };
-

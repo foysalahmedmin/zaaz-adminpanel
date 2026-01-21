@@ -1,0 +1,337 @@
+import CreditsTransactionViewModal from "@/components/modals/CreditsTransactionViewModal";
+import Loader from "@/components/partials/Loader";
+import PageHeader from "@/components/sections/PageHeader";
+import { Card } from "@/components/ui/Card";
+import { cn } from "@/lib/utils";
+import {
+  closeViewModal,
+  openViewModal,
+} from "@/redux/slices/credits-transactions-page-slice";
+import type { RootState } from "@/redux/store";
+import { fetchCreditsTransaction } from "@/services/credits-transaction.service";
+import type { TCreditsTransaction } from "@/types/credits-transaction.type";
+import type { ErrorResponse } from "@/types/response.type";
+import { useQuery } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import {
+  AlertCircle,
+  ArrowDown,
+  ArrowUp,
+  Coins,
+  CreditCard,
+  FileText,
+  User,
+} from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useParams } from "react-router";
+
+const CreditsTransactionsDetailsPage = () => {
+  const { id } = useParams();
+  const location = useLocation();
+  const dispatch = useDispatch();
+
+  const transaction = (
+    location.state as {
+      transaction?: TCreditsTransaction;
+    }
+  )?.transaction;
+
+  const { isViewModalOpen } = useSelector(
+    (state: RootState) => state.creditsTransactionsPage,
+  );
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["credits-transaction", id],
+    queryFn: () => fetchCreditsTransaction(id || ""),
+    enabled: !!id,
+  });
+
+  const currentTransaction = data?.data || transaction;
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <AlertCircle className="mx-auto h-12 w-12 text-red-500" />
+          <h2 className="mt-4 text-xl font-semibold">
+            Error loading transaction
+          </h2>
+          <p className="mt-2 text-gray-500">
+            {(error as AxiosError<ErrorResponse>).response?.data?.message ||
+              "Please try again later"}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentTransaction) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <AlertCircle className="mx-auto h-12 w-12 text-yellow-500" />
+          <h2 className="mt-4 text-xl font-semibold">Transaction not found</h2>
+        </div>
+      </div>
+    );
+  }
+
+  // Safely extract decrease_source (could be object or string)
+  let decreaseSourceText: string | null = null;
+  if (currentTransaction.decrease_source) {
+    if (typeof currentTransaction.decrease_source === "string") {
+      decreaseSourceText = currentTransaction.decrease_source;
+    } else if (
+      typeof currentTransaction.decrease_source === "object" &&
+      currentTransaction.decrease_source !== null
+    ) {
+      const sourceObj = currentTransaction.decrease_source as Record<
+        string,
+        unknown
+      >;
+      decreaseSourceText =
+        (sourceObj.name as string) ||
+        (sourceObj.endpoint as string) ||
+        (sourceObj._id as string) ||
+        "N/A";
+    }
+  }
+
+  const planName =
+    typeof currentTransaction.plan === "object" && currentTransaction.plan
+      ? (currentTransaction.plan as any).name
+      : currentTransaction.plan || "N/A";
+
+  return (
+    <div className="bg-background p-4">
+      <div className="container space-y-6">
+        {/* Header */}
+        <PageHeader
+          name="Credits Transaction Details"
+          description="View credits transaction information"
+          slot={<Coins />}
+        />
+
+        {/* Transaction Information Card */}
+        <Card>
+          <Card.Content className="p-6">
+            <div className="space-y-6">
+              {/* Transaction Header */}
+              <div className="flex items-start gap-6">
+                <div className="relative">
+                  <div
+                    className={cn(
+                      "border-border flex h-24 w-24 items-center justify-center rounded-full border-4",
+                      currentTransaction.type === "increase"
+                        ? "bg-green-500/10 text-green-600"
+                        : "bg-red-500/10 text-red-600",
+                    )}
+                  >
+                    {currentTransaction.type === "increase" ? (
+                      <ArrowUp className="h-12 w-12" />
+                    ) : (
+                      <ArrowDown className="h-12 w-12" />
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <h3
+                      className={cn(
+                        "text-2xl font-bold",
+                        currentTransaction.type === "increase"
+                          ? "text-green-600"
+                          : "text-red-600",
+                      )}
+                    >
+                      {currentTransaction.type === "increase" ? "+" : "-"}
+                      {currentTransaction.credits} credits
+                    </h3>
+                    <p className="text-muted-foreground flex items-center gap-2">
+                      <Coins className="h-4 w-4" />
+                      {currentTransaction.type === "increase"
+                        ? "Credits Increase"
+                        : "Credits Decrease"}
+                    </p>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <span
+                      className={cn(
+                        "flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium capitalize",
+                        currentTransaction.type === "increase"
+                          ? "bg-green-500/10 text-green-600 dark:text-green-400"
+                          : "bg-red-500/10 text-red-600 dark:text-red-400",
+                      )}
+                    >
+                      {currentTransaction.type === "increase" ? (
+                        <ArrowUp className="h-4 w-4" />
+                      ) : (
+                        <ArrowDown className="h-4 w-4" />
+                      )}
+                      {currentTransaction.type}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card.Content>
+        </Card>
+
+        {/* Transaction Details Card */}
+        <Card>
+          <div className="space-y-6 p-6">
+            <div>
+              <h3 className="text-foreground mb-4 text-lg font-semibold">
+                Transaction Details
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-muted rounded-lg p-4">
+                  <div className="text-muted-foreground mb-1 text-sm">
+                    Transaction ID
+                  </div>
+                  <div className="text-foreground font-mono text-sm">
+                    {currentTransaction._id}
+                  </div>
+                </div>
+                <div className="bg-muted rounded-lg p-4">
+                  <div className="text-muted-foreground mb-1 text-sm">Type</div>
+                  <div className="text-foreground text-sm capitalize">
+                    {currentTransaction.type}
+                  </div>
+                </div>
+                <div className="bg-muted rounded-lg p-4">
+                  <div className="text-muted-foreground mb-1 text-sm">
+                    Credits Amount
+                  </div>
+                  <div
+                    className={cn(
+                      "text-xl font-bold",
+                      currentTransaction.type === "increase"
+                        ? "text-green-600"
+                        : "text-red-600",
+                    )}
+                  >
+                    {currentTransaction.type === "increase" ? "+" : "-"}
+                    {currentTransaction.credits} credits
+                  </div>
+                </div>
+                {currentTransaction.increase_source && (
+                  <div className="bg-muted rounded-lg p-4">
+                    <div className="text-muted-foreground mb-1 text-sm">
+                      Increase Source
+                    </div>
+                    <div className="text-foreground text-sm capitalize">
+                      {currentTransaction.increase_source}
+                    </div>
+                  </div>
+                )}
+                {decreaseSourceText && (
+                  <div className="bg-muted rounded-lg p-4">
+                    <div className="text-muted-foreground mb-1 text-sm">
+                      Feature Endpoint
+                    </div>
+                    <div className="text-foreground flex items-center gap-2 text-sm">
+                      <FileText className="h-4 w-4" />
+                      {decreaseSourceText}
+                    </div>
+                  </div>
+                )}
+                {currentTransaction.payment_transaction && (
+                  <div className="bg-muted rounded-lg p-4">
+                    <div className="text-muted-foreground mb-1 text-sm">
+                      Payment Transaction
+                    </div>
+                    <div className="text-foreground flex items-center gap-2 text-sm">
+                      <CreditCard className="h-4 w-4" />
+                      <span className="font-mono text-xs">
+                        {typeof currentTransaction.payment_transaction ===
+                        "string"
+                          ? currentTransaction.payment_transaction
+                          : (currentTransaction.payment_transaction as any)
+                              ._id || "N/A"}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                {currentTransaction.usage_key && (
+                  <div className="bg-muted rounded-lg p-4">
+                    <div className="text-muted-foreground mb-1 text-sm">
+                      Usage Key
+                    </div>
+                    <div className="text-foreground text-sm">
+                      {currentTransaction.usage_key}
+                    </div>
+                  </div>
+                )}
+                {planName !== "N/A" && (
+                  <div className="bg-muted rounded-lg p-4">
+                    <div className="text-muted-foreground mb-1 text-sm">
+                      Plan
+                    </div>
+                    <div className="text-foreground text-sm">{planName}</div>
+                  </div>
+                )}
+                {currentTransaction.user && (
+                  <div className="bg-muted rounded-lg p-4">
+                    <div className="text-muted-foreground mb-1 text-sm">
+                      User
+                    </div>
+                    <div className="text-foreground flex items-center gap-2 text-sm">
+                      <User className="h-4 w-4" />
+                      <span className="font-mono text-xs">
+                        {typeof currentTransaction.user === "string"
+                          ? currentTransaction.user
+                          : (currentTransaction.user as any)._id ||
+                            (currentTransaction.user as any).email ||
+                            "N/A"}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                {currentTransaction.created_at && (
+                  <div className="bg-muted rounded-lg p-4">
+                    <div className="text-muted-foreground mb-1 text-sm">
+                      Created At
+                    </div>
+                    <div className="text-foreground text-sm">
+                      {new Date(currentTransaction.created_at).toLocaleString()}
+                    </div>
+                  </div>
+                )}
+                {currentTransaction.updated_at && (
+                  <div className="bg-muted rounded-lg p-4">
+                    <div className="text-muted-foreground mb-1 text-sm">
+                      Updated At
+                    </div>
+                    <div className="text-foreground text-sm">
+                      {new Date(currentTransaction.updated_at).toLocaleString()}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Modals */}
+        <CreditsTransactionViewModal
+          default={currentTransaction}
+          isOpen={isViewModalOpen}
+          setIsOpen={(value: boolean) =>
+            dispatch(
+              value ? openViewModal(currentTransaction) : closeViewModal(),
+            )
+          }
+        />
+      </div>
+    </div>
+  );
+};
+
+export default CreditsTransactionsDetailsPage;

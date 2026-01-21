@@ -3,6 +3,7 @@ import type {
   AuthResponse,
   ChangePasswordPayload,
   ForgetPasswordPayload,
+  GoogleSignInPayload,
   ResetPasswordPayload,
   SignInPayload,
   SignUpPayload,
@@ -11,6 +12,17 @@ import type {
 // POST - Sign In
 export async function signIn(payload: SignInPayload): Promise<AuthResponse> {
   const response = await api.post("/api/auth/signin", payload, {
+    headers: { "Content-Type": "application/json" },
+    withCredentials: true,
+  });
+  return response.data as AuthResponse;
+}
+
+// POST - Google Sign In
+export async function googleSignIn(
+  payload: GoogleSignInPayload,
+): Promise<AuthResponse> {
+  const response = await api.post("/api/auth/google-signin", payload, {
     headers: { "Content-Type": "application/json" },
     withCredentials: true,
   });

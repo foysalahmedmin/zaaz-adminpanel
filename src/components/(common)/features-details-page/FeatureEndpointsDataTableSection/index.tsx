@@ -114,25 +114,25 @@ const FeatureEndpointsDataTableSection: React.FC<
       },
     },
     {
-      name: "Minimum Token",
-      field: "token",
+      name: "Minimum Credits",
+      field: "min_credits",
       isSortable: true,
       cell: ({ cell }) => {
         // Handle if cell is an object
         if (typeof cell === "object" && cell !== null) {
           const cellObj = cell as Record<string, unknown>;
-          const tokenValue =
-            cellObj.token ||
+          const creditsValue =
+            cellObj.credits ||
             cellObj.value ||
             cellObj.amount ||
             cellObj.count ||
             0;
           return (
             <span className="font-semibold">
-              {typeof tokenValue === "number"
-                ? tokenValue.toString()
-                : typeof tokenValue === "string"
-                  ? tokenValue
+              {typeof creditsValue === "number"
+                ? creditsValue.toString()
+                : typeof creditsValue === "string"
+                  ? creditsValue
                   : "0"}
             </span>
           );
@@ -166,6 +166,20 @@ const FeatureEndpointsDataTableSection: React.FC<
         }
         return <span className="font-semibold">{cell?.toString() || "0"}</span>;
       },
+    },
+    {
+      name: "Max Word (Free)",
+      field: "max_word",
+      cell: ({ row }) => (
+        <span className="font-semibold">{row.max_word?.free ?? 0}</span>
+      ),
+    },
+    {
+      name: "Max Word (Paid)",
+      field: "max_word",
+      cell: ({ row }) => (
+        <span className="font-semibold">{row.max_word?.paid ?? 0}</span>
+      ),
     },
     {
       name: "Status",

@@ -4,13 +4,17 @@ export type TFeatureType = "writing" | "generation" | "other";
 
 export type TFeature = {
   _id: string;
-  value: string;
   parent?: string | null;
   name: string;
+  value: string;
   description?: string;
   path?: string;
   prefix?: string;
   type?: TFeatureType;
+  max_word?: {
+    free: number;
+    paid: number;
+  };
   sequence?: number;
   is_active: boolean;
   is_deleted?: boolean;

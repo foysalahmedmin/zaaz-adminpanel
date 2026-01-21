@@ -45,12 +45,6 @@ const FeatureEndpointViewModal: React.FC<FeatureEndpointViewModalProps> = ({
           <Modal.Body className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <span className="text-muted-foreground text-sm">Value</span>
-                <p className="font-mono text-sm font-semibold">
-                  {endpoint.value || "N/A"}
-                </p>
-              </div>
-              <div>
                 <span className="text-muted-foreground text-sm">Name</span>
                 <p className="font-semibold">{endpoint.name || "N/A"}</p>
               </div>
@@ -78,10 +72,10 @@ const FeatureEndpointViewModal: React.FC<FeatureEndpointViewModalProps> = ({
               </div>
               <div>
                 <span className="text-muted-foreground text-sm">
-                  Minimum Token Amount
+                  Minimum Credits Amount
                 </span>
                 <p className="font-semibold">
-                  {endpoint.token?.toString() || "0"}
+                  {endpoint.min_credits?.toString() || "0"}
                 </p>
               </div>
               {endpoint.sequence !== undefined && (
@@ -94,6 +88,22 @@ const FeatureEndpointViewModal: React.FC<FeatureEndpointViewModalProps> = ({
                   </p>
                 </div>
               )}
+              <div>
+                <span className="text-muted-foreground text-sm">
+                  Max Word (Free)
+                </span>
+                <p className="font-semibold">
+                  {endpoint.max_word?.free ?? "0"}
+                </p>
+              </div>
+              <div>
+                <span className="text-muted-foreground text-sm">
+                  Max Word (Paid)
+                </span>
+                <p className="font-semibold">
+                  {endpoint.max_word?.paid ?? "0"}
+                </p>
+              </div>
               <div>
                 <span className="text-muted-foreground text-sm">Status</span>
                 <p>

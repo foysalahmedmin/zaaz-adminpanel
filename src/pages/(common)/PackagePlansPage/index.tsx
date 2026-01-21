@@ -1,4 +1,5 @@
 import PackagePlansDataTableSection from "@/components/(common)/package-plans-page/PackagePlansDataTableSection";
+import PackagePlansFilterSection from "@/components/(common)/package-plans-page/PackagePlansFilterSection";
 import PackagePlansStatisticsSection from "@/components/(common)/package-plans-page/PackagePlansStatisticsSection";
 import PackagePlanAddModal from "@/components/modals/PackagePlanAddModal";
 import PackagePlanEditModal from "@/components/modals/PackagePlanEditModal";
@@ -22,6 +23,7 @@ import type { ErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Plus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -34,6 +36,20 @@ const PackagePlansPage = () => {
     (state: RootState) => state.packagePlansPage,
   );
 
+  // State management for search, sort, pagination
+  const [search, setSearch] = useState<string>("");
+  const [sort, setSort] = useState<string>("-created_at");
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [total, setTotal] = useState<number>(0);
+
+  // Filter states
+  const [gte, setGte] = useState<string>("");
+  const [lte, setLte] = useState<string>("");
+  const [isActive, setIsActive] = useState<string>("");
+  const [plan, setPlan] = useState<string>("");
+  const [pkg, setPkg] = useState<string>("");
+
   const onOpenAddModal = () => {
     dispatch(openAddModal());
   };
@@ -45,9 +61,7 @@ const PackagePlansPage = () => {
   const delete_mutation = useMutation({
     mutationFn: (_id: string) => deletePackagePlan(_id),
     onSuccess: (data) => {
-      toast.success(
-        data?.message || "Package Plan deleted successfully!",
-      );
+      toast.success(data?.message || "Package Plan deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["package-plans"] });
     },
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -69,10 +83,46 @@ const PackagePlansPage = () => {
     }
   };
 
+  // Build query parameters from state
+  const queryParams = useMemo(() => {
+    const params: Record<string, string | number> = {
+      page,
+      limit,
+    };
+
+    if (sort) params.sort = sort;
+    if (search) params.search = search;
+    if (gte) params.gte = gte;
+    if (lte) params.lte = lte;
+    if (isActive) params.is_active = isActive;
+    if (plan) params.plan = plan;
+    if (pkg) params.package = pkg;
+
+    return params;
+  }, [search, sort, page, limit, gte, lte, isActive, plan, pkg]);
+
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["package-plans"],
-    queryFn: () => fetchPackagePlans({ sort: "created_at" }),
+    queryKey: ["package-plans", queryParams],
+    queryFn: () => fetchPackagePlans(queryParams),
   });
+
+  // Update total from response
+  useEffect(() => {
+    if (data?.meta?.total !== undefined) {
+      setTotal(data.meta.total);
+    }
+  }, [data]);
+
+  const resetFilters = () => {
+    setGte("");
+    setLte("");
+    setIsActive("");
+    setPlan("");
+    setPkg("");
+    setSearch("");
+    setSort("-created_at");
+    setPage(1);
+  };
 
   return (
     <main className="space-y-6">
@@ -84,7 +134,26 @@ const PackagePlansPage = () => {
           </Button>
         }
       />
-      <PackagePlansStatisticsSection data={data?.data || []} />
+
+      <PackagePlansStatisticsSection
+        data={data?.data || []}
+        meta={data?.meta}
+      />
+
+      <PackagePlansFilterSection
+        gte={gte}
+        setGte={setGte}
+        lte={lte}
+        setLte={setLte}
+        isActive={isActive}
+        setIsActive={setIsActive}
+        plan={plan}
+        setPlan={setPlan}
+        pkg={pkg}
+        setPkg={setPkg}
+        onReset={resetFilters}
+      />
+
       <Card>
         <Card.Content>
           <PackagePlansDataTableSection
@@ -93,6 +162,17 @@ const PackagePlansPage = () => {
             isError={isError}
             onEdit={onOpenEditModal}
             onDelete={onDelete}
+            state={{
+              search,
+              sort,
+              page,
+              limit,
+              total,
+              setSearch,
+              setSort,
+              setPage,
+              setLimit,
+            }}
           />
         </Card.Content>
       </Card>
@@ -118,4 +198,3 @@ const PackagePlansPage = () => {
 };
 
 export default PackagePlansPage;
-

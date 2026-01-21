@@ -7,7 +7,7 @@ import type {
 
 // GET All User Wallets (Admin)
 export async function fetchUserWallets(
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
 ): Promise<TUserWalletsResponse> {
   const response = await api.get("/api/user-wallets", { params: query });
   return response.data as TUserWalletsResponse;
@@ -60,3 +60,27 @@ export async function deleteUserWallet(
   return response.data as TUserWalletResponse;
 }
 
+// POST Give Bonus Credits (Admin)
+export async function giveBonusCredits(payload: {
+  user_id: string;
+  credits: number;
+  email?: string;
+}): Promise<TUserWalletResponse> {
+  const response = await api.post(
+    "/api/user-wallets/give-bonus-credits",
+    payload,
+  );
+  return response.data as TUserWalletResponse;
+}
+
+// POST Assign Package (Admin)
+export async function assignPackage(payload: {
+  user_id: string;
+  package_id: string;
+  plan_id: string;
+  increase_source: "payment" | "bonus";
+  email?: string;
+}): Promise<TUserWalletResponse> {
+  const response = await api.post("/api/user-wallets/assign-package", payload);
+  return response.data as TUserWalletResponse;
+}

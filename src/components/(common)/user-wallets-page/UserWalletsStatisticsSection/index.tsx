@@ -12,17 +12,19 @@ type UserWalletsStatisticsSectionProps = {
     statistics?: {
       active?: number;
       expired?: number;
+      free?: number;
+      paid?: number;
     };
   };
 };
 
 const UserWalletsStatisticsSection: React.FC<
   UserWalletsStatisticsSectionProps
-> = ({ data, meta }) => {
-  const total = meta?.total || data?.length || 0;
-  const totalTokens = data?.reduce((sum, d) => sum + (d?.token || 0), 0) || 0;
+> = ({ meta }) => {
+  const total = meta?.total || 0;
   const activeWallets = meta?.statistics?.active || 0;
-  const expiredWallets = meta?.statistics?.expired || 0;
+  const freeWallets = meta?.statistics?.free || 0;
+  const paidWallets = meta?.statistics?.paid || 0;
 
   const statistics: TStatistic[] = [
     {
@@ -40,18 +42,18 @@ const UserWalletsStatisticsSection: React.FC<
       icon: "check-circle",
     },
     {
-      value: expiredWallets,
-      title: "Expired Wallets",
-      subtitle: "Expired",
-      description: "Wallets that have expired.",
-      icon: "clock",
+      value: freeWallets,
+      title: "Free Wallets",
+      subtitle: "Free tier users",
+      description: "Wallets currently on the free tier.",
+      icon: "gift",
     },
     {
-      value: totalTokens,
-      title: "Total Tokens",
-      subtitle: "Across all wallets",
-      description: "Sum of tokens in all wallets.",
-      icon: "coins",
+      value: paidWallets,
+      title: "Paid Wallets",
+      subtitle: "Premium users",
+      description: "Wallets currently on a paid plan.",
+      icon: "crown",
     },
   ];
   return (
@@ -64,4 +66,3 @@ const UserWalletsStatisticsSection: React.FC<
 };
 
 export default UserWalletsStatisticsSection;
-

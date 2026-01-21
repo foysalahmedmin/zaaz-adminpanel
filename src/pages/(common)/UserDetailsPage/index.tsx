@@ -1,26 +1,38 @@
+import CreditsTransactionViewModal from "@/components/modals/CreditsTransactionViewModal";
+import PackageTransactionViewModal from "@/components/modals/PackageTransactionViewModal";
 import PaymentTransactionViewModal from "@/components/modals/PaymentTransactionViewModal";
-import TokenTransactionViewModal from "@/components/modals/TokenTransactionViewModal";
 import Loader from "@/components/partials/Loader";
 import PageHeader from "@/components/sections/PageHeader";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Pagination } from "@/components/ui/Pagination";
 import { Tabs } from "@/components/ui/Tabs";
 import { URLS } from "@/config";
+import {
+  closeViewModal as closeCreditsViewModal,
+  openViewModal as openCreditsViewModal,
+} from "@/redux/slices/credits-transactions-page-slice";
+import {
+  closeViewModal as closePackageViewModal,
+  openViewModal as openPackageViewModal,
+} from "@/redux/slices/package-transactions-page-slice";
 import {
   closeViewModal as closePaymentViewModal,
   openViewModal as openPaymentViewModal,
 } from "@/redux/slices/payment-transactions-page-slice";
-import {
-  closeViewModal as closeTokenViewModal,
-  openViewModal as openTokenViewModal,
-} from "@/redux/slices/token-transactions-page-slice";
 import type { RootState } from "@/redux/store";
+import { fetchCreditsTransactions } from "@/services/credits-transaction.service";
+import type { TPackageTransaction } from "@/services/package-transaction.service";
+import { fetchPackageTransactions } from "@/services/package-transaction.service";
 import { fetchPaymentTransactions } from "@/services/payment-transaction.service";
-import { fetchTokenTransactions } from "@/services/token-transaction.service";
 import { fetchUserWallet } from "@/services/user-wallet.service";
 import { fetchUser } from "@/services/user.service";
+import type { TCreditsTransaction } from "@/types/credits-transaction.type";
+import type { TPackage } from "@/types/package.type";
 import type { TPaymentTransaction } from "@/types/payment-transaction.type";
+import type { TPlan } from "@/types/plan.type";
 import type { ErrorResponse } from "@/types/response.type";
-import type { TTokenTransaction } from "@/types/token-transaction.type";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import {
@@ -28,18 +40,29 @@ import {
   CheckCircle,
   Coins,
   CreditCard,
+  Eye,
   FileText,
   Mail,
+  Package,
   Shield,
   User,
   Wallet,
 } from "lucide-react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 
 const UserDetailsPage = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
+
+  // Pagination States
+  const [paymentPage, setPaymentPage] = useState(1);
+  const [paymentLimit, setPaymentLimit] = useState(10);
+  const [creditsPage, setCreditsPage] = useState(1);
+  const [creditsLimit, setCreditsLimit] = useState(10);
+  const [packagePage, setPackagePage] = useState(1);
+  const [packageLimit, setPackageLimit] = useState(10);
 
   // Fetch user data (admin endpoint)
   const {
@@ -66,38 +89,82 @@ const UserDetailsPage = () => {
 
   // Fetch payment transactions (admin endpoint)
   const { data: paymentTransactionsResponse } = useQuery({
-    queryKey: ["payment-transactions", "user", userId],
+    queryKey: [
+      "payment-transactions",
+      "user",
+      userId,
+      paymentPage,
+      paymentLimit,
+    ],
     queryFn: () =>
       fetchPaymentTransactions({
         user: userId,
         sort: "-created_at",
-        limit: 10,
+        limit: paymentLimit,
+        page: paymentPage,
       }),
     enabled: !!userId,
   });
 
   const paymentTransactions = paymentTransactionsResponse?.data || [];
+  const paymentMeta = paymentTransactionsResponse?.meta;
 
-  // Fetch token transactions (admin endpoint)
-  const { data: tokenTransactionsResponse } = useQuery({
-    queryKey: ["token-transactions", "user", userId],
+  // Fetch credits transactions (admin endpoint)
+  const { data: creditsTransactionsResponse } = useQuery({
+    queryKey: [
+      "credits-transactions",
+      "user",
+      userId,
+      creditsPage,
+      creditsLimit,
+    ],
     queryFn: () =>
-      fetchTokenTransactions({
+      fetchCreditsTransactions({
         user: userId,
         sort: "-created_at",
-        limit: 10,
+        limit: creditsLimit,
+        page: creditsPage,
       }),
     enabled: !!userId,
   });
 
-  const tokenTransactions = tokenTransactionsResponse?.data || [];
+  const creditsTransactions = creditsTransactionsResponse?.data || [];
+  const creditsMeta = creditsTransactionsResponse?.meta;
+
+  // Fetch package transactions (admin endpoint)
+  const { data: packageTransactionsResponse } = useQuery({
+    queryKey: [
+      "package-transactions",
+      "user",
+      userId,
+      packagePage,
+      packageLimit,
+    ],
+    queryFn: () =>
+      fetchPackageTransactions({
+        user: userId,
+        sort: "-created_at",
+        limit: packageLimit,
+        page: packagePage,
+      }),
+    enabled: !!userId,
+  });
+
+  const packageTransactions = packageTransactionsResponse?.data || [];
+  const packageMeta = packageTransactionsResponse?.meta;
 
   const {
     isViewModalOpen: isPaymentViewModalOpen,
     selectedPaymentTransaction,
   } = useSelector((state: RootState) => state.paymentTransactionsPage);
-  const { isViewModalOpen: isTokenViewModalOpen, selectedTokenTransaction } =
-    useSelector((state: RootState) => state.tokenTransactionsPage);
+  const {
+    isViewModalOpen: isCreditsViewModalOpen,
+    selectedCreditsTransaction,
+  } = useSelector((state: RootState) => state.creditsTransactionsPage);
+  const {
+    isViewModalOpen: isPackageViewModalOpen,
+    selectedPackageTransaction,
+  } = useSelector((state: RootState) => state.packageTransactionsPage);
 
   const getRoleColor = (role: string) => {
     const colors = {
@@ -295,11 +362,20 @@ const UserDetailsPage = () => {
                   </Tabs.Trigger>
                   <Tabs.Trigger
                     className="flex items-center gap-2"
-                    value="tokens"
+                    value="credits"
                   >
                     <div className="flex items-center gap-2">
                       <Coins className="h-4 w-4" />
-                      Token Transactions
+                      Credits Transactions
+                    </div>
+                  </Tabs.Trigger>
+                  <Tabs.Trigger
+                    className="flex items-center gap-2"
+                    value="packages"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Package className="h-4 w-4" />
+                      Package Transactions
                     </div>
                   </Tabs.Trigger>
                 </Tabs.List>
@@ -309,10 +385,10 @@ const UserDetailsPage = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="bg-muted rounded-lg p-4">
                           <div className="text-muted-foreground mb-1 text-sm">
-                            Tokens
+                            Credits
                           </div>
                           <div className="text-foreground text-2xl font-bold">
-                            {wallet?.token || 0}
+                            {wallet?.credits || 0}
                           </div>
                         </div>
                         <div className="bg-muted rounded-lg p-4">
@@ -322,7 +398,7 @@ const UserDetailsPage = () => {
                           <div className="text-foreground text-sm">
                             {typeof wallet?.package === "object" &&
                             wallet.package
-                              ? (wallet.package as any).name
+                              ? (wallet.package as TPackage).name
                               : wallet?.package || "N/A"}
                           </div>
                         </div>
@@ -359,96 +435,225 @@ const UserDetailsPage = () => {
                             (transaction: TPaymentTransaction) => (
                               <div
                                 key={transaction._id}
-                                className="border-border hover:bg-muted flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors"
-                                onClick={() =>
-                                  dispatch(openPaymentViewModal(transaction))
-                                }
+                                className="border-border hover:bg-muted flex items-center justify-between rounded-lg border p-4 transition-colors"
                               >
-                                <div>
-                                  <p className="font-semibold">
-                                    {transaction.currency === "USD" ? "$" : "৳"}
-                                    {transaction.amount}
-                                  </p>
-                                  <p className="text-muted-foreground text-sm">
-                                    {transaction.gateway_transaction_id}
-                                  </p>
+                                <div className="flex flex-1 items-center justify-between">
+                                  <div>
+                                    <p className="font-semibold">
+                                      {transaction.currency === "USD"
+                                        ? "$"
+                                        : "৳"}
+                                      {transaction.amount}
+                                    </p>
+                                    <p className="text-muted-foreground text-sm">
+                                      {transaction.gateway_transaction_id}
+                                    </p>
+                                  </div>
+                                  <div className="text-right">
+                                    <span
+                                      className={`rounded-full px-2 py-1 text-xs font-medium capitalize ${
+                                        transaction.status === "success"
+                                          ? "bg-green-100 text-green-800"
+                                          : transaction.status === "pending"
+                                            ? "bg-yellow-100 text-yellow-800"
+                                            : "bg-red-100 text-red-800"
+                                      }`}
+                                    >
+                                      {transaction.status}
+                                    </span>
+                                    {transaction.created_at && (
+                                      <p className="text-muted-foreground mt-1 text-xs">
+                                        {new Date(
+                                          transaction.created_at,
+                                        ).toLocaleDateString()}
+                                      </p>
+                                    )}
+                                  </div>
                                 </div>
-                                <div className="text-right">
-                                  <span
-                                    className={`rounded-full px-2 py-1 text-xs font-medium capitalize ${
-                                      transaction.status === "success"
-                                        ? "bg-green-100 text-green-800"
-                                        : transaction.status === "pending"
-                                          ? "bg-yellow-100 text-yellow-800"
-                                          : "bg-red-100 text-red-800"
-                                    }`}
+                                <div className="ml-4 border-l pl-4">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() =>
+                                      dispatch(
+                                        openPaymentViewModal(transaction),
+                                      )
+                                    }
+                                    className="h-8 w-8 p-0"
                                   >
-                                    {transaction.status}
-                                  </span>
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {paymentMeta && (
+                      <Pagination
+                        total={paymentMeta.total || 0}
+                        limit={paymentLimit}
+                        page={paymentPage}
+                        setLimit={setPaymentLimit}
+                        setPage={setPaymentPage}
+                        className="mt-4 border-t pt-4"
+                      />
+                    )}
+                  </Tabs.Item>
+                  <Tabs.Item value="credits">
+                    <div className="mt-4 space-y-4">
+                      {creditsTransactions.length === 0 ? (
+                        <div className="text-muted-foreground py-8 text-center">
+                          No credits transactions found
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          {creditsTransactions.map(
+                            (transaction: TCreditsTransaction) => (
+                              <div
+                                key={transaction._id}
+                                className="border-border hover:bg-muted flex items-center justify-between rounded-lg border p-4 transition-colors"
+                              >
+                                <div className="flex flex-1 items-center justify-between">
+                                  <div>
+                                    <p
+                                      className={`font-semibold ${
+                                        transaction.type === "increase"
+                                          ? "text-green-600"
+                                          : "text-red-600"
+                                      }`}
+                                    >
+                                      {transaction.type === "increase"
+                                        ? "+"
+                                        : "-"}
+                                      {transaction.credits} credits
+                                    </p>
+                                    {transaction.increase_source && (
+                                      <p className="text-muted-foreground text-sm capitalize">
+                                        Source: {transaction.increase_source}
+                                      </p>
+                                    )}
+                                  </div>
                                   {transaction.created_at && (
-                                    <p className="text-muted-foreground mt-1 text-xs">
+                                    <p className="text-muted-foreground text-sm">
                                       {new Date(
                                         transaction.created_at,
                                       ).toLocaleDateString()}
                                     </p>
                                   )}
                                 </div>
+                                <div className="ml-4 border-l pl-4">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() =>
+                                      dispatch(
+                                        openCreditsViewModal(transaction),
+                                      )
+                                    }
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                </div>
                               </div>
                             ),
                           )}
                         </div>
                       )}
                     </div>
+                    {creditsMeta && (
+                      <Pagination
+                        total={creditsMeta.total || 0}
+                        limit={creditsLimit}
+                        page={creditsPage}
+                        setLimit={setCreditsLimit}
+                        setPage={setCreditsPage}
+                        className="mt-4 border-t pt-4"
+                      />
+                    )}
                   </Tabs.Item>
-                  <Tabs.Item value="tokens">
+                  <Tabs.Item value="packages">
                     <div className="mt-4 space-y-4">
-                      {tokenTransactions.length === 0 ? (
+                      {packageTransactions.length === 0 ? (
                         <div className="text-muted-foreground py-8 text-center">
-                          No token transactions found
+                          No package transactions found
                         </div>
                       ) : (
                         <div className="space-y-2">
-                          {tokenTransactions.map(
-                            (transaction: TTokenTransaction) => (
+                          {packageTransactions.map(
+                            (transaction: TPackageTransaction) => (
                               <div
                                 key={transaction._id}
-                                className="border-border hover:bg-muted flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors"
-                                onClick={() =>
-                                  dispatch(openTokenViewModal(transaction))
-                                }
+                                className="border-border hover:bg-muted flex items-center justify-between rounded-lg border p-4 transition-colors"
                               >
-                                <div>
-                                  <p
-                                    className={`font-semibold ${
-                                      transaction.type === "increase"
-                                        ? "text-green-600"
-                                        : "text-red-600"
-                                    }`}
-                                  >
-                                    {transaction.type === "increase"
-                                      ? "+"
-                                      : "-"}
-                                    {transaction.token} tokens
-                                  </p>
-                                  {transaction.increase_source && (
-                                    <p className="text-muted-foreground text-sm capitalize">
-                                      Source: {transaction.increase_source}
+                                <div className="flex flex-1 items-center justify-between">
+                                  <div>
+                                    <div className="flex items-center gap-2 font-semibold">
+                                      <span className="text-primary font-bold">
+                                        {typeof transaction.package === "object"
+                                          ? (transaction.package as TPackage)
+                                              .name
+                                          : "Package"}
+                                      </span>
+                                      <span className="text-muted-foreground text-xs">
+                                        (
+                                        {typeof transaction.plan === "object"
+                                          ? (transaction.plan as TPlan).name
+                                          : "Plan"}
+                                        )
+                                      </span>
+                                    </div>
+                                    <p className="text-sm font-bold text-green-600">
+                                      +{transaction.credits} credits
                                     </p>
-                                  )}
+                                  </div>
+                                  <div className="text-right">
+                                    <Badge
+                                      className={`text-[10px] font-semibold capitalize ${transaction.increase_source === "payment" ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"}`}
+                                    >
+                                      {transaction.increase_source}
+                                    </Badge>
+                                    {transaction.created_at && (
+                                      <p className="text-muted-foreground mt-1 text-xs">
+                                        {new Date(
+                                          transaction.created_at,
+                                        ).toLocaleDateString()}
+                                      </p>
+                                    )}
+                                  </div>
                                 </div>
-                                {transaction.created_at && (
-                                  <p className="text-muted-foreground text-sm">
-                                    {new Date(
-                                      transaction.created_at,
-                                    ).toLocaleDateString()}
-                                  </p>
-                                )}
+                                <div className="ml-4 border-l pl-4">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() =>
+                                      dispatch(
+                                        openPackageViewModal(transaction),
+                                      )
+                                    }
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                </div>
                               </div>
                             ),
                           )}
                         </div>
                       )}
                     </div>
+                    {packageMeta && (
+                      <Pagination
+                        total={packageMeta.total || 0}
+                        limit={packageLimit}
+                        page={packagePage}
+                        setLimit={setPackageLimit}
+                        setPage={setPackagePage}
+                        className="mt-4 border-t pt-4"
+                      />
+                    )}
                   </Tabs.Item>
                 </Tabs.Content>
               </Tabs>
@@ -470,16 +675,29 @@ const UserDetailsPage = () => {
             )
           }
         />
-        <TokenTransactionViewModal
-          default={selectedTokenTransaction || ({} as TTokenTransaction)}
-          isOpen={isTokenViewModalOpen}
+        <CreditsTransactionViewModal
+          default={selectedCreditsTransaction || ({} as TCreditsTransaction)}
+          isOpen={isCreditsViewModalOpen}
           setIsOpen={(value: boolean) =>
             dispatch(
               value
-                ? openTokenViewModal(
-                    selectedTokenTransaction || ({} as TTokenTransaction),
+                ? openCreditsViewModal(
+                    selectedCreditsTransaction || ({} as TCreditsTransaction),
                   )
-                : closeTokenViewModal(),
+                : closeCreditsViewModal(),
+            )
+          }
+        />
+        <PackageTransactionViewModal
+          default={selectedPackageTransaction || ({} as TPackageTransaction)}
+          isOpen={isPackageViewModalOpen}
+          setIsOpen={(value: boolean) =>
+            dispatch(
+              value
+                ? openPackageViewModal(
+                    selectedPackageTransaction || ({} as TPackageTransaction),
+                  )
+                : closePackageViewModal(),
             )
           }
         />

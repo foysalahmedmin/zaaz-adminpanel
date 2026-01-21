@@ -9,9 +9,9 @@ type DashboardStatisticsSectionProps = {
   data?: TDashboardStatistics;
 };
 
-const DashboardStatisticsSection: React.FC<
-  DashboardStatisticsSectionProps
-> = ({ data }) => {
+const DashboardStatisticsSection: React.FC<DashboardStatisticsSectionProps> = ({
+  data,
+}) => {
   if (!data) return null;
 
   const formatCurrency = (amount: number, currency: string = "USD") => {
@@ -71,15 +71,15 @@ const DashboardStatisticsSection: React.FC<
         : undefined,
     },
     {
-      value: formatNumber(data.total_tokens),
-      title: "Total Tokens",
+      value: formatNumber(data.total_credits),
+      title: "Total Credits",
       subtitle: "In circulation",
-      description: "Total tokens across all user wallets",
+      description: "Total credits across all user wallets",
       icon: "coins",
-      trend: data.trends.tokens
+      trend: data.trends.credits
         ? {
-            type: data.trends.tokens.type,
-            value: `${data.trends.tokens.percentage.toFixed(1)}%`,
+            type: data.trends.credits.type,
+            value: `${data.trends.credits.percentage.toFixed(1)}%`,
             label: "vs last month",
           }
         : undefined,
@@ -96,4 +96,3 @@ const DashboardStatisticsSection: React.FC<
 };
 
 export default DashboardStatisticsSection;
-

@@ -34,13 +34,41 @@ const PaymentTransactionsDataTableSection: React.FC<
 
   const columns: TColumn<TPaymentTransaction>[] = [
     {
+      name: "Doc ID",
+      field: "_id",
+      cell: ({ row }) => (
+        <span className="bg-muted inline-block rounded-md px-2 py-0.5 font-mono text-xs font-medium">
+          {row._id?.substring(0, 8)}...
+        </span>
+      ),
+    },
+    {
+      name: "Email/User",
+      field: "email",
+      isSearchable: true,
+      cell: ({ row }) => (
+        <div className="space-y-1">
+          <p className="font-medium">{row.email || "N/A"}</p>
+          <p className="text-muted-foreground text-xs">
+            {row.customer_email && row.customer_email !== row.email ? (
+              <span>Gateway: {row.customer_email}</span>
+            ) : (
+              <span>ID: {row.user?.substring(0, 10)}...</span>
+            )}
+          </p>
+        </div>
+      ),
+    },
+    {
       name: "Transaction ID",
       field: "gateway_transaction_id",
       isSortable: true,
       isSearchable: true,
       cell: ({ row }) => (
         <div className="space-y-1">
-          <p className="font-mono text-sm">{row.gateway_transaction_id}</p>
+          <p className="font-mono text-sm">
+            {row.gateway_transaction_id || "N/A"}
+          </p>
           {row.gateway_session_id && (
             <p className="text-muted-foreground text-xs">
               Session: {row.gateway_session_id.substring(0, 20)}...

@@ -1,23 +1,21 @@
 import UsersDataTableSection from "@/components/(common)/users-page/UsersDataTableSection";
+import UsersFilterSection from "@/components/(common)/users-page/UsersFilterSection";
 import UsersStatisticsSection from "@/components/(common)/users-page/UsersStatisticsSection";
 import UserEditModal from "@/components/modals/UserEditModal";
 import PageHeader from "@/components/sections/PageHeader";
 import { Card } from "@/components/ui/Card";
 import useMenu from "@/hooks/states/useMenu";
 import useAlert from "@/hooks/ui/useAlert";
-import {
-  closeEditModal,
-  openEditModal,
-} from "@/redux/slices/users-page-slice";
+import { closeEditModal, openEditModal } from "@/redux/slices/users-page-slice";
 import type { RootState } from "@/redux/store";
 import { deleteUser, fetchUsers } from "@/services/user.service";
 import type { ErrorResponse } from "@/types/response.type";
 import type { TUser } from "@/types/user.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { useState, useMemo, useEffect } from "react";
 
 const UsersPage = () => {
   const { activeBreadcrumbs } = useMenu();
@@ -56,30 +54,47 @@ const UsersPage = () => {
     }
   };
 
-  // State management for search, sort, pagination
+  // State management for search, sort, pagination, and filters
   const [search, setSearch] = useState<string>("");
-  const [sort, setSort] = useState<string>("sequence");
+  const [sort, setSort] = useState<string>("-created_at");
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
 
+  // Filters state
+  const [gte, setGte] = useState<string>("");
+  const [lte, setLte] = useState<string>("");
+  const [role, setRole] = useState<string>("");
+  const [status, setStatus] = useState<string>("");
+  const [isVerified, setIsVerified] = useState<string>("");
+
+  const resetFilters = () => {
+    setGte("");
+    setLte("");
+    setRole("");
+    setStatus("");
+    setIsVerified("");
+    setSearch("");
+    setPage(1);
+  };
+
   // Build query parameters from state
   const queryParams = useMemo(() => {
-    const params: Record<string, any> = {
+    const params: Record<string, string | number> = {
       page,
       limit,
     };
 
-    if (sort) {
-      params.sort = sort;
-    }
-
-    if (search) {
-      params.search = search;
-    }
+    if (sort) params.sort = sort;
+    if (search) params.search = search;
+    if (gte) params.gte = gte;
+    if (lte) params.lte = lte;
+    if (role) params.role = role;
+    if (status) params.status = status;
+    if (isVerified) params.is_verified = isVerified;
 
     return params;
-  }, [search, sort, page, limit]);
+  }, [search, sort, page, limit, gte, lte, role, status, isVerified]);
 
   // Fetch data with query parameters
   const { data, isLoading, isError } = useQuery({
@@ -91,15 +106,26 @@ const UsersPage = () => {
   useEffect(() => {
     if (data?.meta?.total !== undefined) {
       setTotal(data.meta.total);
-    } else if (data?.data) {
-      setTotal(data.data.length);
     }
   }, [data]);
 
   return (
     <main className="space-y-6">
-      <PageHeader name="users" />
+      <PageHeader name="Users (Admin)" />
       <UsersStatisticsSection data={data?.data || []} meta={data?.meta} />
+      <UsersFilterSection
+        gte={gte}
+        setGte={setGte}
+        lte={lte}
+        setLte={setLte}
+        role={role}
+        setRole={setRole}
+        status={status}
+        setStatus={setStatus}
+        isVerified={isVerified}
+        setIsVerified={setIsVerified}
+        onReset={resetFilters}
+      />
       <Card>
         <Card.Content>
           <UsersDataTableSection
@@ -127,7 +153,11 @@ const UsersPage = () => {
         default={selectedUser || ({} as TUser)}
         isOpen={isEditModalOpen}
         setIsOpen={(value: boolean) =>
-          dispatch(value ? openEditModal(selectedUser || ({} as TUser)) : closeEditModal())
+          dispatch(
+            value
+              ? openEditModal(selectedUser || ({} as TUser))
+              : closeEditModal(),
+          )
         }
       />
     </main>

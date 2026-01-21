@@ -9,13 +9,17 @@ export type TFeatureEndpointMethod =
 
 export type TFeatureEndpoint = {
   _id: string;
-  value: string;
   feature: string;
   name: string;
+  value: string;
   description?: string;
   endpoint: string;
   method: TFeatureEndpointMethod;
-  token: number;
+  min_credits: number;
+  max_word: {
+    free: number;
+    paid: number;
+  };
   sequence?: number;
   is_active: boolean;
   is_deleted?: boolean;

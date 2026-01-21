@@ -26,7 +26,7 @@ type PackagePlanFormData = {
   plan: string;
   priceUSD: number;
   priceBDT: number;
-  token: number;
+  credits: number;
   is_initial: boolean;
   is_active: boolean;
 };
@@ -141,10 +141,11 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
     formState: { errors },
   } = useForm<TPackageFormInput>({
     defaultValues: {
+      value: pkg?.value || "",
       name: pkg?.name || "",
       description: pkg?.description || "",
       content: pkg?.content || "",
-      type: pkg?.type || "token",
+      type: pkg?.type || "credits",
       badge: pkg?.badge || "",
       points: pkg?.points || [],
       features: pkg?.features || [],
@@ -153,7 +154,7 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
           plan: pp.plan?._id || pp.plan || "",
           priceUSD: pp.price?.USD || 0,
           priceBDT: pp.price?.BDT || 0,
-          token: pp.token || 0,
+          credits: pp.credits || 0,
           is_initial: pp.is_initial || false,
           is_active: pp.is_active !== undefined ? pp.is_active : true,
         })) || [],
@@ -168,6 +169,7 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
   const mutation = useMutation({
     mutationFn: (data: TPackageFormInput) => {
       const payload: any = {
+        value: data.value,
         name: data.name,
         description: data.description,
         content: data.content,
@@ -181,7 +183,7 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
             USD: pp.priceUSD,
             BDT: pp.priceBDT,
           },
-          token: pp.token,
+          credits: pp.credits,
           is_initial: pp.is_initial,
           is_active: pp.is_active,
         })),
@@ -243,7 +245,7 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
             plan: planId,
             priceUSD: 0,
             priceBDT: 0,
-            token: 0,
+            credits: 0,
             is_initial: current.length === 0, // First plan is initial
             is_active: true,
           },
@@ -288,6 +290,28 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
               </div>
 
               <div>
+                <FormControl.Label>Value</FormControl.Label>
+                <FormControl
+                  type="text"
+                  placeholder="e.g., free, basic, premium"
+                  {...register("value", {
+                    required: "Value is required",
+                    pattern: {
+                      value: /^[a-z0-9_-]+$/,
+                      message:
+                        "Value must be lowercases and can only contain letters, numbers, hyphens, and underscores",
+                    },
+                  })}
+                />
+                {errors.value && (
+                  <FormControl.Error>{errors.value.message}</FormControl.Error>
+                )}
+                <FormControl.Helper>
+                  Unique identifier for the package (lowercase)
+                </FormControl.Helper>
+              </div>
+
+              <div>
                 <FormControl.Label>Description (Optional)</FormControl.Label>
                 <FormControl
                   as="textarea"
@@ -314,11 +338,11 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
               <div>
                 <FormControl.Label>Type</FormControl.Label>
                 <FormControl as="select" {...register("type")}>
-                  <option value="token">Token</option>
+                  <option value="credits">Credits</option>
                   <option value="subscription">Subscription</option>
                 </FormControl>
                 <FormControl.Helper>
-                  Select package type (default: token)
+                  Select package type (default: Credits)
                 </FormControl.Helper>
               </div>
 
@@ -381,7 +405,8 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
                   Plans (Required - At least one)
                 </FormControl.Label>
                 <FormControl.Helper>
-                  Select plans and configure their prices, tokens, and settings.
+                  Select plans and configure their prices, credits, and
+                  settings.
                 </FormControl.Helper>
                 <div className="border-input bg-card max-h-68 space-y-3 overflow-y-auto rounded-md border p-3">
                   {plansData?.data?.map((plan) => {
@@ -463,19 +488,19 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
                             </div>
 
                             <div>
-                              <FormControl.Label>Token *</FormControl.Label>
+                              <FormControl.Label>Credits *</FormControl.Label>
                               <FormControl
                                 type="number"
                                 placeholder="0"
                                 min="0"
-                                value={planData.token}
+                                value={planData.credits}
                                 onChange={(e) => {
                                   const updated = [...packagePlans];
                                   const index = updated.findIndex(
                                     (pp) => pp.plan === plan._id,
                                   );
                                   if (index >= 0) {
-                                    updated[index].token =
+                                    updated[index].credits =
                                       parseInt(e.target.value) || 0;
                                     setValue("packagePlans", updated);
                                   }
