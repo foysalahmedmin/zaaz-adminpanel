@@ -1,4 +1,4 @@
-# Admin Panel
+# ZaaZ Admin Panel
 
 A modern, enterprise-grade admin panel for managing the Admin Panel platform. Built with **React 19**, **TypeScript**, and **Modern Web Technologies**, this system provides comprehensive management capabilities for users, financial transactions, credits, AI models, and document processing services. It functions as the central command center for the entire platform, featuring real-time analytics, role-based security, and a modular architecture.
 

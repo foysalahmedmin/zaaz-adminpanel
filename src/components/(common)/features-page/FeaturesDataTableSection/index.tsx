@@ -61,24 +61,6 @@ const FeaturesDataTableSection: React.FC<FeaturesDataTableSectionProps> = ({
       ),
     },
     {
-      name: "Max Word (Free)",
-      field: "max_word",
-      cell: ({ row }) => (
-        <span className="font-mono text-sm">
-          {row.max_word?.free?.toLocaleString() || "0"}
-        </span>
-      ),
-    },
-    {
-      name: "Max Word (Paid)",
-      field: "max_word",
-      cell: ({ row }) => (
-        <span className="font-mono text-sm">
-          {row.max_word?.paid?.toLocaleString() || "0"}
-        </span>
-      ),
-    },
-    {
       name: "Status",
       field: "is_active",
       isSortable: true,

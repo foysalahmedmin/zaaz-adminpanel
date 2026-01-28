@@ -168,20 +168,6 @@ const FeatureEndpointsDataTableSection: React.FC<
       },
     },
     {
-      name: "Max Word (Free)",
-      field: "max_word",
-      cell: ({ row }) => (
-        <span className="font-semibold">{row.max_word?.free ?? 0}</span>
-      ),
-    },
-    {
-      name: "Max Word (Paid)",
-      field: "max_word",
-      cell: ({ row }) => (
-        <span className="font-semibold">{row.max_word?.paid ?? 0}</span>
-      ),
-    },
-    {
       name: "Status",
       field: "is_active",
       isSortable: true,

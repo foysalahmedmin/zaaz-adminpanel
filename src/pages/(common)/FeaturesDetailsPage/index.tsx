@@ -291,22 +291,6 @@ const FeaturesDetailsPage = () => {
                     {currentFeature.is_active ? "Active" : "Inactive"}
                   </div>
                 </div>
-                <div className="bg-muted border-primary/20 rounded-lg border p-4">
-                  <div className="text-primary mb-1 text-sm font-semibold">
-                    Max Word (Free)
-                  </div>
-                  <div className="text-foreground text-xl font-bold">
-                    {currentFeature.max_word?.free?.toLocaleString() || "0"}
-                  </div>
-                </div>
-                <div className="bg-muted border-primary/20 rounded-lg border p-4">
-                  <div className="text-primary mb-1 text-sm font-semibold">
-                    Max Word (Paid)
-                  </div>
-                  <div className="text-foreground text-xl font-bold">
-                    {currentFeature.max_word?.paid?.toLocaleString() || "0"}
-                  </div>
-                </div>
                 {endpointsCount > 0 && (
                   <div className="bg-muted rounded-lg p-4">
                     <div className="text-muted-foreground mb-1 text-sm">

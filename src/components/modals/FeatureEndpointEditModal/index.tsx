@@ -40,10 +40,6 @@ const FeatureEndpointEditModal: React.FC<FeatureEndpointEditModalProps> = ({
       endpoint: endpoint?.endpoint || "",
       method: endpoint?.method || "GET",
       min_credits: endpoint?.min_credits || 0,
-      max_word: {
-        free: endpoint?.max_word?.free || 0,
-        paid: endpoint?.max_word?.paid || 0,
-      },
       sequence: endpoint?.sequence || 0,
       is_active: endpoint?.is_active ?? true,
     },
@@ -57,10 +53,6 @@ const FeatureEndpointEditModal: React.FC<FeatureEndpointEditModalProps> = ({
       endpoint: endpoint?.endpoint || "",
       method: endpoint?.method || "GET",
       min_credits: endpoint?.min_credits || 0,
-      max_word: {
-        free: endpoint?.max_word?.free || 0,
-        paid: endpoint?.max_word?.paid || 0,
-      },
       sequence: endpoint?.sequence || 0,
       is_active: endpoint?.is_active ?? true,
     });
@@ -245,47 +237,6 @@ const FeatureEndpointEditModal: React.FC<FeatureEndpointEditModalProps> = ({
                   Lower numbers appear first when sorting by sequence
                 </FormControl.Helper>
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <FormControl.Label>Max Word (Free)</FormControl.Label>
-                  <FormControl
-                    type="number"
-                    placeholder="0"
-                    min="0"
-                    {...register("max_word.free", {
-                      required: "Max Word (Free) is required",
-                      valueAsNumber: true,
-                      min: { value: 0, message: "Must be 0 or greater" },
-                    })}
-                  />
-                  {errors.max_word?.free && (
-                    <FormControl.Error>
-                      {errors.max_word.free.message}
-                    </FormControl.Error>
-                  )}
-                </div>
-
-                <div>
-                  <FormControl.Label>Max Word (Paid)</FormControl.Label>
-                  <FormControl
-                    type="number"
-                    placeholder="0"
-                    min="0"
-                    {...register("max_word.paid", {
-                      required: "Max Word (Paid) is required",
-                      valueAsNumber: true,
-                      min: { value: 0, message: "Must be 0 or greater" },
-                    })}
-                  />
-                  {errors.max_word?.paid && (
-                    <FormControl.Error>
-                      {errors.max_word.paid.message}
-                    </FormControl.Error>
-                  )}
-                </div>
-              </div>
-
               <div>
                 <label className="inline-flex items-center gap-2">
                   <input

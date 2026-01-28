@@ -89,22 +89,6 @@ const FeatureEndpointViewModal: React.FC<FeatureEndpointViewModalProps> = ({
                 </div>
               )}
               <div>
-                <span className="text-muted-foreground text-sm">
-                  Max Word (Free)
-                </span>
-                <p className="font-semibold">
-                  {endpoint.max_word?.free ?? "0"}
-                </p>
-              </div>
-              <div>
-                <span className="text-muted-foreground text-sm">
-                  Max Word (Paid)
-                </span>
-                <p className="font-semibold">
-                  {endpoint.max_word?.paid ?? "0"}
-                </p>
-              </div>
-              <div>
                 <span className="text-muted-foreground text-sm">Status</span>
                 <p>
                   <span

@@ -43,10 +43,6 @@ const FeatureEditModal: React.FC<FeatureEditModalProps> = ({
       sequence: feature?.sequence || 0,
       is_active: feature?.is_active ?? true,
       parent: feature?.parent || null,
-      max_word: {
-        free: feature?.max_word?.free || 0,
-        paid: feature?.max_word?.paid || 0,
-      },
     },
   });
 
@@ -61,10 +57,6 @@ const FeatureEditModal: React.FC<FeatureEditModalProps> = ({
       sequence: feature?.sequence || 0,
       is_active: feature?.is_active ?? true,
       parent: feature?.parent || null,
-      max_word: {
-        free: feature?.max_word?.free || 0,
-        paid: feature?.max_word?.paid || 0,
-      },
     });
   }, [feature, reset]);
 
@@ -242,49 +234,6 @@ const FeatureEditModal: React.FC<FeatureEditModalProps> = ({
                     Active
                   </span>
                 </label>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <FormControl.Label>Max Word (Free)</FormControl.Label>
-                  <FormControl
-                    type="number"
-                    placeholder="0"
-                    min="0"
-                    {...register("max_word.free", {
-                      valueAsNumber: true,
-                      min: {
-                        value: 0,
-                        message: "Max word must be 0 or greater",
-                      },
-                    })}
-                  />
-                  {errors.max_word?.free && (
-                    <FormControl.Error>
-                      {errors.max_word.free.message}
-                    </FormControl.Error>
-                  )}
-                </div>
-                <div>
-                  <FormControl.Label>Max Word (Paid)</FormControl.Label>
-                  <FormControl
-                    type="number"
-                    placeholder="0"
-                    min="0"
-                    {...register("max_word.paid", {
-                      valueAsNumber: true,
-                      min: {
-                        value: 0,
-                        message: "Max word must be 0 or greater",
-                      },
-                    })}
-                  />
-                  {errors.max_word?.paid && (
-                    <FormControl.Error>
-                      {errors.max_word.paid.message}
-                    </FormControl.Error>
-                  )}
-                </div>
               </div>
             </Modal.Body>
 
