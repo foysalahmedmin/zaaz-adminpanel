@@ -60,6 +60,14 @@ Tools for managing the monetary aspects of the platform.
 - **Plan Selection**: Select multiple plans per package with individual pricing and credit amounts.
 - **Package-Plan Management**: Manage plan associations, set initial plan, configure prices and credits per plan.
 - **Package History**: View complete change history with embedded feature and plan data via modal.
+- **Package Feature Configuration**: Dynamic configuration system for package-specific feature behavior.
+  - Configure minimum/maximum credits per feature or endpoint.
+  - Set daily and monthly usage limits per package.
+  - Define quality tiers (basic, standard, premium) for different packages.
+  - Endpoint-specific overrides for granular control.
+  - Feature-wide configurations for consistent behavior.
+  - Real-time configuration updates without code changes.
+  - **Note**: UI components (modals, forms, tables) are pending implementation. Backend API and types are production-ready.
 - **Plans Page**: Complete CRUD operations for reusable plan templates.
 - **Plan Reusability**: Use same plan across multiple packages.
 - **Pricing Configuration**: Set individual prices (USD/BDT) per plan per package.
@@ -324,7 +332,11 @@ src/
 │   ├── slices/      # Redux slices for each page/module
 │   └── store.ts     # Redux store configuration
 ├── services/        # API service functions
+│   ├── package-feature-config.service.ts  # Package configuration API
+│   └── ...          # Other service modules
 ├── types/           # TypeScript type definitions
+│   ├── package-feature-config.type.ts     # Configuration types
+│   └── ...          # Other type definitions
 └── utils/           # Utility functions
 ```
 

@@ -63,6 +63,16 @@ export type TPaymentTransaction = {
         };
         credits: number;
       }; // PackagePlan document _id
+  coupon?:
+    | string
+    | {
+        _id: string;
+        code: string;
+        discount_type: "percentage" | "fixed";
+        discount_value: number;
+        is_affiliate?: boolean;
+      };
+  discount_amount?: number;
   amount: number;
   currency: TCurrency;
   gateway_fee?: number;
@@ -75,7 +85,7 @@ export type TPaymentTransaction = {
   customer_name?: string;
   return_url?: string; // Frontend return URL (stored for redirect after payment)
   cancel_url?: string; // Frontend cancel URL (stored for redirect after payment)
-  gateway_response?: Record<string, any>;
+  gateway_response?: Record<string, unknown>;
   is_deleted?: boolean;
   created_at?: string;
   updated_at?: string;

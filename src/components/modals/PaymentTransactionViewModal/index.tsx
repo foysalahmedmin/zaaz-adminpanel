@@ -85,15 +85,52 @@ const PaymentTransactionViewModal: React.FC<
                   Financial Info
                 </h4>
                 <div className="grid grid-cols-2 gap-y-3">
-                  <div className="col-span-1">
-                    <span className="text-muted-foreground text-xs">
-                      Amount
-                    </span>
-                    <p className="text-lg font-bold">
-                      {transaction.currency === "USD" ? "$" : "৳"}
-                      {transaction.amount} {transaction.currency}
-                    </p>
-                  </div>
+                  {transaction.discount_amount &&
+                  transaction.discount_amount > 0 ? (
+                    <>
+                      <div className="col-span-2">
+                        <span className="text-muted-foreground text-xs">
+                          Original Price
+                        </span>
+                        <p className="text-lg font-semibold text-gray-500 line-through">
+                          {transaction.currency === "USD" ? "$" : "৳"}
+                          {(
+                            (transaction.amount || 0) +
+                            transaction.discount_amount
+                          ).toFixed(2)}{" "}
+                          {transaction.currency}
+                        </p>
+                      </div>
+                      <div className="col-span-2">
+                        <span className="text-muted-foreground text-xs">
+                          Discount Applied
+                        </span>
+                        <p className="text-lg font-bold text-green-600">
+                          - {transaction.currency === "USD" ? "$" : "৳"}
+                          {transaction.discount_amount.toFixed(2)}
+                        </p>
+                      </div>
+                      <div className="col-span-2 border-t pt-2">
+                        <span className="text-muted-foreground text-xs">
+                          Final Amount Paid
+                        </span>
+                        <p className="text-primary text-2xl font-bold">
+                          {transaction.currency === "USD" ? "$" : "৳"}
+                          {transaction.amount} {transaction.currency}
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="col-span-2">
+                      <span className="text-muted-foreground text-xs">
+                        Amount
+                      </span>
+                      <p className="text-lg font-bold">
+                        {transaction.currency === "USD" ? "$" : "৳"}
+                        {transaction.amount} {transaction.currency}
+                      </p>
+                    </div>
+                  )}
                   <div className="col-span-1">
                     <span className="text-muted-foreground text-xs">
                       Gateway Fee
@@ -109,11 +146,11 @@ const PaymentTransactionViewModal: React.FC<
                       )}
                     </p>
                   </div>
-                  <div className="col-span-2">
+                  <div className="col-span-1">
                     <span className="text-muted-foreground text-xs">
                       Payment Method
                     </span>
-                    <p className="font-medium">
+                    <p className="text-sm font-medium">
                       {typeof transaction.payment_method === "object"
                         ? transaction.payment_method.name
                         : transaction.payment_method || "N/A"}
@@ -158,6 +195,70 @@ const PaymentTransactionViewModal: React.FC<
                   </div>
                 </div>
               </div>
+
+              {/* Coupon & Discount Information */}
+              {transaction.coupon && (
+                <div className="space-y-4">
+                  <h4 className="border-primary/20 text-primary border-b pb-1 text-sm font-bold tracking-widest uppercase">
+                    Coupon & Discount
+                  </h4>
+                  <div className="space-y-3 rounded-lg border border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 p-4 dark:border-green-800 dark:from-green-950/20 dark:to-emerald-950/20">
+                    <div>
+                      <span className="text-muted-foreground text-xs">
+                        Coupon Code
+                      </span>
+                      <p className="font-mono text-lg font-bold text-green-700 dark:text-green-400">
+                        {typeof transaction.coupon === "object"
+                          ? transaction.coupon.code
+                          : "N/A"}
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <span className="text-muted-foreground text-xs">
+                          Discount Type
+                        </span>
+                        <p className="font-semibold capitalize">
+                          {typeof transaction.coupon === "object"
+                            ? transaction.coupon.discount_type
+                            : "N/A"}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground text-xs">
+                          Discount Value
+                        </span>
+                        <p className="font-bold text-green-600 dark:text-green-400">
+                          {typeof transaction.coupon === "object" &&
+                          transaction.coupon.discount_type === "percentage"
+                            ? `${transaction.coupon.discount_value}%`
+                            : typeof transaction.coupon === "object"
+                              ? `${transaction.currency === "USD" ? "$" : "৳"}${transaction.coupon.discount_value}`
+                              : "N/A"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="border-t border-green-200 pt-3 dark:border-green-800">
+                      <span className="text-muted-foreground text-xs">
+                        Total Discount Applied
+                      </span>
+                      <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                        {transaction.discount_amount
+                          ? `${transaction.currency === "USD" ? "$" : "৳"}${transaction.discount_amount.toFixed(2)}`
+                          : "৳0.00"}
+                      </p>
+                    </div>
+                    {typeof transaction.coupon === "object" &&
+                      transaction.coupon.is_affiliate && (
+                        <div className="rounded border border-blue-300 bg-blue-100 px-3 py-2 dark:border-blue-700 dark:bg-blue-900/30">
+                          <span className="text-xs font-bold text-blue-700 uppercase dark:text-blue-300">
+                            🎯 Affiliate Coupon
+                          </span>
+                        </div>
+                      )}
+                  </div>
+                </div>
+              )}
 
               {/* Customer Information */}
               <div className="space-y-4">
