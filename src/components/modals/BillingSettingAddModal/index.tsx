@@ -3,7 +3,7 @@ import { FormControl } from "@/components/ui/FormControl";
 import { Modal } from "@/components/ui/Modal";
 import { createBillingSetting } from "@/services/billing-setting.service";
 import type { TBillingSetting } from "@/types/billing-setting.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
@@ -41,7 +41,7 @@ const BillingSettingAddModal: React.FC<BillingSettingAddModalProps> = ({
       setIsOpen(false);
       reset();
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(
         error.response?.data?.message || "Failed to create Billing Setting",
       );

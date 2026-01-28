@@ -1,4 +1,4 @@
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 
 export type TFeatureEndpointMethod =
   | "GET"
@@ -23,5 +23,5 @@ export type TFeatureEndpoint = {
   updated_at?: string;
 };
 
-export type TFeatureEndpointResponse = Response<TFeatureEndpoint>;
-export type TFeatureEndpointsResponse = Response<TFeatureEndpoint[]>;
+export type TFeatureEndpointResponse = TResponse<TFeatureEndpoint>;
+export type TFeatureEndpointsResponse = TResponse<TFeatureEndpoint[]>;

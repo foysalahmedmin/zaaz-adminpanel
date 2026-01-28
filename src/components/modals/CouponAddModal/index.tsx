@@ -4,7 +4,7 @@ import { Modal } from "@/components/ui/Modal";
 import { createCoupon } from "@/services/coupon.service";
 import { fetchPackages } from "@/services/package.service";
 import type { TCoupon } from "@/types/coupon.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
@@ -61,7 +61,7 @@ const CouponAddModal: React.FC<CouponAddModalProps> = ({
       reset();
       setIsOpen(false);
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to create coupon");
     },
   });

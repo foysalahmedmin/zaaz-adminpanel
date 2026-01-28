@@ -34,7 +34,7 @@ import type { TCreditsProfit } from "@/types/credits-profit.type";
 import type { TFeatureEndpoint } from "@/types/feature-endpoint.type";
 import type { TFeature } from "@/types/feature.type";
 import type { TPackage } from "@/types/package.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import type { TUser } from "@/types/user.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -110,7 +110,7 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
         ],
       });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to restore item");
     },
   });
@@ -146,7 +146,7 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
         ],
       });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to delete item");
     },
   });

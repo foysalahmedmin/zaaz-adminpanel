@@ -13,7 +13,7 @@ import type { RootState } from "@/redux/store";
 import { fetchCreditsProfitHistories } from "@/services/credits-profit-history.service";
 import { fetchCreditsProfit } from "@/services/credits-profit.service";
 import type { TCreditsProfit } from "@/types/credits-profit.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import {
@@ -74,7 +74,7 @@ const CreditsProfitsDetailsPage = () => {
             Error loading credits profit
           </h2>
           <p className="mt-2 text-gray-500">
-            {(error as AxiosError<ErrorResponse>).response?.data?.message ||
+            {(error as AxiosError<TErrorResponse>).response?.data?.message ||
               "Please try again later"}
           </p>
         </div>

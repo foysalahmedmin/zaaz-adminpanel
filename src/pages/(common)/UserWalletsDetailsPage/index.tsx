@@ -32,7 +32,7 @@ import type { TCreditsTransaction } from "@/types/credits-transaction.type";
 import type { TPackage } from "@/types/package.type";
 import type { TPaymentTransaction } from "@/types/payment-transaction.type";
 import type { TPlan } from "@/types/plan.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import type { TUserWallet } from "@/types/user-wallet.type";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -176,7 +176,7 @@ const UserWalletsDetailsPage = () => {
           <AlertCircle className="mx-auto h-12 w-12 text-red-500" />
           <h2 className="mt-4 text-xl font-semibold">Error loading wallet</h2>
           <p className="mt-2 text-gray-500">
-            {(error as AxiosError<ErrorResponse>).response?.data?.message ||
+            {(error as AxiosError<TErrorResponse>).response?.data?.message ||
               "Please try again later"}
           </p>
         </div>

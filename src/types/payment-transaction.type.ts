@@ -1,4 +1,4 @@
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 
 export type TPaymentTransactionStatus =
   | "pending"
@@ -91,8 +91,8 @@ export type TPaymentTransaction = {
   updated_at?: string;
 };
 
-export type TPaymentTransactionResponse = Response<TPaymentTransaction>;
-export type TPaymentTransactionsResponse = Response<TPaymentTransaction[]>;
+export type TPaymentTransactionResponse = TResponse<TPaymentTransaction>;
+export type TPaymentTransactionsResponse = TResponse<TPaymentTransaction[]>;
 
 export type TInitiatePaymentResponse = {
   payment_transaction: TPaymentTransaction;
@@ -100,4 +100,4 @@ export type TInitiatePaymentResponse = {
   payment_url?: string;
 };
 
-export type TInitiatePaymentResponseData = Response<TInitiatePaymentResponse>;
+export type TInitiatePaymentResponseData = TResponse<TInitiatePaymentResponse>;

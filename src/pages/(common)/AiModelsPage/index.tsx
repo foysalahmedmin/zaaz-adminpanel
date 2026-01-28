@@ -25,7 +25,7 @@ import {
   updateAiModel,
 } from "@/services/ai-model.service";
 import type { TAiModel } from "@/types/ai-model.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Plus } from "lucide-react";
@@ -63,7 +63,7 @@ const AiModelsPage = () => {
       toast.success(data?.message || "AI Model deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["ai-models"] });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to delete AI Model");
     },
   });
@@ -77,7 +77,7 @@ const AiModelsPage = () => {
       );
       queryClient.invalidateQueries({ queryKey: ["ai-models"] });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(
         error.response?.data?.message ||
           "Failed to update AI Model initial status",

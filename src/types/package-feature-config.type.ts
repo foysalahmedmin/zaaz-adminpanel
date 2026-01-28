@@ -1,3 +1,5 @@
+import type { TResponse } from "./response.type";
+
 export type TPackageFeatureConfig = {
   _id: string;
   package: string | { _id: string; name: string };
@@ -25,3 +27,6 @@ export type TPackageFeatureConfig = {
   created_at?: string;
   updated_at?: string;
 };
+
+export type TPackageFeatureConfigResponse = TResponse<TPackageFeatureConfig>;
+export type TPackageFeatureConfigsResponse = TResponse<TPackageFeatureConfig[]>;

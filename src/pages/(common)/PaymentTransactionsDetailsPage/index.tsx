@@ -10,7 +10,7 @@ import {
 import type { RootState } from "@/redux/store";
 import { fetchPaymentTransaction } from "@/services/payment-transaction.service";
 import type { TPaymentTransaction } from "@/types/payment-transaction.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import {
@@ -29,19 +29,17 @@ const PaymentTransactionsDetailsPage = () => {
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const transaction = (location.state as {
-    transaction?: TPaymentTransaction;
-  })?.transaction;
+  const transaction = (
+    location.state as {
+      transaction?: TPaymentTransaction;
+    }
+  )?.transaction;
 
   const { isViewModalOpen } = useSelector(
     (state: RootState) => state.paymentTransactionsPage,
   );
 
-  const {
-    data,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["payment-transaction", id],
     queryFn: () => fetchPaymentTransaction(id || ""),
     enabled: !!id,
@@ -83,7 +81,7 @@ const PaymentTransactionsDetailsPage = () => {
             Error loading transaction
           </h2>
           <p className="mt-2 text-gray-500">
-            {(error as AxiosError<ErrorResponse>).response?.data?.message ||
+            {(error as AxiosError<TErrorResponse>).response?.data?.message ||
               "Please try again later"}
           </p>
         </div>
@@ -103,8 +101,7 @@ const PaymentTransactionsDetailsPage = () => {
   }
 
   const packageName =
-    typeof currentTransaction.package === "object" &&
-    currentTransaction.package
+    typeof currentTransaction.package === "object" && currentTransaction.package
       ? (currentTransaction.package as any).name
       : currentTransaction.package || "N/A";
 
@@ -164,7 +161,7 @@ const PaymentTransactionsDetailsPage = () => {
                   <div className="flex gap-3">
                     <span
                       className={cn(
-                        "rounded-full px-3 py-1 text-sm font-medium capitalize flex items-center gap-2",
+                        "flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium capitalize",
                         getStatusColor(currentTransaction.status),
                       )}
                     >
@@ -172,7 +169,7 @@ const PaymentTransactionsDetailsPage = () => {
                       {currentTransaction.status}
                     </span>
                     {currentTransaction.currency && (
-                      <span className="bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-full px-3 py-1 text-sm font-medium uppercase">
+                      <span className="rounded-full bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-600 uppercase dark:text-blue-400">
                         {currentTransaction.currency}
                       </span>
                     )}
@@ -218,13 +215,17 @@ const PaymentTransactionsDetailsPage = () => {
                   </div>
                 )}
                 <div className="bg-muted rounded-lg p-4">
-                  <div className="text-muted-foreground mb-1 text-sm">Status</div>
+                  <div className="text-muted-foreground mb-1 text-sm">
+                    Status
+                  </div>
                   <div className="text-foreground text-sm capitalize">
                     {currentTransaction.status}
                   </div>
                 </div>
                 <div className="bg-muted rounded-lg p-4">
-                  <div className="text-muted-foreground mb-1 text-sm">Amount</div>
+                  <div className="text-muted-foreground mb-1 text-sm">
+                    Amount
+                  </div>
                   <div className="text-foreground text-xl font-bold">
                     {currentTransaction.currency === "USD" ? "$" : "৳"}
                     {currentTransaction.amount}
@@ -251,7 +252,9 @@ const PaymentTransactionsDetailsPage = () => {
                   </div>
                 </div>
                 <div className="bg-muted rounded-lg p-4">
-                  <div className="text-muted-foreground mb-1 text-sm">Package</div>
+                  <div className="text-muted-foreground mb-1 text-sm">
+                    Package
+                  </div>
                   <div className="text-foreground flex items-center gap-2 text-sm">
                     <Package className="h-4 w-4" />
                     {packageName}
@@ -259,7 +262,9 @@ const PaymentTransactionsDetailsPage = () => {
                 </div>
                 {planName !== "N/A" && (
                   <div className="bg-muted rounded-lg p-4">
-                    <div className="text-muted-foreground mb-1 text-sm">Plan</div>
+                    <div className="text-muted-foreground mb-1 text-sm">
+                      Plan
+                    </div>
                     <div className="text-foreground text-sm">{planName}</div>
                   </div>
                 )}
@@ -296,7 +301,9 @@ const PaymentTransactionsDetailsPage = () => {
                 )}
                 {currentTransaction.paid_at && (
                   <div className="bg-muted rounded-lg p-4">
-                    <div className="text-muted-foreground mb-1 text-sm">Paid At</div>
+                    <div className="text-muted-foreground mb-1 text-sm">
+                      Paid At
+                    </div>
                     <div className="text-foreground text-sm">
                       {new Date(currentTransaction.paid_at).toLocaleString()}
                     </div>
@@ -313,7 +320,7 @@ const PaymentTransactionsDetailsPage = () => {
                   </div>
                 )}
                 {currentTransaction.failure_reason && (
-                  <div className="bg-muted rounded-lg p-4 col-span-2">
+                  <div className="bg-muted col-span-2 rounded-lg p-4">
                     <div className="text-muted-foreground mb-1 text-sm">
                       Failure Reason
                     </div>
@@ -338,7 +345,9 @@ const PaymentTransactionsDetailsPage = () => {
                       Refunded At
                     </div>
                     <div className="text-foreground text-sm">
-                      {new Date(currentTransaction.refunded_at).toLocaleString()}
+                      {new Date(
+                        currentTransaction.refunded_at,
+                      ).toLocaleString()}
                     </div>
                   </div>
                 )}
@@ -373,9 +382,7 @@ const PaymentTransactionsDetailsPage = () => {
           isOpen={isViewModalOpen}
           setIsOpen={(value: boolean) =>
             dispatch(
-              value
-                ? openViewModal(currentTransaction)
-                : closeViewModal(),
+              value ? openViewModal(currentTransaction) : closeViewModal(),
             )
           }
         />

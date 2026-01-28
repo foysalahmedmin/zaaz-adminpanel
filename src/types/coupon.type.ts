@@ -1,4 +1,4 @@
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 
 export type TDiscountType = "percentage" | "fixed";
 
@@ -30,5 +30,5 @@ export type TCoupon = {
   updated_at?: string;
 };
 
-export type TCouponResponse = Response<TCoupon>;
-export type TCouponsResponse = Response<TCoupon[]>;
+export type TCouponResponse = TResponse<TCoupon>;
+export type TCouponsResponse = TResponse<TCoupon[]>;

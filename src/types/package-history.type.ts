@@ -1,7 +1,7 @@
 import type { TFeature } from "./feature.type";
 import type { TPackagePrice } from "./package.type";
 import type { TPlan } from "./plan.type";
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 
 // Embedded feature data structure for history
 export type TFeatureHistory = TFeature;
@@ -41,5 +41,5 @@ export type TPackageHistory = {
   updated_at?: string;
 };
 
-export type TPackageHistoryResponse = Response<TPackageHistory>;
-export type TPackageHistoriesResponse = Response<TPackageHistory[]>;
+export type TPackageHistoryResponse = TResponse<TPackageHistory>;
+export type TPackageHistoriesResponse = TResponse<TPackageHistory[]>;

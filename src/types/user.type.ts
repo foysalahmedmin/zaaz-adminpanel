@@ -1,4 +1,4 @@
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 
 export type TRole = "super-admin" | "admin" | "user";
 
@@ -17,5 +17,5 @@ export type TUser = {
   is_verified?: boolean;
 };
 
-export type TUserResponse = Response<TUser>;
-export type TUsersResponse = Response<TUser[]>;
+export type TUserResponse = TResponse<TUser>;
+export type TUsersResponse = TResponse<TUser[]>;

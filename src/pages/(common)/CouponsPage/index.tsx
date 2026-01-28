@@ -17,7 +17,7 @@ import {
 import type { RootState } from "@/redux/store";
 import { deleteCoupon, fetchCoupons } from "@/services/coupon.service";
 import type { TCoupon } from "@/types/coupon.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Plus } from "lucide-react";
@@ -49,7 +49,7 @@ const CouponsPage = () => {
       toast.success(data?.message || "Coupon deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["coupons"] });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to delete coupon");
     },
   });

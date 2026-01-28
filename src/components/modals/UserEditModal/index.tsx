@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/Button";
 import { FormControl } from "@/components/ui/FormControl";
 import { Modal } from "@/components/ui/Modal";
 import { updateUser } from "@/services/user.service";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import type { TUser } from "@/types/user.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -64,7 +64,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
       queryClient.invalidateQueries({ queryKey: key || [] });
       setIsOpen(false);
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to update user");
     },
   });

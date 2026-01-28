@@ -3,7 +3,7 @@ import { FormControl } from "@/components/ui/FormControl";
 import { Modal } from "@/components/ui/Modal";
 import { updatePlan } from "@/services/plan.service";
 import type { TPlan } from "@/types/plan.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
@@ -64,7 +64,7 @@ const PlanEditModal: React.FC<PlanEditModalProps> = ({
       queryClient.invalidateQueries({ queryKey: key || [] });
       setIsOpen(false);
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to update plan");
     },
   });
@@ -101,7 +101,7 @@ const PlanEditModal: React.FC<PlanEditModalProps> = ({
                 <FormControl
                   as="textarea"
                   placeholder="Plan description (optional)"
-                  className="h-auto min-h-20 py-2 resize-none"
+                  className="h-auto min-h-20 resize-none py-2"
                   {...register("description", {
                     maxLength: {
                       value: 500,
@@ -128,7 +128,10 @@ const PlanEditModal: React.FC<PlanEditModalProps> = ({
                   {...register("duration", {
                     required: "Duration is required",
                     valueAsNumber: true,
-                    min: { value: 1, message: "Duration must be at least 1 day" },
+                    min: {
+                      value: 1,
+                      message: "Duration must be at least 1 day",
+                    },
                   })}
                 />
                 {errors.duration && (
@@ -202,4 +205,3 @@ const PlanEditModal: React.FC<PlanEditModalProps> = ({
 };
 
 export default PlanEditModal;
-

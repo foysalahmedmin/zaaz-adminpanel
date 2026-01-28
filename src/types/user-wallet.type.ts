@@ -1,4 +1,4 @@
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 
 export type TUserWallet = {
   _id: string;
@@ -25,5 +25,5 @@ export type TUserWallet = {
   updated_at?: string;
 };
 
-export type TUserWalletResponse = Response<TUserWallet>;
-export type TUserWalletsResponse = Response<TUserWallet[]>;
+export type TUserWalletResponse = TResponse<TUserWallet>;
+export type TUserWalletsResponse = TResponse<TUserWallet[]>;

@@ -1,4 +1,4 @@
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 import type { TUser } from "./user.type";
 
 export type SignInPayload = {
@@ -26,7 +26,7 @@ export type ResetPasswordPayload = {
   password: string;
 };
 
-export type AuthResponse = Response<{
+export type AuthResponse = TResponse<{
   token?: string;
   info?: TUser;
 }>;

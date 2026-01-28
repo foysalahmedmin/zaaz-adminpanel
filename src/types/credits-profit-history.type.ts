@@ -1,4 +1,4 @@
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 
 export type TCreditsProfitHistory = {
   _id: string;
@@ -11,5 +11,7 @@ export type TCreditsProfitHistory = {
   updated_at?: string;
 };
 
-export type TCreditsProfitHistoryResponse = Response<TCreditsProfitHistory>;
-export type TCreditsProfitHistoriesResponse = Response<TCreditsProfitHistory[]>;
+export type TCreditsProfitHistoryResponse = TResponse<TCreditsProfitHistory>;
+export type TCreditsProfitHistoriesResponse = TResponse<
+  TCreditsProfitHistory[]
+>;

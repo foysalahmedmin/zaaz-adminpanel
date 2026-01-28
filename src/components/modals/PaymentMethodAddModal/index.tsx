@@ -3,7 +3,7 @@ import { FormControl } from "@/components/ui/FormControl";
 import { Modal } from "@/components/ui/Modal";
 import { createPaymentMethod } from "@/services/payment-method.service";
 import type { TPaymentMethod } from "@/types/payment-method.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
@@ -57,7 +57,7 @@ const PaymentMethodAddModal: React.FC<PaymentMethodAddModalProps> = ({
       reset();
       setIsOpen(false);
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(
         error.response?.data?.message || "Failed to create payment method",
       );

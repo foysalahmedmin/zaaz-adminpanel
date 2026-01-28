@@ -3,7 +3,7 @@ import { FormControl } from "@/components/ui/FormControl";
 import { Modal } from "@/components/ui/Modal";
 import { updateAiModel } from "@/services/ai-model.service";
 import type { TAiModel } from "@/types/ai-model.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
@@ -52,7 +52,7 @@ const AiModelEditModal: React.FC<AiModelEditModalProps> = ({
       queryClient.invalidateQueries({ queryKey: key });
       setIsOpen(false);
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to update AI Model");
     },
   });

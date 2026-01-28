@@ -22,7 +22,7 @@ import {
 import { fetchFeature as fetchFeatureById } from "@/services/feature.service";
 import type { TFeatureEndpoint } from "@/types/feature-endpoint.type";
 import type { TFeature } from "@/types/feature.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import {
@@ -75,7 +75,7 @@ const FeaturesDetailsPage = () => {
       toast.success(data?.message || "Feature Endpoint deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["feature-endpoints"] });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(
         error.response?.data?.message || "Failed to delete feature endpoint",
       );
@@ -127,7 +127,7 @@ const FeaturesDetailsPage = () => {
           <AlertCircle className="mx-auto h-12 w-12 text-red-500" />
           <h2 className="mt-4 text-xl font-semibold">Error loading feature</h2>
           <p className="mt-2 text-gray-500">
-            {(error as AxiosError<ErrorResponse>).response?.data?.message ||
+            {(error as AxiosError<TErrorResponse>).response?.data?.message ||
               "Please try again later"}
           </p>
         </div>

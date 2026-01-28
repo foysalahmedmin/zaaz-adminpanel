@@ -21,7 +21,7 @@ import {
   updatePackageIsInitial,
 } from "@/services/package.service";
 import type { TPackage } from "@/types/package.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Plus } from "lucide-react";
@@ -53,7 +53,7 @@ const PackagesPage = () => {
       toast.success(data?.message || "Package deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["packages"] });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to delete package");
     },
   });
@@ -67,7 +67,7 @@ const PackagesPage = () => {
       );
       queryClient.invalidateQueries({ queryKey: ["packages"] });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(
         error.response?.data?.message ||
           "Failed to update package initial status",

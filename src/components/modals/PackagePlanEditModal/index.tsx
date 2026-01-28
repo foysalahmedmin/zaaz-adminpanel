@@ -5,7 +5,7 @@ import { updatePackagePlan } from "@/services/package-plan.service";
 import { fetchPackages } from "@/services/package.service";
 import { fetchPlans } from "@/services/plan.service";
 import type { TPackagePlan } from "@/types/package-plan.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
@@ -97,7 +97,7 @@ const PackagePlanEditModal: React.FC<PackagePlanEditModalProps> = ({
       queryClient.invalidateQueries({ queryKey: ["packages"] });
       setIsOpen(false);
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(
         error.response?.data?.message || "Failed to update package plan",
       );

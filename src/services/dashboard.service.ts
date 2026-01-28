@@ -9,66 +9,66 @@ import type {
   TDashboardTransactionStatus,
   TDashboardUserGrowth,
 } from "@/types/dashboard.type";
-import type { Response } from "@/types/response.type";
+import type { TResponse } from "@/types/response.type";
 
 export const fetchDashboardStatistics = async (): Promise<
-  Response<TDashboardStatistics>
+  TResponse<TDashboardStatistics>
 > => {
   const response = await api.get("/api/dashboard/statistics");
-  return response.data as Response<TDashboardStatistics>;
+  return response.data as TResponse<TDashboardStatistics>;
 };
 
 export const fetchDashboardRevenue = async (
   period: string = "30d",
-): Promise<Response<TDashboardRevenueData>> => {
+): Promise<TResponse<TDashboardRevenueData>> => {
   const response = await api.get("/api/dashboard/revenue", {
     params: { period },
   });
-  return response.data as Response<TDashboardRevenueData>;
+  return response.data as TResponse<TDashboardRevenueData>;
 };
 
 export const fetchDashboardTransactions = async (): Promise<
-  Response<TDashboardTransactionStatus>
+  TResponse<TDashboardTransactionStatus>
 > => {
   const response = await api.get("/api/dashboard/transactions");
-  return response.data as Response<TDashboardTransactionStatus>;
+  return response.data as TResponse<TDashboardTransactionStatus>;
 };
 
 export const fetchDashboardPaymentMethods = async (): Promise<
-  Response<TDashboardPaymentMethod>
+  TResponse<TDashboardPaymentMethod>
 > => {
   const response = await api.get("/api/dashboard/payment-methods");
-  return response.data as Response<TDashboardPaymentMethod>;
+  return response.data as TResponse<TDashboardPaymentMethod>;
 };
 
 export const fetchDashboardCreditsFlow = async (
   period: string = "30d",
-): Promise<Response<TDashboardCreditsFlow>> => {
+): Promise<TResponse<TDashboardCreditsFlow>> => {
   const response = await api.get("/api/dashboard/credits-flow", {
     params: { period },
   });
-  return response.data as Response<TDashboardCreditsFlow>;
+  return response.data as TResponse<TDashboardCreditsFlow>;
 };
 
 export const fetchDashboardUserGrowth = async (
   period: string = "30d",
-): Promise<Response<TDashboardUserGrowth>> => {
+): Promise<TResponse<TDashboardUserGrowth>> => {
   const response = await api.get("/api/dashboard/user-growth", {
     params: { period },
   });
-  return response.data as Response<TDashboardUserGrowth>;
+  return response.data as TResponse<TDashboardUserGrowth>;
 };
 
 export const fetchDashboardPackages = async (): Promise<
-  Response<TDashboardPackagePerformance>
+  TResponse<TDashboardPackagePerformance>
 > => {
   const response = await api.get("/api/dashboard/packages");
-  return response.data as Response<TDashboardPackagePerformance>;
+  return response.data as TResponse<TDashboardPackagePerformance>;
 };
 
 export const fetchDashboardFeatures = async (): Promise<
-  Response<TDashboardFeaturePerformance>
+  TResponse<TDashboardFeaturePerformance>
 > => {
   const response = await api.get("/api/dashboard/features");
-  return response.data as Response<TDashboardFeaturePerformance>;
+  return response.data as TResponse<TDashboardFeaturePerformance>;
 };

@@ -1,9 +1,9 @@
 import api from "@/lib/api";
-import type { Response } from "@/types/response.type";
 import type { TPlan } from "@/types/plan.type";
+import type { TResponse } from "@/types/response.type";
 
-export type TPlanResponse = Response<TPlan>;
-export type TPlansResponse = Response<TPlan[]>;
+export type TPlanResponse = TResponse<TPlan>;
+export type TPlansResponse = TResponse<TPlan[]>;
 
 // GET Public Plans (No Auth Required)
 export async function fetchPublicPlans(
@@ -49,4 +49,3 @@ export const restorePlan = async (id: string): Promise<TPlanResponse> => {
   const response = await api.post(`/api/plans/${id}/restore`);
   return response.data as TPlanResponse;
 };
-

@@ -1,4 +1,4 @@
-import type { Response, TMeta } from "./response.type";
+import type { TMeta, TResponse } from "./response.type";
 
 export type TAiModel = {
   _id: string;
@@ -14,5 +14,5 @@ export type TAiModel = {
   updated_at: string;
 };
 
-export type TAiModelResponse = Response<TAiModel>;
-export type TAiModelsResponse = Response<TAiModel[]> & { meta: TMeta };
+export type TAiModelResponse = TResponse<TAiModel>;
+export type TAiModelsResponse = TResponse<TAiModel[]> & { meta: TMeta };

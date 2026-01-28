@@ -43,7 +43,7 @@ import { fetchSelf, updateSelf } from "@/services/user.service";
 import type { ChangePasswordPayload } from "@/types/auth.type";
 import type { TCreditsTransaction } from "@/types/credits-transaction.type";
 import type { TPaymentTransaction } from "@/types/payment-transaction.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import {
@@ -205,7 +205,7 @@ const ProfilePage = () => {
       dispatch(stopEditing());
       resetProfile();
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to update profile");
     },
   });
@@ -218,7 +218,7 @@ const ProfilePage = () => {
       dispatch(stopChangingPassword());
       resetPassword();
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to change password");
     },
   });
@@ -301,7 +301,7 @@ const ProfilePage = () => {
           <AlertCircle className="mx-auto h-12 w-12 text-red-500" />
           <h2 className="mt-4 text-xl font-semibold">Error loading profile</h2>
           <p className="mt-2 text-gray-500">
-            {(error as AxiosError<ErrorResponse>).response?.data?.message ||
+            {(error as AxiosError<TErrorResponse>).response?.data?.message ||
               "Please try again later"}
           </p>
         </div>

@@ -5,10 +5,10 @@ import { Modal } from "@/components/ui/Modal";
 import { updateFeaturePopup } from "@/services/feature-popup.service";
 import { fetchFeatures } from "@/services/feature.service";
 import type {
-    TFeaturePopup,
-    TFeaturePopupAction,
+  TFeaturePopup,
+  TFeaturePopupAction,
 } from "@/types/feature-popup.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Loader2, Plus, X } from "lucide-react";
@@ -405,9 +405,9 @@ const FeaturePopupEditModal: React.FC<FeaturePopupEditModalProps> = ({
     setImageFile(null);
     setVideoFile(null);
     if (popup.video) {
-        setMediaType("video");
+      setMediaType("video");
     } else {
-        setMediaType("image");
+      setMediaType("image");
     }
   }, [popup, reset]);
 
@@ -425,7 +425,7 @@ const FeaturePopupEditModal: React.FC<FeaturePopupEditModalProps> = ({
       queryClient.invalidateQueries({ queryKey: key || [] });
       setIsOpen(false);
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(
         error.response?.data?.message || "Failed to update feature popup",
       );

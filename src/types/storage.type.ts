@@ -1,4 +1,4 @@
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 
 export type TStorage = {
   _id: string;
@@ -15,5 +15,5 @@ export type TStorage = {
   updated_at: string;
 };
 
-export type TStorageResponse = Response<TStorage>;
-export type TStoragesResponse = Response<TStorage[]>;
+export type TStorageResponse = TResponse<TStorage>;
+export type TStoragesResponse = TResponse<TStorage[]>;

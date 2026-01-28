@@ -21,7 +21,6 @@ import recycleBinPageReducer from "./slices/recycle-bin-page-slice";
 import settingReducer from "./slices/setting-slice";
 import userReducer from "./slices/user-slice";
 import userWalletsPageReducer from "./slices/user-wallets-page-slice";
-import userOldReducer from "./slices/userOldSlice";
 import usersPageReducer from "./slices/users-page-slice";
 
 export const store = configureStore({
@@ -49,7 +48,6 @@ export const store = configureStore({
     aiModelsPage: aiModelsPageReducer,
     billingSettingsPage: billingSettingsPageReducer,
     creditsUsagesPage: creditsUsagesPageReducer,
-    userOld: userOldReducer,
   },
 });
 

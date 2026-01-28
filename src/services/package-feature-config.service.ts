@@ -1,11 +1,15 @@
-import { TPackageFeatureConfig } from "../types/package-feature-config.type";
-import { TResponse } from "../types/response.type";
-import axiosInstance from "../utils/axiosInstance";
+import api from "@/lib/api";
+import type { TResponse } from "@/types/response.type";
+import type {
+  TPackageFeatureConfig,
+  TPackageFeatureConfigResponse,
+  TPackageFeatureConfigsResponse,
+} from "../types/package-feature-config.type";
 
 export const getPackageFeatureConfigs = async (
   query?: Record<string, any>,
-): Promise<TResponse<TPackageFeatureConfig[]>> => {
-  const { data } = await axiosInstance.get("/package-feature-configs", {
+): Promise<TPackageFeatureConfigsResponse> => {
+  const { data } = await api.get("/api/package-feature-configs", {
     params: query,
   });
   return data;
@@ -13,27 +17,24 @@ export const getPackageFeatureConfigs = async (
 
 export const getPackageFeatureConfig = async (
   id: string,
-): Promise<TResponse<TPackageFeatureConfig>> => {
-  const { data } = await axiosInstance.get(`/package-feature-configs/${id}`);
+): Promise<TPackageFeatureConfigResponse> => {
+  const { data } = await api.get(`/api/package-feature-configs/${id}`);
   return data;
 };
 
 export const createPackageFeatureConfig = async (
   payload: Partial<TPackageFeatureConfig>,
-): Promise<TResponse<TPackageFeatureConfig>> => {
-  const { data } = await axiosInstance.post(
-    "/package-feature-configs",
-    payload,
-  );
+): Promise<TPackageFeatureConfigResponse> => {
+  const { data } = await api.post("/api/package-feature-configs", payload);
   return data;
 };
 
 export const updatePackageFeatureConfig = async (
   id: string,
   payload: Partial<TPackageFeatureConfig>,
-): Promise<TResponse<TPackageFeatureConfig>> => {
-  const { data } = await axiosInstance.patch(
-    `/package-feature-configs/${id}`,
+): Promise<TPackageFeatureConfigResponse> => {
+  const { data } = await api.patch(
+    `/api/package-feature-configs/${id}`,
     payload,
   );
   return data;
@@ -43,25 +44,24 @@ export const bulkUpsertPackageConfigs = async (
   packageId: string,
   configs: any[],
 ): Promise<TResponse<null>> => {
-  const { data } = await axiosInstance.post(
-    `/packages/${packageId}/configs/bulk`,
-    { configs },
-  );
+  const { data } = await api.post(`/api/packages/${packageId}/configs/bulk`, {
+    configs,
+  });
   return data;
 };
 
 export const deletePackageFeatureConfig = async (
   id: string,
 ): Promise<TResponse<null>> => {
-  const { data } = await axiosInstance.delete(`/package-feature-configs/${id}`);
+  const { data } = await api.delete(`/api/package-feature-configs/${id}`);
   return data;
 };
 
 export const deletePackageFeatureConfigPermanent = async (
   id: string,
 ): Promise<TResponse<null>> => {
-  const { data } = await axiosInstance.delete(
-    `/package-feature-configs/${id}/permanent`,
+  const { data } = await api.delete(
+    `/api/package-feature-configs/${id}/permanent`,
   );
   return data;
 };

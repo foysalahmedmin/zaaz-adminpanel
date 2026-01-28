@@ -11,7 +11,7 @@ import {
 } from "@/services/feature-usage-log.service";
 import { fetchFeatures } from "@/services/feature.service";
 import type { TFeatureUsageLog } from "@/types/feature-usage-log.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
@@ -27,7 +27,7 @@ const FeatureUsageLogsPage = () => {
       toast.success(data?.message || "Log deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["feature-usage-logs"] });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to delete log");
     },
   });

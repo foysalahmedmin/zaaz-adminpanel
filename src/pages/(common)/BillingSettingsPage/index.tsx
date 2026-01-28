@@ -25,7 +25,7 @@ import {
   updateBillingSetting,
 } from "@/services/billing-setting.service";
 import type { TBillingSetting } from "@/types/billing-setting.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Plus } from "lucide-react";
@@ -67,7 +67,7 @@ const BillingSettingsPage = () => {
       toast.success(data?.message || "Billing Setting deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["billing-settings"] });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(
         error.response?.data?.message || "Failed to delete Billing Setting",
       );
@@ -83,7 +83,7 @@ const BillingSettingsPage = () => {
       );
       queryClient.invalidateQueries({ queryKey: ["billing-settings"] });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(
         error.response?.data?.message ||
           "Failed to update Billing Setting initial status",

@@ -1,6 +1,6 @@
 import type { TFeatureEndpoint } from "./feature-endpoint.type";
 import type { TPaymentTransaction } from "./payment-transaction.type";
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 
 export type TCreditsTransactionType = "increase" | "decrease";
 export type TCreditsTransactionIncreaseSource = "payment" | "bonus";
@@ -29,5 +29,5 @@ export type TCreditsTransaction = {
   updated_at?: string;
 };
 
-export type TCreditsTransactionResponse = Response<TCreditsTransaction>;
-export type TCreditsTransactionsResponse = Response<TCreditsTransaction[]>;
+export type TCreditsTransactionResponse = TResponse<TCreditsTransaction>;
+export type TCreditsTransactionsResponse = TResponse<TCreditsTransaction[]>;

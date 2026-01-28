@@ -1,4 +1,4 @@
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 
 export type TFeatureType = "writing" | "generation" | "other";
 
@@ -18,5 +18,5 @@ export type TFeature = {
   updated_at?: string;
 };
 
-export type TFeatureResponse = Response<TFeature>;
-export type TFeaturesResponse = Response<TFeature[]>;
+export type TFeatureResponse = TResponse<TFeature>;
+export type TFeaturesResponse = TResponse<TFeature[]>;

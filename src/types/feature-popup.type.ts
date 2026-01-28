@@ -1,5 +1,5 @@
-import type { Response } from "./response.type";
 import type { TFeature } from "./feature.type";
+import type { TResponse } from "./response.type";
 
 export type TFeaturePopupCategory = "single-time" | "multi-time";
 export type TFeaturePopupActionType = "link" | "other";
@@ -51,6 +51,5 @@ export type TFeaturePopup = {
   updated_at?: string;
 };
 
-export type TFeaturePopupResponse = Response<TFeaturePopup>;
-export type TFeaturePopupsResponse = Response<TFeaturePopup[]>;
-
+export type TFeaturePopupResponse = TResponse<TFeaturePopup>;
+export type TFeaturePopupsResponse = TResponse<TFeaturePopup[]>;

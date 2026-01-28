@@ -17,7 +17,7 @@ import {
 import type { RootState } from "@/redux/store";
 import { deletePlan, fetchPlans } from "@/services/plan.service";
 import type { TPlan } from "@/types/plan.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Plus } from "lucide-react";
@@ -71,7 +71,7 @@ const PlansPage = () => {
       toast.success(data?.message || "Plan deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["plans"] });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to delete plan");
     },
   });

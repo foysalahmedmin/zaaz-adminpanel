@@ -9,7 +9,7 @@ import useAlert from "@/hooks/ui/useAlert";
 import { closeEditModal, openEditModal } from "@/redux/slices/users-page-slice";
 import type { RootState } from "@/redux/store";
 import { deleteUser, fetchUsers } from "@/services/user.service";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import type { TUser } from "@/types/user.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -37,7 +37,7 @@ const UsersPage = () => {
       toast.success(data?.message || "User deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to delete User");
     },
   });

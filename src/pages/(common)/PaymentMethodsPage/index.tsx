@@ -22,7 +22,7 @@ import {
   fetchPaymentMethods,
 } from "@/services/payment-method.service";
 import type { TPaymentMethod } from "@/types/payment-method.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Plus } from "lucide-react";
@@ -73,7 +73,7 @@ const PaymentMethodsPage = () => {
       toast.success(data?.message || "Payment method deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["payment-methods"] });
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(
         error.response?.data?.message || "Failed to delete payment method",
       );

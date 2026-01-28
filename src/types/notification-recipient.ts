@@ -1,5 +1,5 @@
 import type { TNotification } from "./notification";
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 
 export type TNotificationAction = {
   title: string;
@@ -24,10 +24,10 @@ export type TNotificationRecipient = {
   created_at: string;
 };
 
-export type TNotificationRecipientResponse = Response<TNotificationRecipient>;
-export type TNotificationRecipientsResponse = Response<
+export type TNotificationRecipientResponse = TResponse<TNotificationRecipient>;
+export type TNotificationRecipientsResponse = TResponse<
   TNotificationRecipient[]
 >;
-export type TNotificationRecipientReadAllResponse = Response<{
+export type TNotificationRecipientReadAllResponse = TResponse<{
   count: number;
 }>;

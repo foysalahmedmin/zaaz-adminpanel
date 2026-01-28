@@ -6,7 +6,7 @@ export type TMeta = {
   [key: string]: unknown;
 };
 
-export type Response<T = unknown> = {
+export type TResponse<T = unknown> = {
   success?: boolean;
   message?: string;
   status?: number;
@@ -14,16 +14,16 @@ export type Response<T = unknown> = {
   meta?: TMeta;
 };
 
-export type ErrorSource = {
+export type TErrorSource = {
   path: string;
   message: string;
 };
 
-export type ErrorResponse = {
+export type TErrorResponse = {
   success: false;
   status: number;
   message: string;
-  sources?: ErrorSource[];
+  sources?: TErrorSource[];
   error?: {
     status: number;
     name: string;

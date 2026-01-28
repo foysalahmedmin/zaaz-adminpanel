@@ -1,4 +1,4 @@
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 
 export type TPaymentMethod = {
   _id: string;
@@ -16,5 +16,5 @@ export type TPaymentMethod = {
   updated_at?: string;
 };
 
-export type TPaymentMethodResponse = Response<TPaymentMethod>;
-export type TPaymentMethodsResponse = Response<TPaymentMethod[]>;
+export type TPaymentMethodResponse = TResponse<TPaymentMethod>;
+export type TPaymentMethodsResponse = TResponse<TPaymentMethod[]>;

@@ -1,6 +1,6 @@
 import type { TPackagePrice } from "./package.type";
 import type { TPlan } from "./plan.type";
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 
 export type TPackagePlan = {
   _id: string;
@@ -16,5 +16,5 @@ export type TPackagePlan = {
   updated_at?: string;
 };
 
-export type TPackagePlanResponse = Response<TPackagePlan>;
-export type TPackagePlansResponse = Response<TPackagePlan[]>;
+export type TPackagePlanResponse = TResponse<TPackagePlan>;
+export type TPackagePlansResponse = TResponse<TPackagePlan[]>;

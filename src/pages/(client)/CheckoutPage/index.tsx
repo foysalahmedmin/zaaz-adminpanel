@@ -7,7 +7,7 @@ import { useCheckoutData } from "@/components/(pricing-page)/hooks/useCheckoutDa
 import { Card } from "@/components/ui/Card";
 import { ENV } from "@/config";
 import { initiatePayment } from "@/services/payment-transaction.service";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
@@ -99,7 +99,7 @@ const CheckoutPage = () => {
         }
       }
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       setPaymentStatus("failed");
       toast.error(
         error.response?.data?.message ||

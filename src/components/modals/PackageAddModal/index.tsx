@@ -6,7 +6,7 @@ import { fetchFeatures } from "@/services/feature.service";
 import { createPackage } from "@/services/package.service";
 import { fetchPlans } from "@/services/plan.service";
 import type { TPackage } from "@/types/package.type";
-import type { ErrorResponse } from "@/types/response.type";
+import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Loader2, Plus, X } from "lucide-react";
@@ -198,7 +198,7 @@ const PackageAddModal: React.FC<PackageAddModalProps> = ({
       reset();
       setIsOpen(false);
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<TErrorResponse>) => {
       toast.error(error.response?.data?.message || "Failed to create package");
     },
   });

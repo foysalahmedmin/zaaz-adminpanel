@@ -1,4 +1,4 @@
-import type { Response } from "./response.type";
+import type { TResponse } from "./response.type";
 
 export type TCurrency = "USD" | "BDT";
 
@@ -40,5 +40,5 @@ export type TPackage = {
   updated_at?: string;
 };
 
-export type TPackageResponse = Response<TPackage>;
-export type TPackagesResponse = Response<TPackage[]>;
+export type TPackageResponse = TResponse<TPackage>;
+export type TPackagesResponse = TResponse<TPackage[]>;

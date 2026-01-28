@@ -1,7 +1,7 @@
 import api from "@/lib/api";
 import type { TPackage } from "@/types/package.type";
 import type { TPlan } from "@/types/plan.type";
-import type { Response } from "@/types/response.type";
+import type { TResponse } from "@/types/response.type";
 import type { TUser } from "@/types/user.type";
 
 export type TPackageTransaction = {
@@ -19,8 +19,8 @@ export type TPackageTransaction = {
   updated_at: string;
 };
 
-export type TPackageTransactionsResponse = Response<TPackageTransaction[]>;
-export type TPackageTransactionResponse = Response<TPackageTransaction>;
+export type TPackageTransactionsResponse = TResponse<TPackageTransaction[]>;
+export type TPackageTransactionResponse = TResponse<TPackageTransaction>;
 
 // GET All Package Transactions (Admin)
 export async function fetchPackageTransactions(
