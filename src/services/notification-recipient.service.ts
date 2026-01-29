@@ -19,7 +19,7 @@ export async function fetchNotificationRecipientsBySelf(query?: {
     }
   });
 
-  const url = `/api/notification-recipients/bulk/self?${params.toString()}`;
+  const url = `/api/notification-recipients/self?${params.toString()}`;
   const response = await api.get(url);
 
   return response.data;
@@ -55,5 +55,19 @@ export async function deleteNotificationRecipientBySelf(
   id: string,
 ): Promise<TNotificationRecipientResponse> {
   const response = await api.delete(`/api/notification-recipients/${id}/self`);
+  return response.data;
+}
+
+export async function deleteSelfNotificationRecipients(
+  ids: string[],
+): Promise<TNotificationRecipientResponse> {
+  const response = await api.delete(`/api/notification-recipients/bulk/self`, {
+    data: { ids },
+  });
+  return response.data;
+}
+
+export async function deleteAllSelfNotificationRecipients(): Promise<TNotificationRecipientReadAllResponse> {
+  const response = await api.delete(`/api/notification-recipients/all/self`);
   return response.data;
 }

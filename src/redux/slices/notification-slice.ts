@@ -18,6 +18,12 @@ const notificationsSlice = createSlice({
       state.notifications.unshift(action.payload);
       state.unread += 1;
     },
+    setNotifications: (
+      state,
+      action: PayloadAction<TNotificationRecipient[]>,
+    ) => {
+      state.notifications = action.payload;
+    },
     updateNotification: (
       state,
       action: PayloadAction<{ _id: string; read_at: string }>,
@@ -47,6 +53,7 @@ const notificationsSlice = createSlice({
 
 export const {
   setNotification,
+  setNotifications,
   updateNotification,
   setUnread,
   setTotal,

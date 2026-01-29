@@ -3,9 +3,11 @@ import Icon from "@/components/ui/Icon";
 import useMenu from "@/hooks/states/useMenu";
 import useSetting from "@/hooks/states/useSetting";
 import { cn } from "@/lib/utils";
+import type { RootState } from "@/redux/store";
 import type { TProcessedMenu } from "@/types/route-menu.type";
 import { ChevronRight, Dot } from "lucide-react";
 import React from "react";
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router";
 import SubMenuItem from "./SubMenuItem";
 
@@ -41,6 +43,9 @@ const MenuItem: React.FC<Props> = ({ index, item }) => {
   const isCompact = setting.sidebar === "compact";
 
   const { activeIndexes, openIndexes, setOpenIndexes } = useMenu();
+  const unreadNotifications = useSelector(
+    (state: RootState) => state.notification.unread,
+  );
   const { menuType, name: label, path, badges, children } = item || {};
 
   // Check if current item is active
@@ -137,7 +142,14 @@ const MenuItem: React.FC<Props> = ({ index, item }) => {
           <div className="flex flex-1 cursor-pointer items-center gap-2">
             <span className="flex-1">{label}</span>
             <div className="flex gap-0.5">
-              {badges?.map((badge) => <Badge key={badge}>{badge}</Badge>)}
+              {badges?.map((badge) => (
+                <Badge key={badge}>{badge}</Badge>
+              ))}
+              {path === "notifications" && unreadNotifications > 0 && (
+                <Badge className="bg-destructive text-destructive-foreground flex size-5 animate-pulse items-center justify-center rounded-full p-0 text-[10px]">
+                  {unreadNotifications > 99 ? "99+" : unreadNotifications}
+                </Badge>
+              )}
             </div>
           </div>
 

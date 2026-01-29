@@ -13,20 +13,22 @@ const NotificationApplier = () => {
     setUnread,
     setIsConnected,
     setNotification,
+    setNotifications,
     updateNotification,
   } = useNotification();
 
   const { data } = useQuery({
-    queryKey: ["notifications-count"],
-    queryFn: () => fetchNotificationRecipientsBySelf({ is_count_only: true }),
+    queryKey: ["notifications-initial"],
+    queryFn: () => fetchNotificationRecipientsBySelf({ page: 1, limit: 12 }),
   });
 
   useEffect(() => {
     if (data?.data) {
+      setNotifications(data.data as TNotificationRecipient[]);
       setUnread(Number(data?.meta?.statistics?.unread || 0));
       setTotal(Number(data?.meta?.total || 0));
     }
-  }, [data]);
+  }, [data, setNotifications, setUnread, setTotal]);
 
   useEffect(() => {
     const userString = localStorage.getItem("user");
@@ -72,7 +74,7 @@ const NotificationApplier = () => {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [setIsConnected, setNotification, updateNotification]);
 
   return null;
 };

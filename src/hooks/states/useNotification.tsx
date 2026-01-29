@@ -1,6 +1,7 @@
 import {
   setIsConnected as setIsConnectedSlice,
   setNotification as setNotificationSlice,
+  setNotifications as setNotificationsSlice,
   setTotal as setTotalSlice,
   setUnread as setUnreadSlice,
   updateNotification as updateNotificationSlice,
@@ -18,6 +19,8 @@ const useNotification = () => {
   // Action dispatchers
   const setNotification = (notification: TNotificationRecipient) =>
     dispatch(setNotificationSlice(notification));
+  const setNotifications = (notifications: TNotificationRecipient[]) =>
+    dispatch(setNotificationsSlice(notifications));
 
   const updateNotification = (payload: { _id: string; read_at: string }) =>
     dispatch(updateNotificationSlice(payload));
@@ -37,6 +40,7 @@ const useNotification = () => {
 
     // Actions
     setNotification,
+    setNotifications,
     updateNotification,
     setUnread,
     setTotal,

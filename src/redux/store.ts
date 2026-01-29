@@ -5,11 +5,13 @@ import couponsPageReducer from "./slices/coupons-page-slice";
 import creditsProfitsPageReducer from "./slices/credits-profits-page-slice";
 import creditsTransactionsPageReducer from "./slices/credits-transactions-page-slice";
 import creditsUsagesPageReducer from "./slices/credits-usages-page-slice";
+import featureFeedbacksPageReducer from "./slices/feature-feedbacks-page-slice";
 import featurePopupsPageReducer from "./slices/feature-popups-page-slice";
 import featureUsageLogsPageReducer from "./slices/feature-usage-logs-page-slice";
 import featuresPageReducer from "./slices/features-page-slice";
 import routeMenuReducer from "./slices/menu-slice";
 import notificationReducer from "./slices/notification-slice";
+import notificationsPageReducer from "./slices/notifications-page-slice";
 import packagePlansPageReducer from "./slices/package-plans-page-slice";
 import packageTransactionsPageReducer from "./slices/package-transactions-page-slice";
 import packagesPageReducer from "./slices/packages-page-slice";
@@ -48,6 +50,8 @@ export const store = configureStore({
     aiModelsPage: aiModelsPageReducer,
     billingSettingsPage: billingSettingsPageReducer,
     creditsUsagesPage: creditsUsagesPageReducer,
+    notificationsPage: notificationsPageReducer,
+    featureFeedbacksPage: featureFeedbacksPageReducer,
   },
 });
 

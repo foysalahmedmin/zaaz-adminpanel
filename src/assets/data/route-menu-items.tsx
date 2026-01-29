@@ -8,10 +8,12 @@ import CreditsTransactionsDetailsPage from "@/pages/(common)/CreditsTransactions
 import CreditsTransactionsPage from "@/pages/(common)/CreditsTransactionsPage";
 import CreditsUsagesPage from "@/pages/(common)/CreditsUsagesPage";
 import Dashboard from "@/pages/(common)/Dashboard";
+import FeatureFeedbacksPage from "@/pages/(common)/FeatureFeedbacksPage";
 import FeaturePopupsPage from "@/pages/(common)/FeaturePopupsPage";
 import FeatureUsageLogsPage from "@/pages/(common)/FeatureUsageLogsPage";
 import FeaturesDetailsPage from "@/pages/(common)/FeaturesDetailsPage";
 import FeaturesPage from "@/pages/(common)/FeaturesPage";
+import NotificationsPage from "@/pages/(common)/NotificationsPage";
 import PackageTransactionsPage from "@/pages/(common)/PackageTransactionsPage";
 import PackagesDetailsPage from "@/pages/(common)/PackagesDetailsPage";
 import PackagesPage from "@/pages/(common)/PackagesPage";
@@ -44,12 +46,12 @@ export const items: TItem[] = [
     ),
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     menuType: "title",
     name: "Management",
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "users",
     path: "users",
     name: "Users",
@@ -83,7 +85,7 @@ export const items: TItem[] = [
     ],
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "wallet",
     path: "user-wallets",
     name: "User Wallets",
@@ -117,12 +119,12 @@ export const items: TItem[] = [
     ],
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     menuType: "title",
     name: "Payment System",
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "cpu",
     path: "ai-models",
     name: "AI Models",
@@ -133,7 +135,7 @@ export const items: TItem[] = [
     ),
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "calendar",
     path: "plans",
     name: "Plans",
@@ -158,7 +160,7 @@ export const items: TItem[] = [
     ],
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "package",
     path: "packages",
     name: "Packages",
@@ -192,7 +194,7 @@ export const items: TItem[] = [
     ],
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "ticket",
     path: "coupons",
     name: "Coupons",
@@ -203,7 +205,7 @@ export const items: TItem[] = [
     ),
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "layout-template",
     path: "features",
     name: "Features",
@@ -237,7 +239,7 @@ export const items: TItem[] = [
     ],
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "square-stack",
     path: "feature-popups",
     name: "Feature Popups",
@@ -262,7 +264,7 @@ export const items: TItem[] = [
     ],
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "credit-card",
     path: "payment-methods",
     name: "Payment Methods",
@@ -287,7 +289,7 @@ export const items: TItem[] = [
     ],
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "percent",
     path: "credits-profits",
     name: "Credits Profits",
@@ -321,7 +323,7 @@ export const items: TItem[] = [
     ],
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "settings",
     path: "billing-settings",
     name: "Billing Settings",
@@ -332,12 +334,12 @@ export const items: TItem[] = [
     ),
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     menuType: "title",
     name: "Activities",
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "receipt",
     path: "payment-transactions",
     name: "Payment Transactions",
@@ -371,7 +373,7 @@ export const items: TItem[] = [
     ],
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "shopping-bag",
     path: "package-transactions",
     name: "Package Transactions",
@@ -396,7 +398,7 @@ export const items: TItem[] = [
     ],
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "coins",
     path: "credits-transactions",
     name: "Credits Transactions",
@@ -430,7 +432,7 @@ export const items: TItem[] = [
     ],
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "activity",
     path: "credits-usages",
     name: "Credits Usages",
@@ -441,7 +443,7 @@ export const items: TItem[] = [
     ),
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
     icon: "history",
     path: "feature-usage-logs",
     name: "Feature Usage Logs",
@@ -462,12 +464,34 @@ export const items: TItem[] = [
     name: "RECYCLE BIN",
   },
   {
-    roles: ["supper-admin", "admin"],
+    roles: ["super-admin", "admin"],
+    icon: "bell",
+    path: "notifications",
+    name: "Notifications",
+    element: (
+      <AuthWrapper roles={["super-admin", "admin"]}>
+        <NotificationsPage />
+      </AuthWrapper>
+    ),
+  },
+  {
+    roles: ["super-admin", "admin"],
+    icon: "message-square",
+    path: "feature-feedbacks",
+    name: "Feature Feedbacks",
+    element: (
+      <AuthWrapper roles={["super-admin", "admin"]}>
+        <FeatureFeedbacksPage />
+      </AuthWrapper>
+    ),
+  },
+  {
+    roles: ["super-admin", "admin"],
     icon: "trash",
     path: "bin",
     name: "Recycle Bin",
     element: (
-      <AuthWrapper roles={["supper-admin", "admin"]}>
+      <AuthWrapper roles={["super-admin", "admin"]}>
         <RecycleBinPage />
       </AuthWrapper>
     ),

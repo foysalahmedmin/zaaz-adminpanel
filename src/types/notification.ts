@@ -14,8 +14,10 @@ export type TNotification = {
   priority?: TPriority;
   channels: TChannel[];
   sender: TUser;
-  status?: TStatus;
   expires_at?: Date;
+  url?: string;
+  metadata?: Record<string, any>;
+  status?: TStatus;
   created_at: string;
 };
 
