@@ -47,6 +47,12 @@ Configuration for the core services offered by the platform.
 - **Model Configuration**: Configure model parameters and costs.
 - **Plagiarism Checking**: Management interface for document ingestion and checking status.
 - **Billing Settings**: Global configuration for system-wide billing rules.
+- **Feature Feedback Management**:
+  - Centralized dashboard for reviewing user suggestions, bugs, and compliments.
+  - Interactive Preview Modal for reading full comments and rating analysis.
+  - Administrative response system via `admin_note` field.
+  - Status management (Resolved, Reviewed, Pending) with bulk update support.
+  - Page-level bulk deletion for efficient maintenance.
 - **Status Control**: Activate/deactivate features and endpoints.
 
 ### Financial Management (Packages & Plans)
@@ -129,9 +135,14 @@ The core currency of the platform, managed with precision.
 
 ### Real-time Features
 
-- **Real-time Notifications**: Live notification system with Socket.io integration.
-- **Live Updates**: Real-time data synchronization across all connected clients.
-- **Notification Management**: Custom notification center with read/unread status.
+- **Live Notifications**:
+  - Real-time Sidebar badge indicated unread notification count with pulse animations.
+  - Instant synchronization across all tabs via Redux and Socket.io.
+  - In-app desktop notifications for high-priority alerts.
+- **Notification Center**:
+  - Comprehensive list view with status filtering.
+  - Detailed `NotificationViewModal` with support for deep links and metadata.
+  - Bulk actions: "Mark All Read" and "Clear All" for optimal inbox management.
 - **Credit Balance Updates**: Real-time wallet balance updates.
 - **Payment Status Updates**: Live payment transaction status changes.
 
@@ -285,6 +296,7 @@ src/
 │   │   ├── user-wallets-page/
 │   │   ├── users-page/
 │   │   ├── dashboard/
+│   │   ├── feature-feedbacks-page/
 │   │   ├── recycle-bin-page/
 │   │   └── ...
 │   ├── appliers/    # State appliers and providers
@@ -293,7 +305,8 @@ src/
 │   │   ├── FeatureAddModal/
 │   │   ├── FeatureEditModal/
 │   │   ├── PackageAddModal/
-│   │   ├── PaymentTransactionViewModal/
+│   │   ├── FeatureFeedbackViewModal/
+│   │   ├── NotificationViewModal/
 │   │   └── ...
 │   ├── partials/    # Layout partials (Header, Sidebar, etc.)
 │   ├── sections/    # Page sections
@@ -332,7 +345,8 @@ src/
 │   ├── slices/      # Redux slices for each page/module
 │   └── store.ts     # Redux store configuration
 ├── services/        # API service functions
-│   ├── package-feature-config.service.ts  # Package configuration API
+│   ├── feature-feedback.service.ts         # Feedback API service
+│   ├── notification-recipient.service.ts   # Notification API service
 │   └── ...          # Other service modules
 ├── types/           # TypeScript type definitions
 │   ├── package-feature-config.type.ts     # Configuration types
