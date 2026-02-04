@@ -8,7 +8,7 @@ interface PageSEO {
 export function usePageSEO({ title, description }: PageSEO) {
   useEffect(() => {
     // Update document title
-    document.title = `${title} | Payment System`;
+    document.title = `${title} | ZaaZ`;
 
     // Update meta description
     let metaDescription = document.querySelector('meta[name="description"]');
@@ -26,7 +26,7 @@ export function usePageSEO({ title, description }: PageSEO) {
       ogTitle.setAttribute("property", "og:title");
       document.head.appendChild(ogTitle);
     }
-    ogTitle.setAttribute("content", `${title} | Payment System`);
+    ogTitle.setAttribute("content", `${title} | ZaaZ`);
 
     let ogDescription = document.querySelector(
       'meta[property="og:description"]',
@@ -40,7 +40,7 @@ export function usePageSEO({ title, description }: PageSEO) {
 
     // Cleanup on unmount
     return () => {
-      document.title = "Payment System";
+      document.title = "ZaaZ";
     };
   }, [title, description]);
 }
