@@ -95,9 +95,8 @@ const PricingPage = () => {
             </h1>
             <p className="text-foreground text-lg">
               Discover the right plan for your needs and take advantage of
-              Shothik.ai's powerful tools. Whether you're just getting started
-              or need advanced features for your business, we've got you
-              covered.
+              zaaz.com's powerful tools. Whether you're just getting started or
+              need advanced features for your business, we've got you covered.
             </p>
           </div>
 
