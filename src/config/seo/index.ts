@@ -1,6 +1,6 @@
 export const SEO = {
-  title: "Payment System Admin Panel",
-  description: "Payment System Admin Panel",
-  keywords: ["Admin Panel", "Payment System"],
+  title: "ZaaZ Admin Panel",
+  description: "ZaaZ Admin Panel",
+  keywords: ["Admin Panel", "ZaaZ"],
   image: "/images/logo.svg",
 };
