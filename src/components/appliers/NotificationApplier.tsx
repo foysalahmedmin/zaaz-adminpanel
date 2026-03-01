@@ -38,8 +38,14 @@ const NotificationApplier = () => {
 
     if (!user?.token) return;
 
-    const socket: Socket = io(import.meta.env.VITE_API_URL, {
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const url = new URL(apiUrl);
+    const path =
+      url.pathname === "/" || !url.pathname ? "/socket.io" : url.pathname;
+
+    const socket: Socket = io(apiUrl, {
       auth: { token: user.token },
+      path: path,
     });
 
     socket.on("connect", () => {
