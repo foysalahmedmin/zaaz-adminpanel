@@ -4,6 +4,7 @@ import { Modal } from "@/components/ui/Modal";
 import { updatePackagePlan } from "@/services/package-plan.service";
 import { fetchPackages } from "@/services/package.service";
 import { fetchPlans } from "@/services/plan.service";
+import type { TPlan } from "@/types/plan.type";
 import type { TPackagePlan } from "@/types/package-plan.type";
 import type { TErrorResponse } from "@/types/response.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -47,16 +48,27 @@ const PackagePlanEditModal: React.FC<PackagePlanEditModalProps> = ({
   } = useForm<Partial<TPackagePlan>>({
     defaultValues: {
       package:
-        packagePlan?.package ||
-        (typeof packagePlan?.package === "object"
-          ? packagePlan?.package?._id || ""
-          : ""),
+        typeof packagePlan?.package === "string"
+          ? packagePlan.package
+          : typeof packagePlan?.package === "object" && packagePlan?.package
+            ? "_id" in packagePlan.package 
+              ? packagePlan.package._id 
+              : ""
+            : "",
       plan:
-        packagePlan?.plan ||
-        (typeof packagePlan?.plan === "object"
-          ? packagePlan?.plan?._id || ""
-          : ""),
-      price: (typeof packagePlan?.price === 'number' ? packagePlan.price : 0) as unknown as number,
+        typeof packagePlan?.plan === "string"
+          ? packagePlan.plan
+          : typeof packagePlan?.plan === "object" && packagePlan?.plan
+            ? "_id" in packagePlan.plan 
+              ? (packagePlan.plan as TPlan)._id 
+              : ""
+            : "",
+      price:
+        typeof packagePlan?.price === "number"
+          ? packagePlan.price
+          : typeof (packagePlan?.price as any) === "object"
+            ? (packagePlan?.price as any)?.amount || 0
+            : 0,
       credits: packagePlan?.credits || 0,
       is_initial: packagePlan?.is_initial || false,
       is_active: packagePlan?.is_active ?? true,
@@ -69,15 +81,24 @@ const PackagePlanEditModal: React.FC<PackagePlanEditModalProps> = ({
         typeof packagePlan?.package === "string"
           ? packagePlan.package
           : typeof packagePlan?.package === "object" && packagePlan?.package
-            ? (packagePlan.package as any)?._id || ""
+            ? "_id" in packagePlan.package 
+              ? packagePlan.package._id 
+              : ""
             : "",
       plan:
         typeof packagePlan?.plan === "string"
           ? packagePlan.plan
           : typeof packagePlan?.plan === "object" && packagePlan?.plan
-            ? (packagePlan.plan as any)?._id || ""
+            ? "_id" in packagePlan.plan 
+              ? (packagePlan.plan as TPlan)._id 
+              : ""
             : "",
-      price: (typeof packagePlan?.price === 'number' ? packagePlan.price : 0) as unknown as number,
+      price:
+        typeof packagePlan?.price === "number"
+          ? packagePlan.price
+          : typeof (packagePlan?.price as any) === "object"
+            ? (packagePlan?.price as any)?.amount || 0
+            : 0,
       credits: packagePlan?.credits || 0,
       is_initial: packagePlan?.is_initial || false,
       is_active: packagePlan?.is_active ?? true,
