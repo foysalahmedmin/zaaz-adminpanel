@@ -1,6 +1,6 @@
 import useIsDark from "@/hooks/ui/useIsDark";
 import { cn } from "@/lib/utils";
-import { uploadFiles } from "@/services/storage.service";
+import { uploadFiles } from "@/services/file.service";
 import { BlockNoteView } from "@blocknote/mantine";
 import { useCreateBlockNote } from "@blocknote/react";
 import React from "react";
