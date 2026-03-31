@@ -77,7 +77,7 @@ const PackageHistoriesDataTableSection: React.FC<
           <div className="space-y-1">
             <span className="font-semibold">{initialPlan.plan.name}</span>
             <div className="text-muted-foreground text-xs">
-              ${initialPlan.price.USD} / ৳{initialPlan.price.BDT}
+              ${typeof initialPlan.price === "number" ? initialPlan.price : (initialPlan.price as any)?.USD ?? 0}
             </div>
           </div>
         ) : (

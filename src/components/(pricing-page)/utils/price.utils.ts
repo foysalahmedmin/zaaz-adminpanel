@@ -3,40 +3,39 @@
  */
 
 /**
- * Get price display based on location
+ * Get price display based on location.
+ * Prices are stored in USD (base currency). Exchange rates are applied at checkout.
  */
 export const getPriceDisplay = (
-  price: { USD: number; BDT: number },
+  price: number | { USD: number; BDT: number },
   isBangladesh: boolean | null,
 ): { mode: "BOTH" | "SINGLE"; primary: string; secondary?: string } => {
-  const formatPrice = (amount: number, currency: string): string => {
+  // Normalize: if price is the old object format, extract USD
+  const usdAmount =
+    typeof price === "number" ? price : (price?.USD ?? 0);
+
+  const formatUSD = (amount: number): string => {
     const isRoundNumber = amount % 1 === 0;
     return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: currency,
+      currency: "USD",
       minimumFractionDigits: isRoundNumber ? 0 : 2,
       maximumFractionDigits: 2,
     }).format(amount);
   };
 
   if (isBangladesh === true) {
+    // Show USD base price with BDT conversion note at checkout
     return {
       mode: "SINGLE",
-      primary: formatPrice(price.BDT, "BDT"),
+      primary: formatUSD(usdAmount),
     };
   }
-  if (isBangladesh === false) {
-    return {
-      mode: "SINGLE",
-      primary: formatPrice(price.USD, "USD"),
-    };
-  }
-  // null - show both
+
+  // Non-Bangladesh or location unknown: show USD
   return {
-    mode: "BOTH",
-    primary: formatPrice(price.USD, "USD"),
-    secondary: formatPrice(price.BDT, "BDT"),
+    mode: "SINGLE",
+    primary: formatUSD(usdAmount),
   };
 };
-
 

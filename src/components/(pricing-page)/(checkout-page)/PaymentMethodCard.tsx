@@ -77,7 +77,7 @@ export const PaymentMethodCard: React.FC<PaymentMethodCardProps> = ({
                   <div className="flex items-center justify-between">
                     <span className="font-semibold">{method.name}</span>
                     <span className="text-muted-foreground text-sm">
-                      {method.currency}
+                      {method.currencies?.join(", ")}
                     </span>
                   </div>
                   {method.description && (
@@ -103,14 +103,14 @@ export const PaymentMethodCard: React.FC<PaymentMethodCardProps> = ({
                 <span>Total:</span>
                 <span>
                   {(() => {
-                    const amount =
-                      selectedMethod.currency === "USD"
-                        ? selectedPlan.price.USD
-                        : selectedPlan.price.BDT;
+                    const currency = isBangladesh ? "BDT" : "USD";
+                    const price = typeof selectedPlan.price === "number"
+                      ? selectedPlan.price
+                      : (selectedPlan.price?.USD || 0);
                     return new Intl.NumberFormat("en-US", {
                       style: "currency",
-                      currency: selectedMethod.currency,
-                    }).format(amount);
+                      currency,
+                    }).format(price);
                   })()}
                 </span>
               </div>

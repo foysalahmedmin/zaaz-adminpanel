@@ -163,9 +163,9 @@ const PackagesDetailsPage = () => {
                     {initialPlan && (
                       <span className="rounded-full bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-600 dark:text-blue-400">
                         Initial Plan:{" "}
-                        {initialPlan.price.USD > 0
-                          ? `$${initialPlan.price.USD}`
-                          : `৳${initialPlan.price.BDT}`}
+                        {typeof initialPlan.price === "number"
+                          ? `$${initialPlan.price}`
+                          : `$${(initialPlan.price as any)?.USD ?? 0}`}
                       </span>
                     )}
                   </div>
@@ -407,7 +407,7 @@ const PackagesDetailsPage = () => {
                             </p>
                             <div className="space-y-1">
                               <p className="text-lg font-semibold">
-                                ${pp.price?.USD || 0} / ৳{pp.price?.BDT || 0}
+                                ${typeof pp.price === "number" ? pp.price : (pp.price?.USD || 0)}
                               </p>
                               <p className="text-muted-foreground text-sm">
                                 {pp.credits} credits

@@ -155,30 +155,14 @@ const PackageHistoryViewModal: React.FC<PackageHistoryViewModalProps> = ({
                                   {pp.credits}
                                 </div>
                                 <div>
-                                  <span className="font-medium">
-                                    Price (USD):
-                                  </span>{" "}
-                                  ${pp.price?.USD || 0}
-                                </div>
-                                <div>
-                                  <span className="font-medium">
-                                    Price (BDT):
-                                  </span>{" "}
-                                  ৳{pp.price?.BDT || 0}
+                                  <span className="font-medium">Price:</span>{" "}
+                                  ${typeof pp.price === "number" ? pp.price : ((pp.price as any)?.USD || 0)}
                                 </div>
                                 {pp.previous_price && (
                                   <>
                                     <div>
-                                      <span className="font-medium">
-                                        Previous Price (USD):
-                                      </span>{" "}
-                                      ${pp.previous_price.USD || 0}
-                                    </div>
-                                    <div>
-                                      <span className="font-medium">
-                                        Previous Price (BDT):
-                                      </span>{" "}
-                                      ৳{pp.previous_price.BDT || 0}
+                                      <span className="font-medium">Previous Price:</span>{" "}
+                                      ${typeof pp.previous_price === "number" ? pp.previous_price : ((pp.previous_price as any)?.USD || 0)}
                                     </div>
                                   </>
                                 )}

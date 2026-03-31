@@ -2,10 +2,7 @@ import type { TResponse } from "./response.type";
 
 export type TCurrency = "USD" | "BDT";
 
-export type TPackagePrice = {
-  USD: number;
-  BDT: number;
-};
+export type TPackagePrice = number;
 
 export type TPackagePlanItem = {
   _id: string;

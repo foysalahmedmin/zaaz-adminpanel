@@ -26,11 +26,11 @@ const PaymentMethodsStatisticsSection: React.FC<
     0;
   const totalUSD =
     meta?.statistics?.usd ||
-    data?.filter((d) => d?.currency === "USD").length ||
+    data?.filter((d) => d?.currencies?.includes("USD")).length ||
     0;
   const totalBDT =
     meta?.statistics?.bdt ||
-    data?.filter((d) => d?.currency === "BDT").length ||
+    data?.filter((d) => d?.currencies?.includes("BDT")).length ||
     0;
 
   const statistics: TStatistic[] = [

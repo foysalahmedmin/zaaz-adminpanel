@@ -58,7 +58,7 @@ const PackagePlanAddModal: React.FC<PackagePlanAddModalProps> = ({
           : typeof packagePlan?.plan === "object" && packagePlan?.plan
             ? (packagePlan.plan as any)?._id || ""
             : "",
-      price: packagePlan?.price || { USD: 0, BDT: 0 },
+      price: (typeof packagePlan?.price === 'number' ? packagePlan.price : 0) as unknown as number,
       credits: packagePlan?.credits || 0,
       is_initial: packagePlan?.is_initial || false,
       is_active: packagePlan?.is_active ?? true,
@@ -149,51 +149,30 @@ const PackagePlanAddModal: React.FC<PackagePlanAddModalProps> = ({
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <FormControl.Label>Price (USD) *</FormControl.Label>
-                  <FormControl
-                    type="number"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                    {...register("price.USD", {
-                      required: "Price USD is required",
-                      valueAsNumber: true,
-                      min: {
-                        value: 0,
-                        message: "Price must be 0 or greater",
-                      },
-                    })}
-                  />
-                  {errors.price?.USD && (
-                    <FormControl.Error>
-                      {errors.price.USD.message}
-                    </FormControl.Error>
-                  )}
-                </div>
-                <div>
-                  <FormControl.Label>Price (BDT) *</FormControl.Label>
-                  <FormControl
-                    type="number"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                    {...register("price.BDT", {
-                      required: "Price BDT is required",
-                      valueAsNumber: true,
-                      min: {
-                        value: 0,
-                        message: "Price must be 0 or greater",
-                      },
-                    })}
-                  />
-                  {errors.price?.BDT && (
-                    <FormControl.Error>
-                      {errors.price.BDT.message}
-                    </FormControl.Error>
-                  )}
-                </div>
+              <div>
+                <FormControl.Label>Price (USD) *</FormControl.Label>
+                <FormControl
+                  type="number"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                  {...register("price" as keyof TPackagePlan, {
+                    required: "Price is required",
+                    valueAsNumber: true,
+                    min: {
+                      value: 0,
+                      message: "Price must be 0 or greater",
+                    },
+                  })}
+                />
+                <FormControl.Helper>
+                  Base price in USD. Other currencies are converted dynamically at checkout.
+                </FormControl.Helper>
+                {errors.price && (
+                  <FormControl.Error>
+                    {(errors.price as any)?.message}
+                  </FormControl.Error>
+                )}
               </div>
 
               <div>

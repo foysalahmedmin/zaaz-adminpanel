@@ -41,7 +41,7 @@ const PaymentMethodAddModal: React.FC<PaymentMethodAddModalProps> = ({
     defaultValues: {
       name: paymentMethod?.name || "",
       value: paymentMethod?.value || "",
-      currency: paymentMethod?.currency || "USD",
+      currencies: (paymentMethod?.currencies as string[]) || ["USD"],
       description: paymentMethod?.description || "",
       sequence: paymentMethod?.sequence || 0,
       is_test: paymentMethod?.is_test ?? false,
@@ -81,7 +81,6 @@ const PaymentMethodAddModal: React.FC<PaymentMethodAddModalProps> = ({
     mutation.mutate({
       ...data,
       value: data.value?.toLowerCase(),
-      currency: data.currency?.toUpperCase() as "USD" | "BDT",
       config: parsedConfig,
     });
   };
@@ -137,20 +136,40 @@ const PaymentMethodAddModal: React.FC<PaymentMethodAddModalProps> = ({
               </div>
 
               <div>
-                <FormControl.Label>Currency *</FormControl.Label>
-                <FormControl
-                  as="select"
-                  className="border-input bg-card w-full rounded-md border px-3 py-2 text-sm"
-                  {...register("currency", {
-                    required: "Currency is required",
-                  })}
-                >
-                  <option value="USD">USD</option>
-                  <option value="BDT">BDT</option>
-                </FormControl>
-                {errors.currency && (
+                <FormControl.Label>Supported Currencies *</FormControl.Label>
+                <div className="flex flex-wrap gap-4 pt-1">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      value="USD"
+                      id="currency_usd"
+                      className="accent-accent size-4"
+                      {...register("currencies", {
+                        required: "At least one currency is required",
+                      })}
+                    />
+                    <label htmlFor="currency_usd" className="text-sm">
+                      USD
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      value="BDT"
+                      id="currency_bdt"
+                      className="accent-accent size-4"
+                      {...register("currencies", {
+                        required: "At least one currency is required",
+                      })}
+                    />
+                    <label htmlFor="currency_bdt" className="text-sm">
+                      BDT
+                    </label>
+                  </div>
+                </div>
+                {errors.currencies && (
                   <FormControl.Error>
-                    {errors.currency.message}
+                    {errors.currencies.message}
                   </FormControl.Error>
                 )}
               </div>

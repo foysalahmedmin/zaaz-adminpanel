@@ -56,6 +56,7 @@ export async function initiatePayment(payload: {
   package: string;
   plan: string;
   payment_method: string;
+  currency: string;
   return_url: string;
   cancel_url: string;
   customer_email?: string;

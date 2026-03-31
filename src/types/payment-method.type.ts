@@ -4,9 +4,8 @@ export type TPaymentMethod = {
   _id: string;
   name: string;
   value: string;
-  currency: "USD" | "BDT";
+  currencies: string[];
   description?: string;
-  currencies?: string[];
   config?: Record<string, unknown>;
   is_test?: boolean;
   sequence?: number;

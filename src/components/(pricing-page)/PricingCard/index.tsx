@@ -30,23 +30,15 @@ const formatPrice = (amount: number, currency: string): string => {
 
 /**
  * Get price display based on location
+ * Accepts both new number format and old { USD, BDT } object format
  */
 const getPriceDisplay = (
-  price: { USD: number; BDT: number },
-  isBangladesh: boolean | null,
+  price: number | { USD: number; BDT: number },
+  _isBangladesh: boolean | null,
 ): React.ReactNode => {
-  if (isBangladesh === true) {
-    return formatPrice(price.BDT, "BDT");
-  }
-  if (isBangladesh === false) {
-    return formatPrice(price.USD, "USD");
-  }
-  // null - show both
-  return (
-    <>
-      {formatPrice(price.USD, "USD")} / {formatPrice(price.BDT, "BDT")}
-    </>
-  );
+  // Normalize to USD amount
+  const usdAmount = typeof price === "number" ? price : (price?.USD ?? 0);
+  return formatPrice(usdAmount, "USD");
 };
 
 /**
@@ -75,8 +67,8 @@ const getInitialPlanId = (plans: TPackage["plans"] = []): string | null => {
 // ==================== Sub Components ====================
 
 type PricingHeaderProps = {
-  price: { USD: number; BDT: number };
-  previousPrice?: { USD: number; BDT: number };
+  price: number | { USD: number; BDT: number };
+  previousPrice?: number | { USD: number; BDT: number };
   credits?: number;
   planName: string;
   packageName: string;
@@ -93,9 +85,11 @@ const PricingHeader: React.FC<PricingHeaderProps> = ({
   badge,
   isBangladesh,
 }) => {
+  const getUSD = (p: number | { USD: number; BDT: number }) =>
+    typeof p === "number" ? p : (p?.USD ?? 0);
   const hasDiscount =
-    previousPrice &&
-    (previousPrice.USD > price.USD || previousPrice.BDT > price.BDT);
+    previousPrice !== undefined &&
+    getUSD(previousPrice) > getUSD(price);
 
   return (
     <div className="border-b pb-6">

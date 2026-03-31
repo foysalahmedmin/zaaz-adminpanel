@@ -21,7 +21,7 @@ export const filterPaymentMethodsByLocation = (
     // Bangladesh: Show only SSL Commerz (BDT currency)
     return allMethods.filter(
       (method: TPaymentMethod) =>
-        method.currency === "BDT" &&
+        method.currencies?.includes("BDT") &&
         (method.value?.toLowerCase() === "sslcommerz" ||
           method.name.toLowerCase().includes("ssl")),
     );
@@ -29,7 +29,7 @@ export const filterPaymentMethodsByLocation = (
     // Other countries: Show only Stripe (USD currency)
     return allMethods.filter(
       (method: TPaymentMethod) =>
-        method.currency === "USD" &&
+        method.currencies?.includes("USD") &&
         (method.value?.toLowerCase() === "stripe" ||
           method.name.toLowerCase().includes("stripe")),
     );

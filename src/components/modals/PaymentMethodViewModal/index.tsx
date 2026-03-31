@@ -54,12 +54,6 @@ const PaymentMethodViewModal: React.FC<PaymentMethodViewModalProps> = ({
                 </p>
               </div>
               <div>
-                <span className="text-muted-foreground text-sm">Currency</span>
-                <p className="font-semibold uppercase">
-                  {paymentMethod.currency || "N/A"}
-                </p>
-              </div>
-              <div>
                 <span className="text-muted-foreground text-sm">Sequence</span>
                 <p className="font-semibold">
                   {paymentMethod.sequence?.toString() || "0"}

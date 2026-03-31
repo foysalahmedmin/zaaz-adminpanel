@@ -100,11 +100,7 @@ const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
                 </p>
                 <div className="flex items-center gap-2 text-xs">
                   <span className="text-muted-foreground font-bold">
-                    ${plan.price?.USD || 0}
-                  </span>
-                  <span className="text-muted-foreground">/</span>
-                  <span className="text-muted-foreground font-semibold">
-                    ৳{plan.price?.BDT || 0}
+                    ${typeof plan.price === "number" ? plan.price : (plan.price?.USD || 0)}
                   </span>
                 </div>
               </div>

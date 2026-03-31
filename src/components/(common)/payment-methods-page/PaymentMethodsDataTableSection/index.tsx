@@ -46,13 +46,25 @@ const PaymentMethodsDataTableSection: React.FC<
       ),
     },
     {
-      name: "Currency",
-      field: "currency",
-      isSortable: true,
-      cell: ({ cell }) => (
-        <span className="font-semibold uppercase">
-          {cell?.toString() || "N/A"}
-        </span>
+      name: "Supported Currencies",
+      field: "currencies",
+      cell: ({ row }) => (
+        <div className="flex flex-wrap gap-1">
+          {row.currencies && row.currencies.length > 0 ? (
+            row.currencies.map((currency, index) => (
+              <span
+                key={index}
+                className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-gray-700"
+              >
+                {currency}
+              </span>
+            ))
+          ) : (
+            <span className="text-muted-foreground text-xs font-semibold">
+              N/A
+            </span>
+          )}
+        </div>
       ),
     },
     {

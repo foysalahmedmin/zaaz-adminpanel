@@ -41,7 +41,7 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
     defaultValues: {
       name: paymentMethod?.name || "",
       value: paymentMethod?.value || "",
-      currency: paymentMethod?.currency || "USD",
+      currencies: paymentMethod?.currencies || ["USD"],
       description: paymentMethod?.description || "",
       config: paymentMethod?.config
         ? JSON.stringify(paymentMethod.config, null, 2)
@@ -57,7 +57,7 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
       reset({
         name: paymentMethod?.name || "",
         value: paymentMethod?.value || "",
-        currency: paymentMethod?.currency || "USD",
+        currencies: paymentMethod?.currencies || ["USD"],
         description: paymentMethod?.description || "",
         config: paymentMethod?.config
           ? JSON.stringify(paymentMethod.config, null, 2)
@@ -102,7 +102,6 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
     mutation.mutate({
       ...data,
       value: data.value?.toLowerCase(),
-      currency: data.currency?.toUpperCase() as "USD" | "BDT",
       config: parsedConfig,
     });
   };
@@ -158,20 +157,40 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
               </div>
 
               <div>
-                <FormControl.Label>Currency *</FormControl.Label>
-                <FormControl
-                  as="select"
-                  className="border-input bg-card w-full rounded-md border px-3 py-2 text-sm"
-                  {...register("currency", {
-                    required: "Currency is required",
-                  })}
-                >
-                  <option value="USD">USD</option>
-                  <option value="BDT">BDT</option>
-                </FormControl>
-                {errors.currency && (
+                <FormControl.Label>Supported Currencies *</FormControl.Label>
+                <div className="flex flex-wrap gap-4 pt-1">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      value="USD"
+                      id="edit_currency_usd"
+                      className="accent-accent size-4"
+                      {...register("currencies", {
+                        required: "At least one currency is required",
+                      })}
+                    />
+                    <label htmlFor="edit_currency_usd" className="text-sm">
+                      USD
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      value="BDT"
+                      id="edit_currency_bdt"
+                      className="accent-accent size-4"
+                      {...register("currencies", {
+                        required: "At least one currency is required",
+                       })}
+                    />
+                    <label htmlFor="edit_currency_bdt" className="text-sm">
+                      BDT
+                    </label>
+                  </div>
+                </div>
+                {errors.currencies && (
                   <FormControl.Error>
-                    {errors.currency.message}
+                    {errors.currencies.message}
                   </FormControl.Error>
                 )}
               </div>

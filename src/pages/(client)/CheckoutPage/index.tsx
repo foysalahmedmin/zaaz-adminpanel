@@ -63,6 +63,7 @@ const CheckoutPage = () => {
       package: string;
       plan: string;
       payment_method: string;
+      currency: string;
       return_url: string;
       cancel_url: string;
       customer_email?: string;
@@ -142,6 +143,7 @@ const CheckoutPage = () => {
       package: currentPackage._id,
       plan: selectedPlanId,
       payment_method: selectedPaymentMethod,
+      currency: isBangladesh ? "BDT" : "USD",
       return_url: returnUrl,
       cancel_url: cancelUrl,
     });
