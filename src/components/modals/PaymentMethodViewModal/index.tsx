@@ -89,6 +89,21 @@ const PaymentMethodViewModal: React.FC<PaymentMethodViewModalProps> = ({
                   </span>
                 </p>
               </div>
+              <div>
+                <span className="text-muted-foreground text-sm">Type</span>
+                <p>
+                  <span
+                    className={cn(
+                      "rounded-full px-2 py-1 text-xs font-medium",
+                      paymentMethod.is_recurring
+                        ? "bg-purple-100 text-purple-800"
+                        : "bg-gray-100 text-gray-800",
+                    )}
+                  >
+                    {paymentMethod.is_recurring ? "Recurring" : "One-time"}
+                  </span>
+                </p>
+              </div>
               {paymentMethod.description && (
                 <div className="col-span-2">
                   <span className="text-muted-foreground text-sm">

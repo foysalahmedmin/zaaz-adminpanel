@@ -93,6 +93,23 @@ const PaymentMethodsDataTableSection: React.FC<
       ),
     },
     {
+      name: "Type",
+      field: "is_recurring",
+      isSortable: true,
+      cell: ({ cell }) => (
+        <span
+          className={cn(
+            "rounded-full px-2 py-1 text-xs font-medium",
+            cell
+              ? "bg-purple-100 text-purple-800"
+              : "bg-gray-100 text-gray-800",
+          )}
+        >
+          {cell ? "Recurring" : "One-time"}
+        </span>
+      ),
+    },
+    {
       name: "Status",
       field: "is_active",
       isSortable: true,

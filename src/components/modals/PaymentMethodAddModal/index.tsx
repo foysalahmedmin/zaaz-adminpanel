@@ -45,6 +45,7 @@ const PaymentMethodAddModal: React.FC<PaymentMethodAddModalProps> = ({
       description: paymentMethod?.description || "",
       sequence: paymentMethod?.sequence || 0,
       is_test: paymentMethod?.is_test ?? false,
+      is_recurring: paymentMethod?.is_recurring ?? false,
       is_active: paymentMethod?.is_active ?? true,
     },
   });
@@ -244,6 +245,20 @@ const PaymentMethodAddModal: React.FC<PaymentMethodAddModalProps> = ({
                   />
                   <FormControl.Label htmlFor="is_test" className="font-normal">
                     Test Mode
+                  </FormControl.Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    className="accent-accent size-5"
+                    id="is_recurring"
+                    {...register("is_recurring")}
+                  />
+                  <FormControl.Label
+                    htmlFor="is_recurring"
+                    className="font-normal"
+                  >
+                    Recurring
                   </FormControl.Label>
                 </div>
                 <div className="flex items-center gap-2">

@@ -47,6 +47,7 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
         ? JSON.stringify(paymentMethod.config, null, 2)
         : "",
       is_test: paymentMethod?.is_test ?? false,
+      is_recurring: paymentMethod?.is_recurring ?? false,
       is_active: paymentMethod?.is_active ?? true,
     },
   });
@@ -64,6 +65,7 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
           : "",
         sequence: paymentMethod?.sequence || 0,
         is_test: paymentMethod?.is_test ?? false,
+        is_recurring: paymentMethod?.is_recurring ?? false,
         is_active: paymentMethod?.is_active ?? true,
       });
     }
@@ -269,7 +271,21 @@ const PaymentMethodEditModal: React.FC<PaymentMethodEditModalProps> = ({
                   <input
                     type="checkbox"
                     className="accent-accent size-5"
-                    id="is_active"
+                    id="edit_is_recurring"
+                    {...register("is_recurring")}
+                  />
+                  <FormControl.Label
+                    htmlFor="edit_is_recurring"
+                    className="font-normal"
+                  >
+                    Recurring
+                  </FormControl.Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    className="accent-accent size-5"
+                    id="edit_is_active"
                     {...register("is_active")}
                   />
                   <FormControl.Label
