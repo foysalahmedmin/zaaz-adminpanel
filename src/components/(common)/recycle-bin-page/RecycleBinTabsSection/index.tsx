@@ -7,6 +7,14 @@ import {
   restoreAiModel,
 } from "@/services/ai-model.service";
 import {
+  deleteBillingSettingPermanent,
+  restoreBillingSetting,
+} from "@/services/billing-setting.service";
+import {
+  deleteCreditsProfitPermanent,
+  restoreCreditsProfit,
+} from "@/services/credits-profit.service";
+import {
   deleteFeatureEndpointPermanent,
   restoreFeatureEndpoint,
 } from "@/services/feature-endpoint.service";
@@ -14,26 +22,37 @@ import {
   deleteFeaturePermanent,
   restoreFeature,
 } from "@/services/feature.service";
-import {
-  deletePackagePermanent,
-  restorePackage,
-} from "@/services/package.service";
-
-import {
-  deleteCreditsProfitPermanent,
-  restoreCreditsProfit,
-} from "@/services/credits-profit.service";
 import type { TPackageTransaction } from "@/services/package-transaction.service";
 import {
   deletePackageTransactionPermanent,
   restorePackageTransaction,
 } from "@/services/package-transaction.service";
+import {
+  deletePackagePermanent,
+  restorePackage,
+} from "@/services/package.service";
+import {
+  deletePaymentMethodPermanent,
+  restorePaymentMethod,
+} from "@/services/payment-method.service";
+import {
+  deletePaymentTransactionPermanent,
+  restorePaymentTransaction,
+} from "@/services/payment-transaction.service";
+import {
+  deletePlanPermanent,
+  restorePlan,
+} from "@/services/plan.service";
 import { deleteUserPermanent, restoreUser } from "@/services/user.service";
 import type { TAiModel } from "@/types/ai-model.type";
+import type { TBillingSetting } from "@/types/billing-setting.type";
 import type { TCreditsProfit } from "@/types/credits-profit.type";
 import type { TFeatureEndpoint } from "@/types/feature-endpoint.type";
 import type { TFeature } from "@/types/feature.type";
 import type { TPackage } from "@/types/package.type";
+import type { TPaymentMethod } from "@/types/payment-method.type";
+import type { TPaymentTransaction } from "@/types/payment-transaction.type";
+import type { TPlan } from "@/types/plan.type";
 import type { TErrorResponse } from "@/types/response.type";
 import type { TUser } from "@/types/user.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -49,7 +68,11 @@ type DeletedItemType =
   | "credits-profit"
   | "user"
   | "package-transaction"
-  | "ai-model";
+  | "ai-model"
+  | "interval"
+  | "payment-method"
+  | "payment-transaction"
+  | "billing-setting";
 
 type TRecycleBinItem =
   | TFeature
@@ -58,7 +81,11 @@ type TRecycleBinItem =
   | TCreditsProfit
   | TUser
   | TPackageTransaction
-  | TAiModel;
+  | TAiModel
+  | TPlan
+  | TPaymentMethod
+  | TPaymentTransaction
+  | TBillingSetting;
 
 type RecycleBinTabsSectionProps = {
   type: DeletedItemType;
@@ -97,6 +124,14 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
           return restorePackageTransaction(id);
         case "ai-model":
           return restoreAiModel(id);
+        case "interval":
+          return restorePlan(id);
+        case "payment-method":
+          return restorePaymentMethod(id);
+        case "payment-transaction":
+          return restorePaymentTransaction(id);
+        case "billing-setting":
+          return restoreBillingSetting(id);
         default:
           throw new Error("Invalid type");
       }
@@ -133,6 +168,14 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
           return deletePackageTransactionPermanent(id);
         case "ai-model":
           return deleteAiModelPermanent(id);
+        case "interval":
+          return deletePlanPermanent(id);
+        case "payment-method":
+          return deletePaymentMethodPermanent(id);
+        case "payment-transaction":
+          return deletePaymentTransactionPermanent(id);
+        case "billing-setting":
+          return deleteBillingSettingPermanent(id);
         default:
           throw new Error("Invalid type");
       }
@@ -353,6 +396,114 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
         {
           name: "Provider",
           field: "provider",
+          isSortable: true,
+          cell: ({ cell }) => (
+            <span className="capitalize">{cell?.toString() || "N/A"}</span>
+          ),
+        },
+        ...baseColumns.slice(1),
+      ];
+    }
+
+    if (type === "interval") {
+      return [
+        ...baseColumns.slice(0, 1),
+        {
+          name: "Duration",
+          field: "duration",
+          isSortable: true,
+          cell: ({ cell }) => (
+            <span>{cell?.toString() || "N/A"} days</span>
+          ),
+        },
+        ...baseColumns.slice(1),
+      ];
+    }
+
+    if (type === "payment-method") {
+      return [
+        ...baseColumns.slice(0, 1),
+        {
+          name: "Value",
+          field: "value",
+          isSortable: true,
+          cell: ({ cell }) => (
+            <span className="font-mono text-xs">{cell?.toString() || "N/A"}</span>
+          ),
+        },
+        {
+          name: "Currencies",
+          field: "currencies",
+          cell: ({ cell }) => (
+            <span>{Array.isArray(cell) ? cell.join(", ") : "N/A"}</span>
+          ),
+        },
+        ...baseColumns.slice(1),
+      ];
+    }
+
+    if (type === "payment-transaction") {
+      return [
+        {
+          name: "Gateway Txn ID",
+          field: "gateway_transaction_id",
+          isSearchable: true,
+          cell: ({ row }) => (
+            <div className="flex flex-col">
+              <span className="font-mono text-xs">
+                {(row as any).gateway_transaction_id || "N/A"}
+              </span>
+              <span className="text-muted-foreground text-xs">
+                {(row as any).customer_email || ""}
+              </span>
+            </div>
+          ),
+        },
+        {
+          name: "Amount",
+          field: "amount",
+          isSortable: true,
+          cell: ({ row }) => (
+            <span className="font-bold">
+              {(row as any).currency === "USD" ? "$" : "৳"}
+              {(row as any).amount}
+            </span>
+          ),
+        },
+        {
+          name: "Status",
+          field: "status",
+          isSortable: true,
+          cell: ({ cell }) => (
+            <span className="capitalize">{cell?.toString() || "N/A"}</span>
+          ),
+        },
+        ...baseColumns.slice(1),
+      ];
+    }
+
+    if (type === "billing-setting") {
+      return [
+        {
+          name: "Credit Price",
+          field: "credit_price",
+          isSortable: true,
+          cell: ({ row }) => (
+            <span className="font-bold">
+              ${(row as any).credit_price} / credit
+            </span>
+          ),
+        },
+        {
+          name: "Currency",
+          field: "currency",
+          cell: ({ cell }) => (
+            <span className="uppercase">{cell?.toString() || "N/A"}</span>
+          ),
+        },
+        {
+          name: "Status",
+          field: "status",
           isSortable: true,
           cell: ({ cell }) => (
             <span className="capitalize">{cell?.toString() || "N/A"}</span>

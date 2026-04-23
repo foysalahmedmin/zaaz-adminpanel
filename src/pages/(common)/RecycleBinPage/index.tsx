@@ -16,11 +16,15 @@ import {
 } from "@/redux/slices/recycle-bin-page-slice";
 import type { RootState } from "@/redux/store";
 import { fetchAiModels } from "@/services/ai-model.service";
+import { fetchBillingSettings } from "@/services/billing-setting.service";
 import { fetchCreditsProfits } from "@/services/credits-profit.service";
 import { fetchFeatureEndpoints } from "@/services/feature-endpoint.service";
 import { fetchFeatures } from "@/services/feature.service";
 import { fetchPackageTransactions } from "@/services/package-transaction.service";
 import { fetchPackages } from "@/services/package.service";
+import { fetchPaymentMethods } from "@/services/payment-method.service";
+import { fetchPaymentTransactions } from "@/services/payment-transaction.service";
+import { fetchPlans } from "@/services/plan.service";
 import { fetchUsers } from "@/services/user.service";
 import { useQuery } from "@tanstack/react-query";
 import { Trash2 } from "lucide-react";
@@ -151,6 +155,78 @@ const RecycleBinPage = () => {
     enabled: activeTab === "ai-model",
   });
 
+  const { data: intervalsData } = useQuery({
+    queryKey: ["intervals", "deleted", { page, limit, search, sort, gte, lte }],
+    queryFn: () =>
+      fetchPlans({
+        is_deleted: true,
+        page,
+        limit,
+        sort: sort || "-created_at",
+        ...(search && { search }),
+        ...(gte && { gte }),
+        ...(lte && { lte }),
+      }),
+    enabled: activeTab === "interval",
+  });
+
+  const { data: paymentMethodsData } = useQuery({
+    queryKey: [
+      "payment-methods",
+      "deleted",
+      { page, limit, search, sort, gte, lte },
+    ],
+    queryFn: () =>
+      fetchPaymentMethods({
+        is_deleted: true,
+        page,
+        limit,
+        sort: sort || "-created_at",
+        ...(search && { search }),
+        ...(gte && { gte }),
+        ...(lte && { lte }),
+      }),
+    enabled: activeTab === "payment-method",
+  });
+
+  const { data: paymentTransactionsData } = useQuery({
+    queryKey: [
+      "payment-transactions",
+      "deleted",
+      { page, limit, search, sort, gte, lte },
+    ],
+    queryFn: () =>
+      fetchPaymentTransactions({
+        is_deleted: true,
+        page,
+        limit,
+        sort: sort || "-created_at",
+        ...(search && { search }),
+        ...(gte && { gte }),
+        ...(lte && { lte }),
+      }),
+    enabled: activeTab === "payment-transaction",
+  });
+
+  const { data: billingSettingsData } = useQuery({
+    queryKey: [
+      "billing-settings",
+      "deleted",
+      { page, limit, search, sort, gte, lte },
+    ],
+    queryFn: () =>
+      fetchBillingSettings({
+        is_deleted: true,
+        page,
+        limit,
+        sort: sort || "-created_at",
+        ...(search && { search }),
+        ...(gte && { gte }),
+        ...(lte && { lte }),
+      }),
+    enabled: activeTab === "billing-setting",
+  });
+
   // Aggregate statistics
   const statistics = {
     features: featuresData?.meta?.total || 0,
@@ -160,6 +236,10 @@ const RecycleBinPage = () => {
     users: usersData?.meta?.total || 0,
     packageTransactions: packageTransactionsData?.meta?.total || 0,
     aiModels: aiModelsData?.meta?.total || 0,
+    intervals: intervalsData?.meta?.total || 0,
+    paymentMethods: paymentMethodsData?.meta?.total || 0,
+    paymentTransactions: paymentTransactionsData?.meta?.total || 0,
+    billingSettings: billingSettingsData?.meta?.total || 0,
   };
 
   const totalDeleted = Object.values(statistics).reduce(
@@ -204,7 +284,12 @@ const RecycleBinPage = () => {
                     | "package"
                     | "credits-profit"
                     | "user"
-                    | "package-transaction",
+                    | "package-transaction"
+                    | "ai-model"
+                    | "interval"
+                    | "payment-method"
+                    | "payment-transaction"
+                    | "billing-setting",
                 ),
               )
             }
@@ -230,6 +315,18 @@ const RecycleBinPage = () => {
               </Tabs.Trigger>
               <Tabs.Trigger value="ai-model">
                 AI Models ({statistics.aiModels})
+              </Tabs.Trigger>
+              <Tabs.Trigger value="interval">
+                Intervals ({statistics.intervals})
+              </Tabs.Trigger>
+              <Tabs.Trigger value="payment-method">
+                Payment Methods ({statistics.paymentMethods})
+              </Tabs.Trigger>
+              <Tabs.Trigger value="payment-transaction">
+                Payment Transactions ({statistics.paymentTransactions})
+              </Tabs.Trigger>
+              <Tabs.Trigger value="billing-setting">
+                Billing Settings ({statistics.billingSettings})
               </Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content>
@@ -418,6 +515,118 @@ const RecycleBinPage = () => {
                   isError={false}
                   state={{
                     total: aiModelsData?.meta?.total || 0,
+                    page,
+                    setPage: (value: number) => dispatch(setPage(value)),
+                    limit,
+                    setLimit: (value: number) => dispatch(setLimit(value)),
+                    search,
+                    setSearch: (value: string) => dispatch(setSearch(value)),
+                    sort,
+                    setSort: (value: string) => dispatch(setSort(value)),
+                  }}
+                />
+              </Tabs.Item>
+              <Tabs.Item value="interval">
+                <RecycleBinTabsSection
+                  type="interval"
+                  data={intervalsData?.data || []}
+                  meta={
+                    intervalsData?.meta
+                      ? {
+                          total: intervalsData.meta.total || 0,
+                          page: intervalsData.meta.page || 1,
+                          limit: intervalsData.meta.limit || 10,
+                        }
+                      : undefined
+                  }
+                  isLoading={false}
+                  isError={false}
+                  state={{
+                    total: intervalsData?.meta?.total || 0,
+                    page,
+                    setPage: (value: number) => dispatch(setPage(value)),
+                    limit,
+                    setLimit: (value: number) => dispatch(setLimit(value)),
+                    search,
+                    setSearch: (value: string) => dispatch(setSearch(value)),
+                    sort,
+                    setSort: (value: string) => dispatch(setSort(value)),
+                  }}
+                />
+              </Tabs.Item>
+              <Tabs.Item value="payment-method">
+                <RecycleBinTabsSection
+                  type="payment-method"
+                  data={paymentMethodsData?.data || []}
+                  meta={
+                    paymentMethodsData?.meta
+                      ? {
+                          total: paymentMethodsData.meta.total || 0,
+                          page: paymentMethodsData.meta.page || 1,
+                          limit: paymentMethodsData.meta.limit || 10,
+                        }
+                      : undefined
+                  }
+                  isLoading={false}
+                  isError={false}
+                  state={{
+                    total: paymentMethodsData?.meta?.total || 0,
+                    page,
+                    setPage: (value: number) => dispatch(setPage(value)),
+                    limit,
+                    setLimit: (value: number) => dispatch(setLimit(value)),
+                    search,
+                    setSearch: (value: string) => dispatch(setSearch(value)),
+                    sort,
+                    setSort: (value: string) => dispatch(setSort(value)),
+                  }}
+                />
+              </Tabs.Item>
+              <Tabs.Item value="payment-transaction">
+                <RecycleBinTabsSection
+                  type="payment-transaction"
+                  data={paymentTransactionsData?.data || []}
+                  meta={
+                    paymentTransactionsData?.meta
+                      ? {
+                          total: paymentTransactionsData.meta.total || 0,
+                          page: paymentTransactionsData.meta.page || 1,
+                          limit: paymentTransactionsData.meta.limit || 10,
+                        }
+                      : undefined
+                  }
+                  isLoading={false}
+                  isError={false}
+                  state={{
+                    total: paymentTransactionsData?.meta?.total || 0,
+                    page,
+                    setPage: (value: number) => dispatch(setPage(value)),
+                    limit,
+                    setLimit: (value: number) => dispatch(setLimit(value)),
+                    search,
+                    setSearch: (value: string) => dispatch(setSearch(value)),
+                    sort,
+                    setSort: (value: string) => dispatch(setSort(value)),
+                  }}
+                />
+              </Tabs.Item>
+              <Tabs.Item value="billing-setting">
+                <RecycleBinTabsSection
+                  type="billing-setting"
+                  data={billingSettingsData?.data || []}
+                  meta={
+                    billingSettingsData?.meta
+                      ? {
+                          total: billingSettingsData.meta.total || 0,
+                          page: billingSettingsData.meta.page || 1,
+                          limit: billingSettingsData.meta.limit || 10,
+                        }
+                      : undefined
+                  }
+                  isLoading={false}
+                  isError={false}
+                  state={{
+                    total: billingSettingsData?.meta?.total || 0,
                     page,
                     setPage: (value: number) => dispatch(setPage(value)),
                     limit,

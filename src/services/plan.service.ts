@@ -49,3 +49,10 @@ export const restorePlan = async (id: string): Promise<TPlanResponse> => {
   const response = await api.post(`/api/intervals/${id}/restore`);
   return response.data as TPlanResponse;
 };
+
+export const deletePlanPermanent = async (
+  id: string,
+): Promise<TPlanResponse> => {
+  const response = await api.delete(`/api/intervals/${id}/permanent`);
+  return response.data as TPlanResponse;
+};

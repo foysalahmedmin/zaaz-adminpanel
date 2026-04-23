@@ -105,3 +105,23 @@ export async function deletePaymentTransaction(
   const response = await api.delete(`/api/payment-transactions/${id}`);
   return response.data as TPaymentTransactionResponse;
 }
+
+// DELETE Single Permanent (Admin)
+export async function deletePaymentTransactionPermanent(
+  id: string,
+): Promise<TPaymentTransactionResponse> {
+  const response = await api.delete(
+    `/api/payment-transactions/${id}/permanent`,
+  );
+  return response.data as TPaymentTransactionResponse;
+}
+
+// POST Single Restore (Admin)
+export async function restorePaymentTransaction(
+  id: string,
+): Promise<TPaymentTransactionResponse> {
+  const response = await api.post(
+    `/api/payment-transactions/${id}/restore`,
+  );
+  return response.data as TPaymentTransactionResponse;
+}

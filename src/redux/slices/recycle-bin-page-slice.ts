@@ -8,7 +8,11 @@ export type DeletedItemType =
   | "credits-profit"
   | "user"
   | "package-transaction"
-  | "ai-model";
+  | "ai-model"
+  | "interval"
+  | "payment-method"
+  | "payment-transaction"
+  | "billing-setting";
 
 interface RecycleBinPageState {
   activeTab: DeletedItemType;
