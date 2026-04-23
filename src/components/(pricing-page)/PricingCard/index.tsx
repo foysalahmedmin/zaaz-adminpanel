@@ -60,8 +60,8 @@ const getInitialPlan = (plans: TPackage["plans"] = []) => {
  */
 const getInitialPlanId = (plans: TPackage["plans"] = []): string | null => {
   const initialPlan = getInitialPlan(plans);
-  if (!initialPlan?.plan) return null;
-  return getPlanId(initialPlan.plan);
+  if (!initialPlan?.interval) return null;
+  return getPlanId(initialPlan.interval);
 };
 
 // ==================== Sub Components ====================
@@ -338,7 +338,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
 
   // Get plan details for header
   const displayPlan = selectedPlanForDisplay || initialPlan;
-  const plan = displayPlan?.plan;
+  const plan = displayPlan?.interval;
   const planName = getPlanName(plan);
   const price = displayPlan?.price;
   const previousPrice = displayPlan?.previous_price;

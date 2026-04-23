@@ -36,9 +36,9 @@ const PackageTransactionViewModal: React.FC<
   };
 
   const getPlanName = () => {
-    if (!transaction.plan) return "N/A";
-    if (typeof transaction.plan === "string") return transaction.plan;
-    return (transaction.plan as any).name || "N/A";
+    if (!transaction.interval) return "N/A";
+    if (typeof transaction.interval === "string") return transaction.interval;
+    return (transaction.interval as any).name || "N/A";
   };
 
   const getUserInfo = () => {

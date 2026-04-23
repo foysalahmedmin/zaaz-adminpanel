@@ -126,7 +126,7 @@ const PackageHistoryViewModal: React.FC<PackageHistoryViewModalProps> = ({
                               <div className="mb-2 flex items-center justify-between">
                                 <div>
                                   <span className="font-semibold">
-                                    {pp.plan.name}
+                                    {pp.interval?.name || "N/A"}
                                   </span>
                                   {pp.is_initial && (
                                     <span className="bg-primary/10 text-primary ml-2 rounded px-2 py-0.5 text-xs">
@@ -140,15 +140,15 @@ const PackageHistoryViewModal: React.FC<PackageHistoryViewModalProps> = ({
                                   )}
                                 </div>
                               </div>
-                              {pp.plan.description && (
+                              {(pp.interval as any)?.description && (
                                 <p className="text-muted-foreground mb-2 text-sm">
-                                  {pp.plan.description}
+                                  {(pp.interval as any).description}
                                 </p>
                               )}
                               <div className="grid grid-cols-2 gap-4 text-sm">
                                 <div>
                                   <span className="font-medium">Duration:</span>{" "}
-                                  {pp.plan.duration} days
+                                  {(pp.interval as any)?.duration} days
                                 </div>
                                 <div>
                                   <span className="font-medium">Credits:</span>{" "}

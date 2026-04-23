@@ -599,8 +599,8 @@ const UserDetailsPage = () => {
                                       </span>
                                       <span className="text-muted-foreground text-xs">
                                         (
-                                        {typeof transaction.plan === "object"
-                                          ? (transaction.plan as TPlan).name
+                                        {typeof transaction.interval === "object"
+                                          ? (transaction.interval as TPlan).name
                                           : "Plan"}
                                         )
                                       </span>

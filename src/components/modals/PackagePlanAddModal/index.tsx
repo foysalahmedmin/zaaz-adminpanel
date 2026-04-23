@@ -51,16 +51,16 @@ const PackagePlanAddModal: React.FC<PackagePlanAddModalProps> = ({
         typeof packagePlan?.package === "string"
           ? packagePlan.package
           : typeof packagePlan?.package === "object" && packagePlan?.package
-            ? "_id" in packagePlan.package 
-              ? packagePlan.package._id 
+            ? "_id" in packagePlan.package
+              ? packagePlan.package._id
               : ""
             : "",
-      plan:
-        typeof packagePlan?.plan === "string"
-          ? packagePlan.plan
-          : typeof packagePlan?.plan === "object" && packagePlan?.plan
-            ? "_id" in packagePlan.plan 
-              ? (packagePlan.plan as TPlan)._id 
+      interval:
+        typeof packagePlan?.interval === "string"
+          ? packagePlan.interval
+          : typeof packagePlan?.interval === "object" && packagePlan?.interval
+            ? "_id" in packagePlan.interval
+              ? (packagePlan.interval as TPlan)._id
               : ""
             : "",
       price:
@@ -96,13 +96,13 @@ const PackagePlanAddModal: React.FC<PackagePlanAddModalProps> = ({
       toast.error("Package is required");
       return;
     }
-    if (!data.plan) {
+    if (!data.interval) {
       toast.error("Plan is required");
       return;
     }
     mutation.mutate({
-      package: typeof data.package === "string" ? data.package : data.package,
-      plan: typeof data.plan === "string" ? data.plan : data.plan,
+      package: data.package,
+      interval: data.interval,
       price: data.price,
       credits: data.credits,
       is_initial: data.is_initial,
@@ -145,7 +145,7 @@ const PackagePlanAddModal: React.FC<PackagePlanAddModalProps> = ({
                 <FormControl.Label>Plan *</FormControl.Label>
                 <FormControl
                   as="select"
-                  {...register("plan", { required: "Plan is required" })}
+                  {...register("interval", { required: "Plan is required" })}
                 >
                   <option value="">Select a plan</option>
                   {plansData?.data?.map((plan) => (
@@ -154,8 +154,8 @@ const PackagePlanAddModal: React.FC<PackagePlanAddModalProps> = ({
                     </option>
                   ))}
                 </FormControl>
-                {errors.plan && (
-                  <FormControl.Error>{errors.plan.message}</FormControl.Error>
+                {errors.interval && (
+                  <FormControl.Error>{errors.interval.message}</FormControl.Error>
                 )}
               </div>
 

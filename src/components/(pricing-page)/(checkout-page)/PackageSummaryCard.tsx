@@ -41,7 +41,7 @@ export const PackageSummaryCard: React.FC<PackageSummaryCardProps> = ({
               <div className="text-sm font-medium">Select Plan:</div>
               <div className="space-y-2">
                 {availablePlans.map((pp: any) => {
-                  const plan = pp.plan;
+                  const plan = pp.interval;
                   const planId = getPlanId(plan);
                   const planName = getPlanName(plan);
                   const planDuration = getPlanDuration(plan);
@@ -119,18 +119,18 @@ export const PackageSummaryCard: React.FC<PackageSummaryCardProps> = ({
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Plan:</span>
                 <span className="font-semibold">
-                  {getPlanName(selectedPlan.plan)}
+                  {getPlanName(selectedPlan.interval)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Credits:</span>
                 <span className="font-semibold">{selectedPlan.credits}</span>
               </div>
-              {getPlanDuration(selectedPlan.plan) > 0 && (
+              {getPlanDuration(selectedPlan.interval) > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Duration:</span>
                   <span className="font-semibold">
-                    {getPlanDuration(selectedPlan.plan)} days
+                    {getPlanDuration(selectedPlan.interval)} days
                   </span>
                 </div>
               )}

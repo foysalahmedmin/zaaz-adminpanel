@@ -102,9 +102,9 @@ const CreditsTransactionsDetailsPage = () => {
   }
 
   const planName =
-    typeof currentTransaction.plan === "object" && currentTransaction.plan
-      ? (currentTransaction.plan as any).name
-      : currentTransaction.plan || "N/A";
+    typeof currentTransaction.interval === "object" && currentTransaction.interval
+      ? (currentTransaction.interval as any).name
+      : currentTransaction.interval || "N/A";
 
   return (
     <div className="bg-background p-4">

@@ -366,14 +366,14 @@ const PackagesDetailsPage = () => {
                 </h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   {currentPackage.plans.map((pp: any, index: number) => {
-                    const plan = pp.plan;
+                    const interval = pp.interval;
                     const planName =
-                      typeof plan === "object" && plan?.name
-                        ? plan.name
+                      typeof interval === "object" && interval?.name
+                        ? interval.name
                         : "N/A";
                     const planDuration =
-                      typeof plan === "object" && plan?.duration
-                        ? plan.duration
+                      typeof interval === "object" && interval?.duration
+                        ? interval.duration
                         : 0;
                     return (
                       <div

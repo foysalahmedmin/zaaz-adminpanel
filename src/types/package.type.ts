@@ -6,7 +6,7 @@ export type TPackagePrice = number;
 
 export type TPackagePlanItem = {
   _id: string;
-  plan: {
+  interval: {
     _id: string;
     name: string;
     duration: number;

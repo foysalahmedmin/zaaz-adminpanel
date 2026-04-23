@@ -106,9 +106,9 @@ const PaymentTransactionsDetailsPage = () => {
       : currentTransaction.package || "N/A";
 
   const planName =
-    typeof currentTransaction.plan === "object" && currentTransaction.plan
-      ? (currentTransaction.plan as any).name
-      : currentTransaction.plan || "N/A";
+    typeof currentTransaction.interval === "object" && currentTransaction.interval
+      ? (currentTransaction.interval as any).name
+      : currentTransaction.interval || "N/A";
 
   const paymentMethodName =
     typeof currentTransaction.payment_method === "object" &&

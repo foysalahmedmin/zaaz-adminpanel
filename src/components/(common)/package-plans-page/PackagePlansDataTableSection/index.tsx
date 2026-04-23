@@ -48,14 +48,14 @@ const PackagePlansDataTableSection: React.FC<
       isSortable: true,
       cell: ({ row }) => {
         const planName =
-          typeof row.plan === "object" && row.plan?.name
-            ? row.plan.name
-            : typeof row.plan === "string"
-              ? row.plan
+          typeof row.interval === "object" && row.interval?.name
+            ? row.interval.name
+            : typeof row.interval === "string"
+              ? row.interval
               : "N/A";
         const planDuration =
-          typeof row.plan === "object" && row.plan?.duration
-            ? row.plan.duration
+          typeof row.interval === "object" && row.interval?.duration
+            ? row.interval.duration
             : null;
         return (
           <div className="space-y-1">

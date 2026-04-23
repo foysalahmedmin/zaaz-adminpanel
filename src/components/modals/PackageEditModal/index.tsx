@@ -23,7 +23,7 @@ type PackageEditModalProps = {
 };
 
 type PackagePlanFormData = {
-  plan: string;
+  interval: string;
   priceUSD: number;
   priceBDT: number;
   credits: number;
@@ -163,7 +163,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
       features: normalizeFeatures(pkg?.features),
       packagePlans:
         pkg?.plans?.map((pp: any) => ({
-          plan: pp.plan?._id || pp.plan || "",
+          interval: pp.interval?._id || pp.interval || "",
           priceUSD: pp.price?.USD || 0,
           priceBDT: pp.price?.BDT || 0,
           credits: pp.credits || 0,
@@ -187,7 +187,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
       features: normalizeFeatures(pkg?.features),
       packagePlans:
         pkg?.plans?.map((pp: any) => ({
-          plan: pp.plan?._id || pp.plan || "",
+          interval: pp.interval?._id || pp.interval || "",
           priceUSD: pp.price?.USD || 0,
           priceBDT: pp.price?.BDT || 0,
           credits: pp.credits || 0,
@@ -209,7 +209,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
       }
       const payload: any = {
         plans: data.packagePlans.map((pp) => ({
-          plan: pp.plan,
+          interval: pp.interval,
           price: {
             USD: pp.priceUSD,
             BDT: pp.priceBDT,
@@ -282,7 +282,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
     // Compare plans array for changes
     const oldPlansSerialized = JSON.stringify(
       pkg.plans?.map((p) => ({
-        plan: p.plan?._id || p.plan,
+        interval: p.interval?._id || p.interval,
         price: p.price,
         credits: p.credits,
         is_initial: p.is_initial,
@@ -291,7 +291,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
     );
     const newPlansSerialized = JSON.stringify(
       data.packagePlans.map((p) => ({
-        plan: p.plan,
+        interval: p.interval,
         price: { USD: p.priceUSD, BDT: p.priceBDT },
         credits: p.credits,
         is_initial: p.is_initial,
@@ -330,7 +330,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
 
   const togglePlan = (planId: string) => {
     const current = packagePlans;
-    const existingIndex = current.findIndex((pp) => pp.plan === planId);
+    const existingIndex = current.findIndex((pp) => pp.interval === planId);
 
     if (existingIndex >= 0) {
       // Remove plan
@@ -514,7 +514,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
                 <div className="border-input bg-card max-h-68 space-y-3 overflow-y-auto rounded-md border p-3">
                   {plansData?.data?.map((plan) => {
                     const planData = packagePlans.find(
-                      (pp) => pp.plan === plan._id,
+                      (pp) => pp.interval === plan._id,
                     );
                     const isSelected = !!planData;
 
@@ -555,7 +555,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
                                   onChange={(e) => {
                                     const updated = [...packagePlans];
                                     const index = updated.findIndex(
-                                      (pp) => pp.plan === plan._id,
+                                      (pp) => pp.interval === plan._id,
                                     );
                                     if (index >= 0) {
                                       updated[index].priceUSD =
@@ -578,7 +578,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
                                   onChange={(e) => {
                                     const updated = [...packagePlans];
                                     const index = updated.findIndex(
-                                      (pp) => pp.plan === plan._id,
+                                      (pp) => pp.interval === plan._id,
                                     );
                                     if (index >= 0) {
                                       updated[index].priceBDT =
@@ -600,7 +600,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
                                 onChange={(e) => {
                                   const updated = [...packagePlans];
                                   const index = updated.findIndex(
-                                    (pp) => pp.plan === plan._id,
+                                    (pp) => pp.interval === plan._id,
                                   );
                                   if (index >= 0) {
                                     updated[index].credits =
@@ -619,7 +619,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
                                   onChange={(e) => {
                                     const updated = [...packagePlans];
                                     const index = updated.findIndex(
-                                      (pp) => pp.plan === plan._id,
+                                      (pp) => pp.interval === plan._id,
                                     );
                                     if (index >= 0) {
                                       // Unset other initial plans
@@ -645,7 +645,7 @@ const PackageEditModal: React.FC<PackageEditModalProps> = ({
                                   onChange={(e) => {
                                     const updated = [...packagePlans];
                                     const index = updated.findIndex(
-                                      (pp) => pp.plan === plan._id,
+                                      (pp) => pp.interval === plan._id,
                                     );
                                     if (index >= 0) {
                                       updated[index].is_active =

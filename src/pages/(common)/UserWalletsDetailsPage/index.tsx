@@ -204,9 +204,9 @@ const UserWalletsDetailsPage = () => {
       : currentWallet.package || "N/A";
 
   const planName =
-    typeof currentWallet.plan === "object" && currentWallet.plan
-      ? currentWallet.plan.name
-      : currentWallet.plan || "N/A";
+    typeof (currentWallet as any).plan === "object" && (currentWallet as any).plan
+      ? (currentWallet as any).plan.name
+      : (currentWallet as any).plan || "N/A";
 
   return (
     <div className="bg-background p-4">
@@ -661,8 +661,8 @@ const UserWalletsDetailsPage = () => {
                                       ? (transaction.package as TPackage).name
                                       : "Package"}{" "}
                                     -{" "}
-                                    {typeof transaction.plan === "object"
-                                      ? (transaction.plan as TPlan).name
+                                    {typeof transaction.interval === "object"
+                                      ? (transaction.interval as TPlan).name
                                       : "Plan"}
                                   </p>
                                   <p className="text-muted-foreground text-sm">

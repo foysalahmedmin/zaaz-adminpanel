@@ -40,69 +40,45 @@ const PackagePlanEditModal: React.FC<PackagePlanEditModalProps> = ({
     queryFn: () => fetchPlans({ is_active: true, sort: "name" }),
   });
 
+  const getDefaultValues = (pp: Partial<TPackagePlan>) => ({
+    package:
+      typeof pp?.package === "string"
+        ? pp.package
+        : typeof pp?.package === "object" && pp?.package
+          ? "_id" in pp.package
+            ? pp.package._id
+            : ""
+          : "",
+    interval:
+      typeof pp?.interval === "string"
+        ? pp.interval
+        : typeof pp?.interval === "object" && pp?.interval
+          ? "_id" in pp.interval
+            ? (pp.interval as TPlan)._id
+            : ""
+          : "",
+    price:
+      typeof pp?.price === "number"
+        ? pp.price
+        : typeof (pp?.price as any) === "object"
+          ? (pp?.price as any)?.amount || 0
+          : 0,
+    credits: pp?.credits || 0,
+    is_initial: pp?.is_initial || false,
+    is_active: pp?.is_active ?? true,
+  });
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<Partial<TPackagePlan>>({
-    defaultValues: {
-      package:
-        typeof packagePlan?.package === "string"
-          ? packagePlan.package
-          : typeof packagePlan?.package === "object" && packagePlan?.package
-            ? "_id" in packagePlan.package 
-              ? packagePlan.package._id 
-              : ""
-            : "",
-      plan:
-        typeof packagePlan?.plan === "string"
-          ? packagePlan.plan
-          : typeof packagePlan?.plan === "object" && packagePlan?.plan
-            ? "_id" in packagePlan.plan 
-              ? (packagePlan.plan as TPlan)._id 
-              : ""
-            : "",
-      price:
-        typeof packagePlan?.price === "number"
-          ? packagePlan.price
-          : typeof (packagePlan?.price as any) === "object"
-            ? (packagePlan?.price as any)?.amount || 0
-            : 0,
-      credits: packagePlan?.credits || 0,
-      is_initial: packagePlan?.is_initial || false,
-      is_active: packagePlan?.is_active ?? true,
-    },
+    defaultValues: getDefaultValues(packagePlan),
   });
 
   React.useEffect(() => {
-    reset({
-      package:
-        typeof packagePlan?.package === "string"
-          ? packagePlan.package
-          : typeof packagePlan?.package === "object" && packagePlan?.package
-            ? "_id" in packagePlan.package 
-              ? packagePlan.package._id 
-              : ""
-            : "",
-      plan:
-        typeof packagePlan?.plan === "string"
-          ? packagePlan.plan
-          : typeof packagePlan?.plan === "object" && packagePlan?.plan
-            ? "_id" in packagePlan.plan 
-              ? (packagePlan.plan as TPlan)._id 
-              : ""
-            : "",
-      price:
-        typeof packagePlan?.price === "number"
-          ? packagePlan.price
-          : typeof (packagePlan?.price as any) === "object"
-            ? (packagePlan?.price as any)?.amount || 0
-            : 0,
-      credits: packagePlan?.credits || 0,
-      is_initial: packagePlan?.is_initial || false,
-      is_active: packagePlan?.is_active ?? true,
-    });
+    reset(getDefaultValues(packagePlan));
   }, [packagePlan, reset]);
 
   const mutation = useMutation({
@@ -130,7 +106,7 @@ const PackagePlanEditModal: React.FC<PackagePlanEditModalProps> = ({
       toast.error("Package is required");
       return;
     }
-    if (!data.plan) {
+    if (!data.interval) {
       toast.error("Plan is required");
       return;
     }
@@ -143,13 +119,13 @@ const PackagePlanEditModal: React.FC<PackagePlanEditModalProps> = ({
         : typeof packagePlan.package === "string"
           ? packagePlan.package
           : "";
-    const currentPlan =
-      typeof packagePlan.plan === "object"
-        ? packagePlan.plan?._id || ""
-        : packagePlan.plan || "";
+    const currentInterval =
+      typeof packagePlan.interval === "object"
+        ? (packagePlan.interval as any)?._id || ""
+        : packagePlan.interval || "";
 
     if (data.package !== currentPackage) updatedFields.package = data.package;
-    if (data.plan !== currentPlan) updatedFields.plan = data.plan;
+    if (data.interval !== currentInterval) updatedFields.interval = data.interval;
     if (JSON.stringify(data.price) !== JSON.stringify(packagePlan.price)) {
       updatedFields.price = data.price;
     }
@@ -203,7 +179,7 @@ const PackagePlanEditModal: React.FC<PackagePlanEditModalProps> = ({
                 <FormControl.Label>Plan *</FormControl.Label>
                 <FormControl
                   as="select"
-                  {...register("plan", { required: "Plan is required" })}
+                  {...register("interval", { required: "Plan is required" })}
                 >
                   <option value="">Select a plan</option>
                   {plansData?.data?.map((plan) => (
@@ -212,8 +188,8 @@ const PackagePlanEditModal: React.FC<PackagePlanEditModalProps> = ({
                     </option>
                   ))}
                 </FormControl>
-                {errors.plan && (
-                  <FormControl.Error>{errors.plan.message}</FormControl.Error>
+                {errors.interval && (
+                  <FormControl.Error>{errors.interval.message}</FormControl.Error>
                 )}
               </div>
 

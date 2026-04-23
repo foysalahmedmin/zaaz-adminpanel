@@ -61,7 +61,7 @@ const CheckoutPage = () => {
   const initiatePaymentMutation = useMutation({
     mutationFn: (payload: {
       package: string;
-      plan: string;
+      interval: string;
       payment_method: string;
       currency: string;
       return_url: string;
@@ -141,7 +141,7 @@ const CheckoutPage = () => {
 
     initiatePaymentMutation.mutate({
       package: currentPackage._id,
-      plan: selectedPlanId,
+      interval: selectedPlanId,
       payment_method: selectedPaymentMethod,
       currency: isBangladesh ? "BDT" : "USD",
       return_url: returnUrl,

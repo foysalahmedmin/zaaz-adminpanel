@@ -15,7 +15,7 @@ export type TCreditsTransaction = {
   increase_source?: TCreditsTransactionIncreaseSource;
   decrease_source?: string | Partial<TFeatureEndpoint> | null;
   payment_transaction?: string | Partial<TPaymentTransaction> | null;
-  plan?:
+  interval?:
     | string
     | {
         _id: string;

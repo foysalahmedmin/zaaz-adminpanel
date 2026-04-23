@@ -178,8 +178,8 @@ const PaymentTransactionViewModal: React.FC<
                   <div className="col-span-1">
                     <span className="text-muted-foreground text-xs">Plan</span>
                     <p className="font-semibold">
-                      {typeof transaction.plan === "object"
-                        ? transaction.plan.name
+                      {typeof transaction.interval === "object"
+                        ? (transaction.interval as any).name
                         : "N/A"}
                     </p>
                   </div>

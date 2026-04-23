@@ -96,7 +96,7 @@ const PackagesDataTableSection: React.FC<PackagesDataTableSectionProps> = ({
                 className="border-muted-foreground/10 border-b pb-1 last:border-0 last:pb-0"
               >
                 <p className="text-[10px] font-bold tracking-tighter uppercase">
-                  {plan.plan?.name || "Unnamed Plan"}
+                  {plan.interval?.name || "Unnamed Plan"}
                 </p>
                 <div className="flex items-center gap-2 text-xs">
                   <span className="text-muted-foreground font-bold">

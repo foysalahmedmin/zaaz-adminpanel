@@ -10,7 +10,7 @@ export type TPackageTransaction = {
   email?: string;
   user_wallet: string;
   package: string | Partial<TPackage>;
-  plan: string | Partial<TPlan>;
+  interval: string | Partial<TPlan>;
   credits: number;
   increase_source: "payment" | "bonus";
   payment_transaction?: string;

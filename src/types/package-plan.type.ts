@@ -4,7 +4,7 @@ import type { TResponse } from "./response.type";
 
 export type TPackagePlan = {
   _id: string;
-  plan: TPlan | string;
+  interval: TPlan | string;
   package: string | { _id: string; name: string; [key: string]: any };
   previous_price?: TPackagePrice;
   price: TPackagePrice;

@@ -75,7 +75,7 @@ const PackageHistoriesDataTableSection: React.FC<
         const initialPlan = row.plans?.find((pp) => pp.is_initial);
         return initialPlan ? (
           <div className="space-y-1">
-            <span className="font-semibold">{initialPlan.plan.name}</span>
+            <span className="font-semibold">{(initialPlan.interval as any)?.name || "N/A"}</span>
             <div className="text-muted-foreground text-xs">
               ${typeof initialPlan.price === "number" ? initialPlan.price : (initialPlan.price as any)?.USD ?? 0}
             </div>

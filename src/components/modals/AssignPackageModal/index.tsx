@@ -61,7 +61,7 @@ const AssignPackageModal = ({
   const selectedPlanDetails = useMemo(() => {
     return filteredPlans.find((pp) => {
       const planId =
-        typeof pp.plan === "string" ? pp.plan : (pp.plan as any)?._id;
+        typeof pp.interval === "string" ? pp.interval : (pp.interval as any)?._id;
       return planId === selectedPlanId;
     });
   }, [selectedPlanId, filteredPlans]);
@@ -178,12 +178,12 @@ const AssignPackageModal = ({
                   <option value="">Select a plan</option>
                   {filteredPlans.map((pp) => {
                     const planId =
-                      typeof pp.plan === "string"
-                        ? pp.plan
-                        : (pp.plan as any)?._id;
+                      typeof pp.interval === "string"
+                        ? pp.interval
+                        : (pp.interval as any)?._id;
                     const planName =
-                      typeof pp.plan === "object"
-                        ? (pp.plan as any)?.name
+                      typeof pp.interval === "object"
+                        ? (pp.interval as any)?.name
                         : "Standard Plan";
                     return (
                       <option key={planId} value={planId}>

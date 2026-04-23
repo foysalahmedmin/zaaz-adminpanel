@@ -48,8 +48,8 @@ export const PaymentFailedView: React.FC<PaymentFailedViewProps> = ({
                     <div key={pp._id} className="flex justify-between">
                       <span className="text-muted-foreground">Plan:</span>
                       <span className="font-semibold">
-                        {typeof pp.plan === "object" && pp.plan?.name
-                          ? `${pp.plan.name} (${pp.plan.duration || 0} days)`
+                        {typeof pp.interval === "object" && pp.interval?.name
+                          ? `${pp.interval.name} (${pp.interval.duration || 0} days)`
                           : "N/A"}
                       </span>
                     </div>

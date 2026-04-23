@@ -46,23 +46,14 @@ export type TPaymentTransaction = {
         _id: string;
         name: string;
       };
-  plan:
+  interval:
     | string
     | {
         _id: string;
         name: string;
         duration?: number;
       };
-  price:
-    | string
-    | {
-        _id: string;
-        price: {
-          USD: number;
-          BDT: number;
-        };
-        credits: number;
-      }; // PackagePlan document _id
+  price: string; // PackagePrice document _id
   coupon?:
     | string
     | {

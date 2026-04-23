@@ -95,7 +95,7 @@ const PackagePlansPage = () => {
     if (gte) params.gte = gte;
     if (lte) params.lte = lte;
     if (isActive) params.is_active = isActive;
-    if (plan) params.plan = plan;
+    if (plan) params.interval = plan;
     if (pkg) params.package = pkg;
 
     return params;
