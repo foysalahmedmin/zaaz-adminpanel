@@ -50,7 +50,7 @@ const PackageTransactionsDataTableSection: React.FC<
       field: "package",
       cell: ({ row }) => {
         const pkg = row.package as any;
-        const plan = row.plan as any;
+        const interval = row.interval as any;
         return (
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-sm font-bold uppercase">
@@ -58,7 +58,7 @@ const PackageTransactionsDataTableSection: React.FC<
               <span>{pkg?.name || "N/A"}</span>
             </div>
             <span className="text-muted-foreground text-xs font-medium">
-              {plan?.name || "Standard Plan"}
+              {interval?.name || "Standard Plan"}
             </span>
           </div>
         );
