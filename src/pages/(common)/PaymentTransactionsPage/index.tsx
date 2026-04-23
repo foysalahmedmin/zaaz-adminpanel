@@ -3,6 +3,7 @@ import PaymentTransactionsFilterSection from "@/components/(common)/payment-tran
 import PaymentTransactionsStatisticsSection from "@/components/(common)/payment-transactions-page/PaymentTransactionsStatisticsSection";
 import PaymentTransactionViewModal from "@/components/modals/PaymentTransactionViewModal";
 import PageHeader from "@/components/sections/PageHeader";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import {
   closeViewModal,
@@ -10,11 +11,16 @@ import {
 } from "@/redux/slices/payment-transactions-page-slice";
 import type { RootState } from "@/redux/store";
 import { fetchPaymentMethods } from "@/services/payment-method.service";
-import { fetchPaymentTransactions } from "@/services/payment-transaction.service";
+import {
+  fetchPaymentTransactions,
+  reconcilePayments,
+} from "@/services/payment-transaction.service";
 import type { TPaymentTransaction } from "@/types/payment-transaction.type";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { RefreshCw } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const PaymentTransactionsPage = () => {
   const dispatch = useDispatch();
@@ -85,9 +91,28 @@ const PaymentTransactionsPage = () => {
     }
   }, [data]);
 
+  const reconcileMutation = useMutation({
+    mutationFn: reconcilePayments,
+    onSuccess: () => toast.success("Reconciliation triggered successfully"),
+    onError: () => toast.error("Failed to trigger reconciliation"),
+  });
+
   return (
     <main className="space-y-6">
-      <PageHeader name="Payment Transactions" />
+      <PageHeader
+        name="Payment Transactions"
+        slot={
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => reconcileMutation.mutate()}
+            disabled={reconcileMutation.isPending}
+          >
+            <RefreshCw className="mr-2 h-4 w-4" />
+            {reconcileMutation.isPending ? "Reconciling..." : "Reconcile Pending"}
+          </Button>
+        }
+      />
       <PaymentTransactionsStatisticsSection
         data={data?.data || []}
         meta={data?.meta}

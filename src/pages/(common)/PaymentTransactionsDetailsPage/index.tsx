@@ -1,33 +1,42 @@
 import PaymentTransactionViewModal from "@/components/modals/PaymentTransactionViewModal";
 import Loader from "@/components/partials/Loader";
 import PageHeader from "@/components/sections/PageHeader";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import useAlert from "@/hooks/ui/useAlert";
 import { cn } from "@/lib/utils";
 import {
   closeViewModal,
   openViewModal,
 } from "@/redux/slices/payment-transactions-page-slice";
 import type { RootState } from "@/redux/store";
-import { fetchPaymentTransaction } from "@/services/payment-transaction.service";
+import {
+  fetchPaymentTransaction,
+  initiateRefund,
+} from "@/services/payment-transaction.service";
 import type { TPaymentTransaction } from "@/types/payment-transaction.type";
 import type { TErrorResponse } from "@/types/response.type";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import {
   AlertCircle,
   CheckCircle,
   CreditCard,
   Package,
+  RefreshCw,
   User,
   XCircle,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router";
+import { toast } from "react-toastify";
 
 const PaymentTransactionsDetailsPage = () => {
   const { id } = useParams();
   const location = useLocation();
   const dispatch = useDispatch();
+  const confirm = useAlert();
+  const queryClient = useQueryClient();
 
   const transaction = (
     location.state as {
@@ -46,6 +55,28 @@ const PaymentTransactionsDetailsPage = () => {
   });
 
   const currentTransaction = data?.data || transaction;
+
+  const refundMutation = useMutation({
+    mutationFn: () => initiateRefund(id || ""),
+    onSuccess: () => {
+      toast.success("Refund initiated successfully");
+      queryClient.invalidateQueries({ queryKey: ["payment-transaction", id] });
+    },
+    onError: (error: AxiosError<TErrorResponse>) => {
+      toast.error(error.response?.data?.message || "Failed to initiate refund");
+    },
+  });
+
+  const handleRefund = async () => {
+    const ok = await confirm({
+      title: "Initiate Refund",
+      message:
+        "This will refund the payment via the payment gateway and revoke the credits from the user's wallet. This action cannot be undone. Proceed?",
+      confirmText: "Refund",
+      cancelText: "Cancel",
+    });
+    if (ok) refundMutation.mutate();
+  };
 
   const getStatusColor = (status: string) => {
     const colors = {
@@ -158,7 +189,7 @@ const PaymentTransactionsDetailsPage = () => {
                     </p>
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="flex flex-wrap items-center gap-3">
                     <span
                       className={cn(
                         "flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium capitalize",
@@ -172,6 +203,17 @@ const PaymentTransactionsDetailsPage = () => {
                       <span className="rounded-full bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-600 uppercase dark:text-blue-400">
                         {currentTransaction.currency}
                       </span>
+                    )}
+                    {currentTransaction.status === "success" && (
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={handleRefund}
+                        disabled={refundMutation.isPending}
+                      >
+                        <RefreshCw className="mr-2 h-4 w-4" />
+                        {refundMutation.isPending ? "Refunding..." : "Refund"}
+                      </Button>
                     )}
                   </div>
                 </div>
