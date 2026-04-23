@@ -1,15 +1,15 @@
 # ZaaZ Admin Panel
 
-A modern, enterprise-grade admin panel for managing the Admin Panel platform. Built with **React 19**, **TypeScript**, and **Modern Web Technologies**, this system provides comprehensive management capabilities for users, financial transactions, credits, AI models, and document processing services. It functions as the central command center for the entire platform, featuring real-time analytics, role-based security, and a modular architecture.
+A modern, enterprise-grade admin panel for managing the ZaaZ platform. Built with **React 19**, **TypeScript**, and **Tailwind CSS 4**, this system provides comprehensive management capabilities for users, financial transactions, credits, AI models, contacts, files, and document processing services. It functions as the central command center for the entire platform, featuring real-time analytics, role-based security, and a modular architecture.
 
 ## Features
 
 ### Dashboard
 
-The dashboard serves as the nerve center for the application, aggregating data from various modules into a unified view.
+The dashboard serves as the nerve center of the application, aggregating data from all modules into a unified view.
 
 - **Comprehensive Analytics Dashboard**: Modern admin dashboard with real-time statistics and charts.
-- **Statistics Cards**: Four key metric cards showing total revenue (USD/BDT), total users, total transactions, and total credits with month-over-month trends.
+- **Statistics Cards**: Key metric cards showing total revenue (USD/BDT), total users, total transactions, and total credits with month-over-month trends.
 - **Revenue Trend Chart**: Area chart displaying daily revenue trends over time (USD and BDT).
 - **Transaction Status Chart**: Bar chart showing distribution of transactions by status.
 - **Payment Method Performance Chart**: Bar chart displaying transaction count and revenue by payment method.
@@ -24,14 +24,26 @@ The dashboard serves as the nerve center for the application, aggregating data f
 Comprehensive tools for managing the user lifecycle and security.
 
 - **Role-Based Access Control (RBAC)**:
-  - **Super Admin**: unrestricted access to all system configurations.
+  - **Super Admin**: Unrestricted access to all system configurations.
   - **Admin**: Operational access for day-to-day management.
   - **User**: Restricted access to personal profile and own data.
 - **Profile Management**: Detailed views of user activities, wallet status, and transaction history.
 - **Security**: Account blocking, verification status management, and activity logging.
-- **User Details Page**: Separate admin-only page for viewing user details (read-only).
+- **User Details Page**: Admin-only read-only page with user info, wallet status, and all transaction tabs (payments, credits, packages).
 - **Profile Page**: User's own profile page with edit capabilities and `/self` API endpoints.
-- **Role-based Layout Access**: CommonLayout automatically redirects non-admin users to client profile.
+- **Role-based Layout Access**: `CommonLayout` automatically redirects non-admin users to client profile.
+
+### User Wallets
+
+Manage credit balances for every user in the system.
+
+- **Wallet List Page**: DataTable of all user wallets with email, user ID, credit balance, and onboarding status.
+- **Initial Credits Status**: Visual indicator showing whether a user has received their initial free credits.
+- **Initial Package Status**: Visual indicator showing whether a user has received their initial package assignment.
+- **Wallet Details Page**: Detailed view with tabbed history — package transactions, payment transactions, and credits transactions.
+- **Give Bonus Credits**: Assign additional credits directly to a user's wallet from the details page.
+- **Assign Package**: Assign a package to a user directly from the wallet details page.
+- **Subscription Context**: Active package context is derived from the latest package transaction record.
 
 ### Service Management (Features & AI)
 
@@ -41,15 +53,13 @@ Configuration for the core services offered by the platform.
 - **Features Details Page**: View feature details and manage associated endpoints.
 - **Feature Endpoints Management**: Create, edit, and delete API endpoints with credit requirements.
 - **Feature Popups**: Manage informational popups associated with features.
-- **Feature Usage Logs**: Track detailed usage logs for features.
+- **Feature Usage Logs**: Track detailed usage logs per feature.
 - **Parent-Child Relationships**: Organize features hierarchically.
-- **AI Models Page**: Manage AI models available in the system.
-- **Model Configuration**: Configure model parameters and costs.
-- **Plagiarism Checking**: Management interface for document ingestion and checking status.
-- **Billing Settings**: Global configuration for system-wide billing rules.
+- **AI Models Page**: Manage AI models with CRUD operations and model configuration.
+- **Billing Settings**: Global configuration for system-wide billing rules with full change history.
 - **Feature Feedback Management**:
   - Centralized dashboard for reviewing user suggestions, bugs, and compliments.
-  - Interactive Preview Modal for reading full comments and rating analysis.
+  - Interactive preview modal for reading full feedback and rating analysis.
   - Administrative response system via `admin_note` field.
   - Status management (Resolved, Reviewed, Pending) with bulk update support.
   - Page-level bulk deletion for efficient maintenance.
@@ -59,92 +69,92 @@ Configuration for the core services offered by the platform.
 
 Tools for managing the monetary aspects of the platform.
 
-- **Packages Page**: Complete CRUD operations for credit packages.
-- **Packages Details Page**: View package details and all associated plans.
+- **Packages Page**: Complete CRUD operations for credit packages with rich-text descriptions.
+- **Packages Details Page**: View package details and all associated pricing plans.
+- **Package Prices Page**: Manage all package–interval price combinations in one place.
 - **Rich Text Editor**: BlockNote integration for HTML content editing.
 - **Feature Association**: Link packages to multiple features.
-- **Plan Selection**: Select multiple plans per package with individual pricing and credit amounts.
-- **Package-Plan Management**: Manage plan associations, set initial plan, configure prices and credits per plan.
-- **Package History**: View complete change history with embedded feature and plan data via modal.
+- **Interval Selection**: Select multiple billing intervals per package with individual pricing and credit amounts.
+- **Package History**: View complete change history with embedded feature and interval data via modal.
 - **Package Feature Configuration**: Dynamic configuration system for package-specific feature behavior.
   - Configure minimum/maximum credits per feature or endpoint.
   - Set daily and monthly usage limits per package.
   - Define quality tiers (basic, standard, premium) for different packages.
   - Endpoint-specific overrides for granular control.
-  - Feature-wide configurations for consistent behavior.
-  - Real-time configuration updates without code changes.
-  - **Note**: UI components (modals, forms, tables) are pending implementation. Backend API and types are production-ready.
-- **Plans Page**: Complete CRUD operations for reusable plan templates.
-- **Plan Reusability**: Use same plan across multiple packages.
-- **Pricing Configuration**: Set individual prices (USD/BDT) per plan per package.
-- **Initial Plan**: Designate one plan as initial per package.
+- **Plans / Intervals Page**: Complete CRUD operations for reusable billing interval templates.
+- **Coupon Management**: Create and manage discount coupons with expiry dates and usage limits.
 
 ### Payment & Transactions
 
 A robust flow handling multiple gateways and transaction states.
 
-- **Payment Methods Page**: Configure and manage payment gateway settings.
-- **Gateway Configuration**: Set up Stripe and SSL Commerz payment methods.
-- **Test Mode Support**: Configure test/sandbox mode for payment gateways.
-- **Payment Transactions Page**: View and filter all payment transactions.
-- **Status Tracking**: Monitor payment status (pending, completed, failed, etc.).
-- **Gateway Integration**: View payment gateway details (Stripe/SSL Commerz).
-- **Filtering & Search**: Advanced filtering by status, gateway, user, date range.
-- **Transaction Details**: View complete transaction information via modal.
+- **Payment Methods Page**: Configure and manage payment gateway settings (Stripe, SSL Commerz).
+- **Test Mode Support**: Configure test/sandbox mode per payment gateway.
+- **Payment Transactions Page**: View, filter, and inspect all payment transactions.
+- **Status Tracking**: Monitor payment status (pending, completed, failed, cancelled, etc.).
+- **Package Transactions Page**: Track all package assignment records per user.
+- **Filtering & Search**: Advanced filtering by status, gateway, user, and date range.
+- **Transaction Details**: View complete transaction information in a modal.
 
 ### Credits System
 
 The core currency of the platform, managed with precision.
 
-- **Credits Transactions Page**: Track all credit movements.
-- **Transaction Types**: View increases (payments, bonuses) and decreases (feature usage).
-- **User Filtering**: Filter transactions by user.
+- **Credits Transactions Page**: Track all credit movements with type classification (increase / decrease).
+- **Credits Usages Page**: Monitor granular credit consumption by user and feature.
+- **Credits Profits Page**: Configure and view profit percentages for credit sales with full change history.
 - **Real-time Updates**: Live credit balance updates via Socket.io.
-- **Credits Usage Page**: Monitor how credits are being consumed across the system.
-- **Detailed Tracking**: Granular views of credit consumption by user and feature.
-- **Usage Statistics**: Analyze usage patterns.
-- **Credits Profits Page**: Configure profit percentages for credit sales.
-- **User Wallets Page**: Manage all user wallets.
-- **Balance Tracking**: View current credit balances.
-- **Coupon Management**: Create and manage discount coupons with expiry and limits.
 
-### Client-Side Payment Flow
+### Contacts
 
-- **Pricing Page** (`/client/pricing`): Display all public packages with plan tabs (All + individual plans).
-  - Plan filtering via tabs.
-  - Display all plans or specific plan based on selection.
-  - Initial plan price/duration shown on package cards.
-  - Checkout link includes `plan_id` parameter.
-- **Checkout Page** (`/client/checkout`): Select plan and payment method, initiate payment.
-  - Plan selection UI with all available plans.
-  - Display plan details (price, duration, credits).
-  - Payment initiation requires `plan_id`.
-- **Checkout Success Page** (`/client/checkout/success`): Display payment success confirmation.
-- **Checkout Cancel Page** (`/client/checkout/cancel`): Handle payment cancellation/failure.
-- **Client Layout**: Dedicated layout for user-facing pages.
-- **Payment Status Handling**: Complete payment flow with status management.
+- **Contacts Page**: View all inbound contact form submissions.
+- **Sender Details**: Displays sender name, email address, subject, and message body.
+- **Full Message View**: Modal with whitespace-preserved message rendering.
+- **Soft Delete**: Remove contacts with confirmation dialog; deleted items recoverable via Recycle Bin.
+
+### Files
+
+- **Files Page**: Browse and manage all files uploaded to the platform.
+- **File Type Icons**: Visual indicators for images, videos, PDFs, and generic documents.
+- **Image Thumbnails**: Inline preview for image/* MIME types.
+- **Statistics Cards**: Total files, total storage used, image count, and cloud-hosted file count.
+- **Provider Badges**: Distinguish between local storage and Google Cloud Storage (GCS) files.
+- **Status Badges**: File status (active, inactive, archived) with colour coding.
+- **External Links**: Open files directly via provider URL.
+- **Soft Delete**: Remove files with confirmation; recoverable via Recycle Bin.
 
 ### Recycle Bin
 
-- **Soft-Deleted Items Management**: View all soft-deleted items.
-- **Multi-Module Support**: Manage deleted items from Features, Packages, Users, etc.
-- **Restore Functionality**: Restore deleted items with one click.
-- **Permanent Delete**: Permanently delete items from the system.
-- **Statistics**: View counts of deleted items per module.
-- **Tabbed Interface**: Easy navigation between different module types.
+Unified soft-delete recovery centre covering all deletable modules.
+
+- **13 Module Types**: Features, Feature Endpoints, Packages, Credits Profits, Users, Package Transactions, AI Models, Intervals, Payment Methods, Payment Transactions, Billing Settings, Contacts, Files.
+- **Tabbed Interface**: Per-module tabs with item counts shown on each tab trigger.
+- **Restore**: Recover any soft-deleted item with a single click.
+- **Permanent Delete**: Irreversibly remove an item with a confirmation dialog.
+- **Statistics Overview**: Counts of deleted items per module displayed at the top.
+- **Date Range Filtering**: Filter deleted items by creation date range.
 
 ### Real-time Features
 
 - **Live Notifications**:
-  - Real-time Sidebar badge indicated unread notification count with pulse animations.
-  - Instant synchronization across all tabs via Redux and Socket.io.
+  - Real-time sidebar badge showing unread notification count with pulse animation.
+  - Instant synchronisation across all tabs via Redux and Socket.io.
   - In-app desktop notifications for high-priority alerts.
-- **Notification Center**:
-  - Comprehensive list view with status filtering.
-  - Detailed `NotificationViewModal` with support for deep links and metadata.
-  - Bulk actions: "Mark All Read" and "Clear All" for optimal inbox management.
+- **Notification Centre**:
+  - List view with status filtering (all / unread / read).
+  - `NotificationViewModal` with deep-link and metadata support.
+  - Bulk actions: "Mark All Read" and "Clear All".
 - **Credit Balance Updates**: Real-time wallet balance updates.
 - **Payment Status Updates**: Live payment transaction status changes.
+
+### Client-Side Payment Flow
+
+- **Pricing Page** (`/client/pricing`): Display all public packages with plan tabs (All + individual intervals).
+- **Checkout Page** (`/client/checkout`): Select interval and payment method, initiate payment.
+- **Checkout Success / Cancel Pages**: Handle post-payment redirects.
+- **Client Layout**: Dedicated layout for user-facing pages.
+
+---
 
 ## System Architecture
 
@@ -179,8 +189,6 @@ _Figure 1: High-level architectural overview showing the data flow between the C
 
 ### Authentication Flow
 
-The system uses a secure, token-based authentication mechanism.
-
 <div align="center">
 
 ```mermaid
@@ -207,8 +215,6 @@ _Figure 2: Sequence diagram illustrating the secure login process, token storage
 
 ### Payment Flow
 
-A robust flow handling multiple gateways and transaction states.
-
 <div align="center">
 
 ```mermaid
@@ -225,170 +231,187 @@ stateDiagram-v2
     Cancelled --> [*]
 ```
 
-_Figure 3: State transition diagram for payment transactions, covering all possible outcomes from initiation to finalization._
+_Figure 3: State transition diagram for payment transactions, covering all possible outcomes._
 
 </div>
+
+---
 
 ## Technology Stack
 
 ### Core Framework
 
-- **React 19** - Latest React with concurrent features.
-- **TypeScript** - Type-safe development.
-- **Vite** - Fast build tool and development server.
+| Library | Version | Purpose |
+|---------|---------|---------|
+| React | 19 | UI framework with concurrent features |
+| TypeScript | 5.x | Type-safe development |
+| Vite | 6.x | Build tool and dev server |
 
 ### Styling & UI
 
-- **Tailwind CSS 4** - Utility-first CSS framework.
-- **Custom Component Library** - **Most components are custom-built** with minimal third-party dependencies.
-- **Lucide React** - Icon library (only major UI dependency).
-- **BlockNote** - Rich text editor for HTML content.
+- **Tailwind CSS 4** — Utility-first CSS framework.
+- **Custom Component Library** — All major UI components are custom-built (DataTable, Modal, Card, Tabs, Pagination, Badge, Button, etc.).
+- **Lucide React** — Icon library.
+- **BlockNote** — Rich text editor for HTML content.
 
 ### State Management
 
-- **Redux Toolkit** - Predictable state management.
-- **React Query (TanStack Query)** - Server state management and caching.
+- **Redux Toolkit** — Synchronous client state (modal visibility, pagination, filters, form inputs).
+- **TanStack React Query** — Asynchronous server state with caching and background refetch.
 
 ### Routing & Navigation
 
-- **React Router 7** - Client-side routing.
-- **Custom RouteMenu Class** - Dynamic route generation with role-based access control.
+- **React Router 7** — Client-side routing.
+- **Custom `RouteMenu` Class** — Dynamic route and sidebar generation with RBAC.
 
 ### Form Management
 
-- **React Hook Form** - Performant forms with easy validation.
-- **Zod** - TypeScript-first schema validation.
-- **Hookform Resolvers** - Validation integration.
+- **React Hook Form** — Performant forms.
+- **Zod** — TypeScript-first schema validation.
+- **Hookform Resolvers** — Validation integration.
 
-### Data Visualization
+### Data Visualisation
 
-- **Recharts** - Charts and data visualization.
-  - Area charts for revenue trends and user growth.
-  - Bar charts for transaction status, payment methods, packages, and features.
-  - Line charts for credit flow.
+- **Recharts** — Area, bar, and line charts for analytics dashboards.
 
 ### Additional Libraries
 
-- **Axios** - HTTP client for API requests.
-- **Socket.io Client** - Real-time communication.
-- **React Toastify** - Toast notifications.
-- **Date-fns** - Date manipulation utilities.
-- **Class Variance Authority** - Component variant management.
-- **Embla Carousel** - Touch-friendly carousel component.
+- **Axios** — HTTP client.
+- **Socket.io Client** — Real-time communication.
+- **React Toastify** — Toast notifications.
+- **Date-fns** — Date utilities.
+- **Class Variance Authority** — Component variant management.
+
+---
 
 ## Project Structure
 
 ```text
 src/
-├── assets/            # Static assets and data
-│   ├── data/         # Route menu items configuration
-│   └── styles/       # Global styles and CSS files
-├── builder/          # Builder classes (RouteMenu, ObjectFormData)
-├── components/       # Reusable UI components
-│   ├── (auth)/      # Authentication components
-│   ├── (common)/    # Common page components
+├── assets/
+│   ├── data/               # Route and menu item definitions
+│   └── styles/             # Global CSS
+├── builder/                # RouteMenu and ObjectFormData builder classes
+├── components/
+│   ├── (auth)/             # Login / auth UI components
+│   ├── (common)/           # Page-specific section components
+│   │   ├── dashboard/
 │   │   ├── features-page/
 │   │   ├── packages-page/
 │   │   ├── payment-methods-page/
 │   │   ├── payment-transactions-page/
+│   │   ├── package-transactions-page/
 │   │   ├── credits-transactions-page/
 │   │   ├── credits-profits-page/
 │   │   ├── user-wallets-page/
 │   │   ├── users-page/
-│   │   ├── dashboard/
 │   │   ├── feature-feedbacks-page/
 │   │   ├── recycle-bin-page/
 │   │   └── ...
-│   ├── appliers/    # State appliers and providers
-│   ├── cards/       # Card components
-│   ├── modals/      # Modal dialogs
-│   │   ├── FeatureAddModal/
-│   │   ├── FeatureEditModal/
-│   │   ├── PackageAddModal/
-│   │   ├── FeatureFeedbackViewModal/
-│   │   ├── NotificationViewModal/
-│   │   └── ...
-│   ├── partials/    # Layout partials (Header, Sidebar, etc.)
-│   ├── sections/    # Page sections
-│   ├── ui/          # Base UI components
-│   │   ├── BlockNoteEditor/  # Rich text editor
+│   ├── modals/             # All modal dialogs
+│   ├── partials/           # Header, Sidebar, Footer
+│   ├── sections/           # Shared section components (PageHeader, etc.)
+│   ├── ui/                 # Base design-system components
+│   │   ├── DataTable/      # Feature-rich table (sorting, pagination, row selection, bulk actions)
+│   │   ├── BlockNoteEditor/
 │   │   ├── Button/
 │   │   ├── Card/
-│   │   ├── DataTable/
-│   │   ├── FormControl/
 │   │   ├── Modal/
+│   │   ├── Tabs/
+│   │   ├── Pagination/
+│   │   ├── Badge/
 │   │   └── ...
-│   └── wrappers/    # Component wrappers
-├── config/          # Configuration files
-│   ├── constants/   # App constants
-│   ├── env/         # Environment variables
-│   ├── project/     # Project metadata
-│   ├── seo/         # SEO configuration
-│   └── urls/        # URL configuration
-├── hooks/           # Custom React hooks
-│   ├── observers/   # Intersection and mutation observers
-│   ├── states/      # State management hooks
-│   ├── ui/          # UI-related hooks
-│   └── utils/       # Utility hooks
-├── layouts/         # Page layouts
-│   ├── CommonLayout.tsx  # Admin panel layout (with role validation)
-│   ├── ClientLayout.tsx  # Client-facing layout
-│   └── AuthLayout.tsx   # Auth pages layout
-├── lib/             # Library utilities (API, utils)
-├── pages/           # Page components
-│   ├── (auth)/     # Authentication pages
-│   ├── (common)/    # Common pages (admin)
-│   ├── (client)/    # Client-facing pages
-│   ├── (partial)/   # Partial pages (Error, 404, etc.)
-│   └── (user)/      # User-specific pages
-├── redux/           # Redux store and slices
-│   ├── slices/      # Redux slices for each page/module
-│   └── store.ts     # Redux store configuration
-├── services/        # API service functions
-│   ├── feature-feedback.service.ts         # Feedback API service
-│   ├── notification-recipient.service.ts   # Notification API service
-│   └── ...          # Other service modules
-├── types/           # TypeScript type definitions
-│   ├── package-feature-config.type.ts     # Configuration types
-│   └── ...          # Other type definitions
-└── utils/           # Utility functions
+│   └── wrappers/           # AuthWrapper and layout wrappers
+├── config/                 # Env vars, constants, SEO, URL config
+├── hooks/                  # Custom hooks (observers, states, ui, utils)
+├── layouts/
+│   ├── CommonLayout.tsx    # Admin panel layout with role validation
+│   ├── ClientLayout.tsx    # User-facing layout
+│   └── AuthLayout.tsx      # Auth pages layout
+├── lib/                    # Axios instance, utilities
+├── pages/
+│   ├── (auth)/             # Login page
+│   ├── (common)/           # Admin pages
+│   │   ├── Dashboard/
+│   │   ├── UsersPage/
+│   │   ├── UserDetailsPage/
+│   │   ├── UserWalletsPage/
+│   │   ├── UserWalletsDetailsPage/
+│   │   ├── FeaturesPage/
+│   │   ├── FeaturesDetailsPage/
+│   │   ├── AiModelsPage/
+│   │   ├── PlansPage/
+│   │   ├── PackagesPage/
+│   │   ├── PackagesDetailsPage/
+│   │   ├── PackagePlansPage/
+│   │   ├── CouponsPage/
+│   │   ├── FeaturePopupsPage/
+│   │   ├── PaymentMethodsPage/
+│   │   ├── CreditsProfitsPage/
+│   │   ├── CreditsProfitsDetailsPage/
+│   │   ├── BillingSettingsPage/
+│   │   ├── PaymentTransactionsPage/
+│   │   ├── PaymentTransactionsDetailsPage/
+│   │   ├── PackageTransactionsPage/
+│   │   ├── CreditsTransactionsPage/
+│   │   ├── CreditsTransactionsDetailsPage/
+│   │   ├── CreditsUsagesPage/
+│   │   ├── FeatureUsageLogsPage/
+│   │   ├── ContactsPage/
+│   │   ├── FilesPage/
+│   │   ├── NotificationsPage/
+│   │   ├── FeatureFeedbacksPage/
+│   │   └── RecycleBinPage/
+│   ├── (client)/           # User-facing pricing and checkout pages
+│   ├── (partial)/          # 404, error pages
+│   └── (user)/             # ProfilePage
+├── redux/
+│   ├── slices/             # One slice per page/module
+│   └── store.ts
+├── services/               # API service functions per module
+├── types/                  # TypeScript type definitions
+└── utils/                  # Shared utility functions
 ```
+
+---
 
 ## Custom Architecture
 
-### Custom-Built Components
+### DataTable Component
 
-This project emphasizes **custom-built components** with minimal third-party dependencies. Most UI components, including data tables, forms, modals, and layout components, are built from scratch to ensure:
+The `DataTable` component is a fully custom-built, feature-rich table that powers every list view in the admin panel.
 
-- **Performance optimization** tailored to specific use cases.
-- **Consistent design system** across the application.
-- **Full control** over component behavior and styling.
-- **Reduced bundle size** by avoiding unnecessary third-party code.
+- **Animated Sort Icons**: Smooth scale/opacity transitions between `ArrowUpDown`, `ArrowUp`, and `ArrowDown` states.
+- **Row Selection**: Optional checkbox selection per row with select-all (supports indeterminate state).
+- **Bulk Actions Bar**: Contextual action bar that appears when one or more rows are selected.
+- **Pagination**: Configurable page size with server-side or client-side processing.
+- **Search & Sort**: Controlled externally via Redux slices or handled internally via `config` flags.
+- **Empty State**: Descriptive "No data found / Try adjusting your search or filters" placeholder.
+- **Loading / Error States**: Skeleton loader and error boundary variants.
 
 ### RouteMenu Class
 
-The **RouteMenu class** is a custom routing solution that provides:
+The `RouteMenu` class is a custom routing solution providing:
 
 - **Dynamic route generation** based on user roles and permissions.
-- **Role-based access control** for different user types.
-- **Nested routing structure** with automatic layout application.
-- **Menu integration** with route definitions.
-- **Type-safe routing** with TypeScript support.
+- **Sidebar menu generation** derived directly from route definitions.
+- **Nested routing** with automatic layout application.
+- **Type-safe routing** with TypeScript.
 
-### Redux & React Query
+### Redux + React Query Hybrid
 
-The application uses a hybrid state management approach:
+- **Redux Toolkit**: Owns UI state — modal open/close, active tab, pagination offsets, filter values.
+- **React Query**: Owns server state — fetching, caching, background refetch, and error handling.
+- Each page module has a dedicated Redux slice (e.g., `recycle-bin-page-slice`, `user-wallets-page-slice`) keeping concerns isolated.
 
-- **Redux Toolkit**: Manages synchronous client state like modal visibility, form inputs, pagination, and user preferences.
-- **React Query**: Manages asynchronous server state, handling caching, background updates, and network error states.
+---
 
 ## Getting Started
 
 ### Prerequisites
 
-- **Node.js** (v18 or higher)
+- **Node.js** v18 or higher
 - **pnpm** (recommended) or npm
-- **Git**
 
 ### Installation
 
@@ -396,65 +419,58 @@ The application uses a hybrid state management approach:
 
    ```bash
    git clone <repository-url>
-   cd payment-system
-   cd adminpanel
+   cd zaaz-adminpanel
    ```
 
 2. **Install dependencies**
 
    ```bash
    pnpm install
-   # or
-   npm install
    ```
 
-3. **Environment Setup**
-   Create a `.env` file in the root directory:
+3. **Environment setup** — create `.env` in the project root:
 
    ```env
    VITE_API_URL=http://localhost:5000
    VITE_APP_URL=http://localhost:8080
    ```
 
-4. **Start development server**
+4. **Start the development server**
 
    ```bash
    pnpm dev
-   # or
-   npm run dev
    ```
 
-5. **Open your browser**
-   Navigate to `http://localhost:8080`
+5. Open `http://localhost:8080` in your browser.
 
 ### Build for Production
 
 ```bash
 pnpm build
-# or
-npm run build
 ```
 
 ### Preview Production Build
 
 ```bash
 pnpm preview
-# or
-npm run preview
 ```
 
 ## Available Scripts
 
-- `pnpm dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm preview` - Preview production build
-- `pnpm lint` - Run ESLint
-- `pnpm lint:fix` - Fix ESLint errors automatically
-
-## Support & License
-
-For support, please create an issue in the repository or contact the development team.
+| Script | Description |
+|--------|-------------|
+| `pnpm dev` | Start development server |
+| `pnpm build` | Build for production |
+| `pnpm preview` | Preview production build |
+| `pnpm lint` | Run ESLint |
+| `pnpm lint:fix` | Auto-fix ESLint errors |
 
 ---
 
-**Built with using React 19, TypeScript, Tailwind CSS, and Redux Toolkit**
+## Support
+
+For support, please open an issue in the repository or contact the development team.
+
+---
+
+**Built with React 19, TypeScript, Tailwind CSS 4, and Redux Toolkit**
