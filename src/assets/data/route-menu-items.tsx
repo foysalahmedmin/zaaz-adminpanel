@@ -14,6 +14,7 @@ import FeatureUsageLogsPage from "@/pages/(common)/FeatureUsageLogsPage";
 import FeaturesDetailsPage from "@/pages/(common)/FeaturesDetailsPage";
 import FeaturesPage from "@/pages/(common)/FeaturesPage";
 import NotificationsPage from "@/pages/(common)/NotificationsPage";
+import PackagePlansPage from "@/pages/(common)/PackagePlansPage";
 import PackageTransactionsPage from "@/pages/(common)/PackageTransactionsPage";
 import PackagesDetailsPage from "@/pages/(common)/PackagesDetailsPage";
 import PackagesPage from "@/pages/(common)/PackagesPage";
@@ -192,6 +193,17 @@ export const items: TItem[] = [
         menuType: "invisible",
       },
     ],
+  },
+  {
+    roles: ["super-admin", "admin"],
+    icon: "layers",
+    path: "package-prices",
+    name: "Package Prices",
+    element: (
+      <AuthWrapper roles={["supper-admin", "admin"]}>
+        <PackagePlansPage />
+      </AuthWrapper>
+    ),
   },
   {
     roles: ["super-admin", "admin"],
