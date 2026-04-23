@@ -40,6 +40,14 @@ import {
   restorePaymentTransaction,
 } from "@/services/payment-transaction.service";
 import {
+  deleteContactPermanent,
+  restoreContact,
+} from "@/services/contact.service";
+import {
+  deleteFilePermanent,
+  restoreFile,
+} from "@/services/file.service";
+import {
   deletePlanPermanent,
   restorePlan,
 } from "@/services/plan.service";
@@ -50,6 +58,8 @@ import type { TCreditsProfit } from "@/types/credits-profit.type";
 import type { TFeatureEndpoint } from "@/types/feature-endpoint.type";
 import type { TFeature } from "@/types/feature.type";
 import type { TPackage } from "@/types/package.type";
+import type { TContact } from "@/types/contact.type";
+import type { TFile } from "@/types/file.type";
 import type { TPaymentMethod } from "@/types/payment-method.type";
 import type { TPaymentTransaction } from "@/types/payment-transaction.type";
 import type { TPlan } from "@/types/plan.type";
@@ -72,7 +82,9 @@ type DeletedItemType =
   | "interval"
   | "payment-method"
   | "payment-transaction"
-  | "billing-setting";
+  | "billing-setting"
+  | "contact"
+  | "file";
 
 type TRecycleBinItem =
   | TFeature
@@ -85,7 +97,9 @@ type TRecycleBinItem =
   | TPlan
   | TPaymentMethod
   | TPaymentTransaction
-  | TBillingSetting;
+  | TBillingSetting
+  | TContact
+  | TFile;
 
 type RecycleBinTabsSectionProps = {
   type: DeletedItemType;
@@ -132,6 +146,10 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
           return restorePaymentTransaction(id);
         case "billing-setting":
           return restoreBillingSetting(id);
+        case "contact":
+          return restoreContact(id);
+        case "file":
+          return restoreFile(id);
         default:
           throw new Error("Invalid type");
       }
@@ -176,6 +194,10 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
           return deletePaymentTransactionPermanent(id);
         case "billing-setting":
           return deleteBillingSettingPermanent(id);
+        case "contact":
+          return deleteContactPermanent(id);
+        case "file":
+          return deleteFilePermanent(id);
         default:
           throw new Error("Invalid type");
       }
@@ -507,6 +529,54 @@ const RecycleBinTabsSection: React.FC<RecycleBinTabsSectionProps> = ({
           isSortable: true,
           cell: ({ cell }) => (
             <span className="capitalize">{cell?.toString() || "N/A"}</span>
+          ),
+        },
+        ...baseColumns.slice(1),
+      ];
+    }
+
+    if (type === "contact") {
+      return [
+        {
+          name: "Sender",
+          field: "name",
+          isSearchable: true,
+          cell: ({ row }) => (
+            <div className="flex flex-col">
+              <span className="font-medium">{(row as any).name}</span>
+              <span className="text-muted-foreground text-xs">{(row as any).email}</span>
+            </div>
+          ),
+        },
+        {
+          name: "Subject",
+          field: "subject",
+          cell: ({ cell }) => (
+            <span className="line-clamp-1">{cell?.toString() || "N/A"}</span>
+          ),
+        },
+        ...baseColumns.slice(1),
+      ];
+    }
+
+    if (type === "file") {
+      return [
+        {
+          name: "File",
+          field: "name",
+          isSearchable: true,
+          cell: ({ row }) => (
+            <div className="flex flex-col">
+              <span className="font-medium">{(row as any).name || (row as any).originalname}</span>
+              <span className="text-muted-foreground text-xs">{(row as any).mimetype}</span>
+            </div>
+          ),
+        },
+        {
+          name: "Provider",
+          field: "provider",
+          cell: ({ cell }) => (
+            <span className="text-xs uppercase">{cell?.toString() || "N/A"}</span>
           ),
         },
         ...baseColumns.slice(1),

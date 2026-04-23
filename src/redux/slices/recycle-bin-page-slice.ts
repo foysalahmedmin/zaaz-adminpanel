@@ -12,7 +12,9 @@ export type DeletedItemType =
   | "interval"
   | "payment-method"
   | "payment-transaction"
-  | "billing-setting";
+  | "billing-setting"
+  | "contact"
+  | "file";
 
 interface RecycleBinPageState {
   activeTab: DeletedItemType;

@@ -17,11 +17,13 @@ import {
 import type { RootState } from "@/redux/store";
 import { fetchAiModels } from "@/services/ai-model.service";
 import { fetchBillingSettings } from "@/services/billing-setting.service";
+import { fetchContacts } from "@/services/contact.service";
 import { fetchCreditsProfits } from "@/services/credits-profit.service";
 import { fetchFeatureEndpoints } from "@/services/feature-endpoint.service";
 import { fetchFeatures } from "@/services/feature.service";
 import { fetchPackageTransactions } from "@/services/package-transaction.service";
 import { fetchPackages } from "@/services/package.service";
+import { fetchFiles } from "@/services/file.service";
 import { fetchPaymentMethods } from "@/services/payment-method.service";
 import { fetchPaymentTransactions } from "@/services/payment-transaction.service";
 import { fetchPlans } from "@/services/plan.service";
@@ -227,6 +229,36 @@ const RecycleBinPage = () => {
     enabled: activeTab === "billing-setting",
   });
 
+  const { data: contactsData } = useQuery({
+    queryKey: ["contacts", "deleted", { page, limit, search, sort, gte, lte }],
+    queryFn: () =>
+      fetchContacts({
+        is_deleted: true,
+        page,
+        limit,
+        sort: sort || "-created_at",
+        ...(search && { search }),
+        ...(gte && { gte }),
+        ...(lte && { lte }),
+      }),
+    enabled: activeTab === "contact",
+  });
+
+  const { data: filesData } = useQuery({
+    queryKey: ["files", "deleted", { page, limit, search, sort, gte, lte }],
+    queryFn: () =>
+      fetchFiles({
+        is_deleted: true,
+        page,
+        limit,
+        sort: sort || "-created_at",
+        ...(search && { search }),
+        ...(gte && { gte }),
+        ...(lte && { lte }),
+      }),
+    enabled: activeTab === "file",
+  });
+
   // Aggregate statistics
   const statistics = {
     features: featuresData?.meta?.total || 0,
@@ -240,6 +272,8 @@ const RecycleBinPage = () => {
     paymentMethods: paymentMethodsData?.meta?.total || 0,
     paymentTransactions: paymentTransactionsData?.meta?.total || 0,
     billingSettings: billingSettingsData?.meta?.total || 0,
+    contacts: contactsData?.meta?.total || 0,
+    files: filesData?.meta?.total || 0,
   };
 
   const totalDeleted = Object.values(statistics).reduce(
@@ -289,7 +323,9 @@ const RecycleBinPage = () => {
                     | "interval"
                     | "payment-method"
                     | "payment-transaction"
-                    | "billing-setting",
+                    | "billing-setting"
+                    | "contact"
+                    | "file",
                 ),
               )
             }
@@ -327,6 +363,12 @@ const RecycleBinPage = () => {
               </Tabs.Trigger>
               <Tabs.Trigger value="billing-setting">
                 Billing Settings ({statistics.billingSettings})
+              </Tabs.Trigger>
+              <Tabs.Trigger value="contact">
+                Contacts ({statistics.contacts})
+              </Tabs.Trigger>
+              <Tabs.Trigger value="file">
+                Files ({statistics.files})
               </Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content>
@@ -627,6 +669,62 @@ const RecycleBinPage = () => {
                   isError={false}
                   state={{
                     total: billingSettingsData?.meta?.total || 0,
+                    page,
+                    setPage: (value: number) => dispatch(setPage(value)),
+                    limit,
+                    setLimit: (value: number) => dispatch(setLimit(value)),
+                    search,
+                    setSearch: (value: string) => dispatch(setSearch(value)),
+                    sort,
+                    setSort: (value: string) => dispatch(setSort(value)),
+                  }}
+                />
+              </Tabs.Item>
+              <Tabs.Item value="contact">
+                <RecycleBinTabsSection
+                  type="contact"
+                  data={contactsData?.data || []}
+                  meta={
+                    contactsData?.meta
+                      ? {
+                          total: contactsData.meta.total || 0,
+                          page: contactsData.meta.page || 1,
+                          limit: contactsData.meta.limit || 10,
+                        }
+                      : undefined
+                  }
+                  isLoading={false}
+                  isError={false}
+                  state={{
+                    total: contactsData?.meta?.total || 0,
+                    page,
+                    setPage: (value: number) => dispatch(setPage(value)),
+                    limit,
+                    setLimit: (value: number) => dispatch(setLimit(value)),
+                    search,
+                    setSearch: (value: string) => dispatch(setSearch(value)),
+                    sort,
+                    setSort: (value: string) => dispatch(setSort(value)),
+                  }}
+                />
+              </Tabs.Item>
+              <Tabs.Item value="file">
+                <RecycleBinTabsSection
+                  type="file"
+                  data={filesData?.data || []}
+                  meta={
+                    filesData?.meta
+                      ? {
+                          total: filesData.meta.total || 0,
+                          page: filesData.meta.page || 1,
+                          limit: filesData.meta.limit || 10,
+                        }
+                      : undefined
+                  }
+                  isLoading={false}
+                  isError={false}
+                  state={{
+                    total: filesData?.meta?.total || 0,
                     page,
                     setPage: (value: number) => dispatch(setPage(value)),
                     limit,
