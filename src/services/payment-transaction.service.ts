@@ -43,18 +43,18 @@ export async function fetchPaymentTransactionStatus(
   return { data: response.data.data as TPaymentTransactionStatusResponse };
 }
 
-// POST Create Payment Transaction (Admin)
+// POST Create Payment (Admin direct create)
 export async function createPaymentTransaction(
   payload: Partial<TPaymentTransaction>,
 ): Promise<TPaymentTransactionResponse> {
-  const response = await api.post("/api/payment-transactions", payload);
+  const response = await api.post("/api/payments", payload);
   return response.data as TPaymentTransactionResponse;
 }
 
 // POST Initiate Payment (User/Admin)
 export async function initiatePayment(payload: {
   package: string;
-  plan: string;
+  interval: string;
   payment_method: string;
   currency: string;
   return_url: string;
@@ -62,10 +62,7 @@ export async function initiatePayment(payload: {
   customer_email?: string;
   customer_name?: string;
 }): Promise<TInitiatePaymentResponseData> {
-  const response = await api.post(
-    "/api/payment-transactions/initiate",
-    payload,
-  );
+  const response = await api.post("/api/payments/initiate", payload);
   return response.data as TInitiatePaymentResponseData;
 }
 
@@ -73,17 +70,32 @@ export async function initiatePayment(payload: {
 export async function verifyPayment(
   id: string,
 ): Promise<TPaymentTransactionResponse> {
-  const response = await api.post(`/api/payment-transactions/${id}/verify`);
+  const response = await api.post(`/api/payments/${id}/verify`);
   return response.data as TPaymentTransactionResponse;
 }
 
-// PATCH Update Payment Transaction (Admin)
+// PATCH Update Payment Status (Admin)
 export async function updatePaymentTransaction(
   id: string,
   payload: Partial<TPaymentTransaction>,
 ): Promise<TPaymentTransactionResponse> {
-  const response = await api.patch(`/api/payment-transactions/${id}`, payload);
+  const response = await api.patch(`/api/payments/${id}`, payload);
   return response.data as TPaymentTransactionResponse;
+}
+
+// POST Initiate Refund (Admin)
+export async function initiateRefund(
+  id: string,
+  admin_note?: string,
+): Promise<TPaymentTransactionResponse> {
+  const response = await api.post(`/api/payments/${id}/refund`, { admin_note });
+  return response.data as TPaymentTransactionResponse;
+}
+
+// POST Reconcile Pending Transactions (Admin)
+export async function reconcilePayments(): Promise<{ message: string }> {
+  const response = await api.post("/api/payments/reconcile");
+  return response.data;
 }
 
 // DELETE Single Payment Transaction (Admin)
