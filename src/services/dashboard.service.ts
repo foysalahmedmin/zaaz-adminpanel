@@ -1,7 +1,9 @@
 import api from "@/lib/api";
 import type {
+  TDashboardAiModelUsage,
   TDashboardCreditsFlow,
   TDashboardFeaturePerformance,
+  TDashboardPackageAssignments,
   TDashboardPackagePerformance,
   TDashboardPaymentMethod,
   TDashboardRevenueData,
@@ -71,4 +73,20 @@ export const fetchDashboardFeatures = async (): Promise<
 > => {
   const response = await api.get("/api/dashboard/features");
   return response.data as TResponse<TDashboardFeaturePerformance>;
+};
+
+export const fetchDashboardAiModels = async (): Promise<
+  TResponse<TDashboardAiModelUsage>
+> => {
+  const response = await api.get("/api/dashboard/ai-models");
+  return response.data as TResponse<TDashboardAiModelUsage>;
+};
+
+export const fetchDashboardPackageAssignments = async (
+  period: string = "30d",
+): Promise<TResponse<TDashboardPackageAssignments>> => {
+  const response = await api.get("/api/dashboard/package-assignments", {
+    params: { period },
+  });
+  return response.data as TResponse<TDashboardPackageAssignments>;
 };

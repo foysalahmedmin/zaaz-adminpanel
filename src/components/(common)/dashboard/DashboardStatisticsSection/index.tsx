@@ -14,80 +14,83 @@ const DashboardStatisticsSection: React.FC<DashboardStatisticsSectionProps> = ({
 }) => {
   if (!data) return null;
 
-  const formatCurrency = (amount: number, currency: string = "USD") => {
-    return new Intl.NumberFormat("en-US", {
+  const fmt = (n: number) => new Intl.NumberFormat("en-US").format(Math.round(n));
+  const fmtUsd = (n: number) =>
+    new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency,
+      currency: "USD",
       minimumFractionDigits: 0,
       maximumFractionDigits: 2,
-    }).format(amount);
-  };
+    }).format(n);
 
-  const formatNumber = (num: number) => {
-    return new Intl.NumberFormat("en-US").format(num);
-  };
+  const trend = (t?: { type: "up" | "down" | "neutral"; percentage: number }) =>
+    t
+      ? {
+          type: t.type,
+          value: `${t.percentage.toFixed(1)}%`,
+          label: "vs last month",
+        }
+      : undefined;
 
   const statistics: TStatistic[] = [
     {
-      value: formatCurrency(data.total_revenue.total_usd_equivalent),
-      title: "Total Revenue",
-      subtitle: "All successful payments",
-      description: "Total revenue from all completed transactions",
+      value: fmtUsd(data.monthly_revenue.total_usd_equivalent),
+      title: "Monthly Revenue",
+      subtitle: `$${fmt(data.monthly_revenue.USD)} USD · ৳${fmt(data.monthly_revenue.BDT)} BDT`,
+      description: "Revenue from completed payments this month",
       icon: "dollar-sign",
-      trend: data.trends.revenue
-        ? {
-            type: data.trends.revenue.type,
-            value: `${data.trends.revenue.percentage.toFixed(1)}%`,
-            label: "vs last month",
-          }
-        : undefined,
+      trend: trend(data.trends.revenue),
     },
     {
-      value: formatNumber(data.total_users),
+      value: fmt(data.total_users),
       title: "Total Users",
-      subtitle: "Active users",
-      description: "Total number of active users in the system",
+      subtitle: "Non-blocked registered users",
+      description: "Cumulative active user count",
       icon: "users",
-      trend: data.trends.users
-        ? {
-            type: data.trends.users.type,
-            value: `${data.trends.users.percentage.toFixed(1)}%`,
-            label: "vs last month",
-          }
-        : undefined,
+      trend: trend(data.trends.users),
     },
     {
-      value: formatNumber(data.total_transactions),
-      title: "Total Transactions",
-      subtitle: "All transactions",
-      description: "Total number of payment transactions",
+      value: fmt(data.total_payment_transactions),
+      title: "Payment Transactions",
+      subtitle: "All payment attempts",
+      description: "Total payment transactions across all gateways",
       icon: "credit-card",
-      trend: data.trends.transactions
-        ? {
-            type: data.trends.transactions.type,
-            value: `${data.trends.transactions.percentage.toFixed(1)}%`,
-            label: "vs last month",
-          }
-        : undefined,
+      trend: trend(data.trends.payment_transactions),
     },
     {
-      value: formatNumber(data.total_credits),
-      title: "Total Credits",
-      subtitle: "In circulation",
-      description: "Total credits across all user wallets",
+      value: fmt(data.total_package_assignments),
+      title: "Package Assignments",
+      subtitle: "Total package subscriptions",
+      description: "Total times a package was assigned to a user",
+      icon: "package",
+      trend: trend(data.trends.package_assignments),
+    },
+    {
+      value: fmt(data.monthly_credits_consumed),
+      title: "Credits Consumed",
+      subtitle: "Used this month",
+      description: "Credits spent on features this calendar month",
+      icon: "zap",
+      trend: trend(data.trends.credits_consumed),
+    },
+    {
+      value: fmt(data.total_credits_in_circulation),
+      title: "Credits in Circulation",
+      subtitle: "Across all wallets",
+      description: "Total unspent credits held by all users",
       icon: "coins",
-      trend: data.trends.credits
-        ? {
-            type: data.trends.credits.type,
-            value: `${data.trends.credits.percentage.toFixed(1)}%`,
-            label: "vs last month",
-          }
-        : undefined,
+    },
+    {
+      value: fmt(data.active_subscriptions),
+      title: "Active Subscriptions",
+      subtitle: "Live subscriptions",
+      description: "Users currently on an active subscription plan",
+      icon: "repeat",
     },
   ];
 
   return (
-    <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {statistics.map((item, index) => (
         <StatisticCard key={index} item={item} />
       ))}
