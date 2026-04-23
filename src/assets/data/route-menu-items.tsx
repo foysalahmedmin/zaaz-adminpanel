@@ -13,6 +13,8 @@ import FeaturePopupsPage from "@/pages/(common)/FeaturePopupsPage";
 import FeatureUsageLogsPage from "@/pages/(common)/FeatureUsageLogsPage";
 import FeaturesDetailsPage from "@/pages/(common)/FeaturesDetailsPage";
 import FeaturesPage from "@/pages/(common)/FeaturesPage";
+import ContactsPage from "@/pages/(common)/ContactsPage";
+import FilesPage from "@/pages/(common)/FilesPage";
 import NotificationsPage from "@/pages/(common)/NotificationsPage";
 import PackagePlansPage from "@/pages/(common)/PackagePlansPage";
 import PackageTransactionsPage from "@/pages/(common)/PackageTransactionsPage";
@@ -469,6 +471,28 @@ export const items: TItem[] = [
     roles: ["supper-admin", "admin"],
     menuType: "title",
     name: "FEATURE CONFIGS",
+  },
+  {
+    roles: ["super-admin", "admin"],
+    icon: "mail",
+    path: "contacts",
+    name: "Contacts",
+    element: (
+      <AuthWrapper roles={["supper-admin", "admin"]}>
+        <ContactsPage />
+      </AuthWrapper>
+    ),
+  },
+  {
+    roles: ["super-admin", "admin"],
+    icon: "hard-drive",
+    path: "files",
+    name: "Files",
+    element: (
+      <AuthWrapper roles={["supper-admin", "admin"]}>
+        <FilesPage />
+      </AuthWrapper>
+    ),
   },
   {
     roles: ["supper-admin", "admin"],

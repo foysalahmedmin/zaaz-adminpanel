@@ -1,21 +1,32 @@
 import type { TResponse } from "./response.type";
 
+export type TFileType = "image" | "video" | "audio" | "file" | "pdf" | "doc" | "txt";
+export type TFileStatus = "active" | "inactive" | "archived";
+export type TFileProvider = "local" | "gcs";
+
 export type TFile = {
   _id: string;
+  filename: string;
+  originalname: string;
   name: string;
-  original_name: string;
-  extension: string;
-  mime_type: string;
-  size: number;
   url: string;
-  path: string;
-  key: string;
-  source: "local" | "cloud" | "external";
+  mimetype: string;
+  size: number;
+  author: string;
+  provider: TFileProvider;
+  category?: string;
+  description?: string;
+  caption?: string;
+  status: TFileStatus;
   is_deleted: boolean;
-  uploaded_by: string;
-  metadata?: Record<string, unknown>;
-  createdAt: string;
-  updatedAt: string;
+  metadata?: {
+    path?: string;
+    bucket?: string;
+    extension?: string;
+    file_type?: TFileType;
+  };
+  created_at?: string;
+  updated_at?: string;
 };
 
 export type TFileResponse = TResponse<TFile>;
