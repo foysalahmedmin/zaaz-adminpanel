@@ -393,33 +393,36 @@ const UserDetailsPage = () => {
                         </div>
                         <div className="bg-muted rounded-lg p-4">
                           <div className="text-muted-foreground mb-1 text-sm">
-                            Package
+                            Initial Credits
                           </div>
-                          <div className="text-foreground text-sm">
-                            {typeof wallet?.package === "object" &&
-                            wallet.package
-                              ? (wallet.package as TPackage).name
-                              : wallet?.package || "N/A"}
+                          <div className="mt-1">
+                            {wallet?.initial_credits_given ? (
+                              <span className="inline-flex items-center gap-1 text-sm font-medium text-green-600">
+                                <CheckCircle className="h-4 w-4" /> Given
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground text-sm">
+                                Not given
+                              </span>
+                            )}
                           </div>
                         </div>
-                        {wallet?.expires_at && (
-                          <div className="bg-muted rounded-lg p-4">
-                            <div className="text-muted-foreground mb-1 text-sm">
-                              Expires At
-                            </div>
-                            <div
-                              className={`text-sm font-semibold ${
-                                new Date(wallet.expires_at) < new Date()
-                                  ? "text-red-600"
-                                  : "text-green-600"
-                              }`}
-                            >
-                              {new Date(wallet.expires_at).toLocaleString()}
-                              {new Date(wallet.expires_at) < new Date() &&
-                                " (Expired)"}
-                            </div>
+                        <div className="bg-muted rounded-lg p-4">
+                          <div className="text-muted-foreground mb-1 text-sm">
+                            Initial Package
                           </div>
-                        )}
+                          <div className="mt-1">
+                            {wallet?.initial_package_given ? (
+                              <span className="inline-flex items-center gap-1 text-sm font-medium text-green-600">
+                                <CheckCircle className="h-4 w-4" /> Given
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground text-sm">
+                                Not given
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </Tabs.Item>
