@@ -4,23 +4,10 @@ export type TUserWallet = {
   _id: string;
   user: string;
   email?: string;
-  package?:
-    | string
-    | {
-        _id: string;
-        name: string;
-      }
-    | null;
-  plan?:
-    | string
-    | {
-        _id: string;
-        name: string;
-      }
-    | null;
   credits: number;
-  type: "free" | "paid";
-  expires_at?: string;
+  initial_credits_given?: boolean;
+  initial_package_given?: boolean;
+  is_deleted?: boolean;
   created_at?: string;
   updated_at?: string;
 };
